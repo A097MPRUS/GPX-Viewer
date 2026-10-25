@@ -2,7 +2,7 @@
 // capture page scrolling; the marker follows the recorded timestamps once, then on request.
 // Author: A097MPRUS.
 import { loadUrl } from './load';
-import { TrackMap, type BaseMapId } from './map';
+import { stylesReady, TrackMap, type BaseMapId } from './map';
 
 export async function mountPreview(host: HTMLElement, sampleUrl: string): Promise<void> {
   const mapEl = document.createElement('div');
@@ -34,13 +34,12 @@ export async function mountPreview(host: HTMLElement, sampleUrl: string): Promis
   bar.append(group, replay);
   host.replaceChildren(mapEl, bar);
 
+  await stylesReady();
   const map = new TrackMap(mapEl, {}, { interactive: false });
   const loaded = await loadUrl(sampleUrl);
   map.setTrack(loaded.data, loaded.derived);
-  new ResizeObserver(() => {
-    map.invalidate();
-    map.fit(false);
-  }).observe(mapEl);
+  // The map refreshes its own size; the preview also keeps the whole route in view.
+  new ResizeObserver(() => map.fit(false)).observe(mapEl);
 
   buttons.forEach((b) =>
     b.addEventListener('click', () => {

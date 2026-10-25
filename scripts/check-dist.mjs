@@ -6,6 +6,8 @@
 // - Web Lite code contains no network call other than fetching the bundled sample and the worker.
 // - Preview builds carry noindex; public builds do not.
 // - Visible text contains no em or en dashes.
+// - Map styles: the map hosts are positioned by the stylesheet and Leaflet's canvases and tiles are
+//   exempt from the global max-width rule (both once left the map blank).
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -129,6 +131,24 @@ for (const required of [
   'samples/gpx-viewer-sample-mullerthal.gpx',
 ])
   if (!existsSync(join(dist, required))) fail(`missing ${required}`);
+
+const css = files
+  .filter((f) => f.endsWith('.css'))
+  .map((f) => readFileSync(f, 'utf8'))
+  .join('\n');
+for (const [rule, label] of [
+  [
+    /\.map-host\[[^\]]+\]\{position:absolute;inset:0/,
+    'Web Lite map host is not absolutely positioned',
+  ],
+  [/\.preview-map\{position:absolute;inset:0/, 'homepage map preview is not absolutely positioned'],
+  [
+    /\.leaflet-container canvas\{max-width:none!important\}/,
+    'Leaflet canvas not exempt from max-width',
+  ],
+  [/\.leaflet-container\{[^}]*overflow:hidden/, 'Leaflet stylesheet missing from the build'],
+])
+  if (!rule.test(css)) fail(`map styles: ${label}`);
 
 if (errors.length) {
   console.error(

@@ -8,7 +8,7 @@ import type { GpxData, Stats } from '../gpx/types';
 import { Chart, type ChartModel, type Series } from './chart';
 import { METRIC_COLORS } from './colors';
 import { loadFile, loadUrl, type Loaded } from './load';
-import { TrackMap, type BaseMapId } from './map';
+import { stylesReady, TrackMap, type BaseMapId } from './map';
 
 type MetricId =
   'elevation' | 'speed' | 'recspeed' | 'grade' | 'vspeed' | 'hr' | 'cad' | 'power' | 'temp';
@@ -72,8 +72,10 @@ const METRICS: { id: MetricId; label: string }[] = [
 const $ = <T extends HTMLElement = HTMLElement>(root: ParentNode, sel: string) =>
   root.querySelector<T>(sel);
 
-export function initViewer(root: HTMLElement): void {
+export async function initViewer(root: HTMLElement): Promise<void> {
   const settings = readSettings();
+  // The map measures and positions its host when created: wait for the page's styles first.
+  await stylesReady();
   const el = {
     input: $<HTMLInputElement>(root, '[data-file-input]')!,
     sample: $<HTMLButtonElement>(root, '[data-load-sample]')!,
@@ -104,6 +106,8 @@ export function initViewer(root: HTMLElement): void {
     error: $(root, '[data-error]')!,
     status: $(root, '[data-status]')!,
     tiles: $(root, '[data-tile-notice]')!,
+    tilesText: $(root, '[data-tile-text]')!,
+    tilesNone: $<HTMLButtonElement>(root, '[data-tile-none]')!,
     play: $<HTMLButtonElement>(root, '[data-play]')!,
     seek: $<HTMLInputElement>(root, '[data-seek]')!,
     speed: $<HTMLSelectElement>(root, '[data-speed]')!,
@@ -125,8 +129,10 @@ export function initViewer(root: HTMLElement): void {
       setCursor(i, 'map');
     },
     pick: (i) => setCursor(i, 'map'),
-    tiles: (ok) => {
-      el.tiles.hidden = ok;
+    tiles: (failed) => {
+      el.tiles.hidden = failed === null;
+      if (failed)
+        el.tilesText.textContent = `${failed} map images are not loading. The track, graphs and statistics still work.`;
     },
   });
   const chart = new Chart(el.chart, {
@@ -138,7 +144,6 @@ export function initViewer(root: HTMLElement): void {
     select: (a, b) => select(a, b),
     reset: () => clearSelection(),
   });
-  new ResizeObserver(() => map.invalidate()).observe(el.map);
 
   // ---- Settings controls
   el.units.value = settings.units;
@@ -149,11 +154,14 @@ export function initViewer(root: HTMLElement): void {
   el.follow.checked = settings.follow;
   map.setBase(settings.basemap);
   const persist = () => saveSettings(settings);
-  el.basemap.addEventListener('change', () => {
-    settings.basemap = el.basemap.value as BaseMapId;
-    map.setBase(settings.basemap);
+  const useBasemap = (id: BaseMapId) => {
+    settings.basemap = id;
+    el.basemap.value = id;
+    map.setBase(id);
     persist();
-  });
+  };
+  el.basemap.addEventListener('change', () => useBasemap(el.basemap.value as BaseMapId));
+  el.tilesNone.addEventListener('click', () => useBasemap('none'));
   el.units.addEventListener('change', () => {
     settings.units = el.units.value as fmt.Units;
     cache.clear();
@@ -776,6 +784,12 @@ export function initViewer(root: HTMLElement): void {
       requestAnimationFrame(() => {
         map.invalidate();
         map.fit(false);
+        const state = map.state();
+        showError(
+          state === 'collapsed'
+            ? 'The map area could not be sized, so the track cannot be drawn. Reload the page; if this persists, report the browser and its version.'
+            : null,
+        );
       }),
     );
   }

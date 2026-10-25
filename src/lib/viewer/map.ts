@@ -10,6 +10,7 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { Derived, GpxData } from '../gpx/types';
+import { trackBounds } from './bounds';
 
 export type BaseMapId = 'osm' | 'opentopomap' | 'none';
 
@@ -45,8 +46,34 @@ export interface MapCallbacks {
   hover?: (index: number | null) => void;
   /** Click or tap on the track. */
   pick?: (index: number) => void;
-  /** Tiles failed repeatedly, or recovered. */
-  tiles?: (ok: boolean) => void;
+  /** Tiles of the current basemap failed repeatedly (with its name), or recovered (null). */
+  tiles?: (failed: string | null) => void;
+}
+
+/** What the map can show; also written to the host's data-map-state for diagnostics. */
+export type MapState = 'ready' | 'collapsed' | 'hidden';
+
+/**
+ * Resolves once every stylesheet linked by the page has loaded or failed (at most `timeout` ms).
+ * Safari can run module scripts before a slow stylesheet in the head has applied; a map created
+ * then measures and positions an unstyled container.
+ */
+export function stylesReady(timeout = 4000): Promise<void> {
+  const pending = [...document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')].filter(
+    (link) => !link.sheet,
+  );
+  if (!pending.length) return Promise.resolve();
+  const loads = pending.map(
+    (link) =>
+      new Promise<void>((done) => {
+        link.addEventListener('load', () => done(), { once: true });
+        link.addEventListener('error', () => done(), { once: true });
+      }),
+  );
+  return Promise.race([
+    Promise.all(loads).then(() => undefined),
+    new Promise<void>((done) => window.setTimeout(done, timeout)),
+  ]);
 }
 
 export class TrackMap {
@@ -67,7 +94,20 @@ export class TrackMap {
   private tileErrors = 0;
   private callbacks: MapCallbacks;
   private reduceMotion: boolean;
+  private element: HTMLElement;
+  private resize: ResizeObserver;
+  private lastSize = '';
+  private onVisible = () => {
+    if (!document.hidden) this.refresh();
+  };
+  private onPageShow = () => this.refresh();
 
+  /**
+   * The host element must be sized and positioned by the page stylesheet (for example absolute
+   * with inset 0 inside a sized parent). The map keeps itself sized: it refreshes when the host
+   * changes size, when the tab becomes visible again and when the page is restored from the
+   * back-forward cache. Call destroy() when the host is removed.
+   */
   constructor(
     element: HTMLElement,
     callbacks: MapCallbacks = {},
@@ -77,6 +117,8 @@ export class TrackMap {
     this.reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.renderer = L.canvas({ padding: 0.4, tolerance: 6 });
     const interactive = options.interactive ?? true;
+    this.element = element;
+    const inlinePosition = element.style.position;
     this.map = L.map(element, {
       zoomControl: interactive,
       attributionControl: true,
@@ -94,6 +136,11 @@ export class TrackMap {
       markerZoomAnimation: !this.reduceMotion,
       worldCopyJump: false,
     });
+    // Leaflet gives a container whose computed position is static an inline position: relative.
+    // When the stylesheet had not applied yet (Safari, slow first load), that inline value then
+    // overrode the stylesheet's absolute positioning for good and collapsed the map to zero
+    // height: no tiles, no track, no controls. Positioning belongs to the page stylesheet.
+    if (!inlinePosition) element.style.removeProperty('position');
     this.map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
     this.map.setView([49.8, 6.35], 9);
     this.trackLayer.addTo(this.map);
@@ -109,6 +156,10 @@ export class TrackMap {
     });
     this.setBase('osm');
     this.map.on('zoomend moveend', () => this.buildGrid());
+    this.resize = new ResizeObserver(() => this.refresh());
+    this.resize.observe(element);
+    document.addEventListener('visibilitychange', this.onVisible);
+    window.addEventListener('pageshow', this.onPageShow);
     if (interactive) {
       this.map.on('mousemove', (e: L.LeafletMouseEvent) =>
         this.callbacks.hover?.(this.nearest(e.containerPoint)),
@@ -126,16 +177,21 @@ export class TrackMap {
     if (this.base) this.map.removeLayer(this.base);
     this.base = null;
     this.tileErrors = 0;
-    this.callbacks.tiles?.(true);
+    this.callbacks.tiles?.(null);
     if (id === 'none') return;
     const def = BASEMAPS[id];
     const layer = L.tileLayer(def.url, { ...def.options, crossOrigin: false });
+    // Tiles are independent of the track: the track, markers and interaction are drawn on the
+    // map's own canvas and stay visible when a tile server fails or the connection drops.
     layer.on('tileerror', () => {
       this.tileErrors++;
-      if (this.tileErrors === 6) this.callbacks.tiles?.(false);
+      if (this.tileErrors === 6) {
+        console.warn(`GPX Viewer: ${def.name} tiles are not loading.`);
+        this.callbacks.tiles?.(def.name);
+      }
     });
     layer.on('tileload', () => {
-      if (this.tileErrors >= 6) this.callbacks.tiles?.(true);
+      if (this.tileErrors >= 6) this.callbacks.tiles?.(null);
       this.tileErrors = 0;
     });
     layer.addTo(this.map);
@@ -231,32 +287,33 @@ export class TrackMap {
 
   bounds(from = 0, to = (this.data?.count ?? 1) - 1): L.LatLngBounds | null {
     if (!this.data || !this.derived || to < from) return null;
-    let s = Infinity;
-    let n = -Infinity;
-    let w = Infinity;
-    let e = -Infinity;
-    for (let i = from; i <= to; i++) {
-      const la = this.data.lat[i]!;
-      const lo = this.derived.lonUnwrapped[i]!;
-      if (la < s) s = la;
-      if (la > n) n = la;
-      if (lo < w) w = lo;
-      if (lo > e) e = lo;
-    }
-    if (this.data.count === 0)
-      for (const p of this.data.waypoints) {
-        s = Math.min(s, p.lat);
-        n = Math.max(n, p.lat);
-        w = Math.min(w, p.lon);
-        e = Math.max(e, p.lon);
-      }
-    return Number.isFinite(s) ? L.latLngBounds([s, w], [n, e]) : null;
+    const b = trackBounds(this.data, this.derived, from, to);
+    return b ? L.latLngBounds([b[0], b[1]], [b[2], b[3]]) : null;
   }
 
   fit(animate = true, from?: number, to?: number): void {
     const b = this.bounds(from, to);
-    if (!b) return;
+    if (!b) {
+      if (this.data) console.warn('GPX Viewer: the file has no valid coordinates to show.');
+      return;
+    }
+    // A map without a measurable size cannot compute a zoom; refresh() fits again once sized.
+    if (this.state() !== 'ready') return;
     this.map.fitBounds(b.pad(0.08), { animate: animate && !this.reduceMotion, maxZoom: 16 });
+  }
+
+  /** Current state of the map host, also written to its data-map-state attribute. */
+  state(): MapState {
+    const { clientWidth: w, clientHeight: h } = this.element;
+    const parent = this.element.parentElement;
+    const state: MapState =
+      w > 0 && h > 0
+        ? 'ready'
+        : parent && parent.clientWidth > 0 && parent.clientHeight > 0
+          ? 'collapsed'
+          : 'hidden';
+    this.element.dataset['mapState'] = state;
+    return state;
   }
 
   /** Marks the current position; follow pans the map when the point leaves the middle area. */
@@ -297,7 +354,27 @@ export class TrackMap {
     this.map.invalidateSize({ animate: false });
   }
 
+  /**
+   * Adopts the host's current size. invalidateSize does nothing when the size is unchanged and
+   * never resizes the host, so this cannot loop with the ResizeObserver. A map that had no size
+   * when the track was set is fitted once it gets one.
+   */
+  refresh(): void {
+    const before = this.lastSize;
+    const state = this.state();
+    this.lastSize = `${this.element.clientWidth}x${this.element.clientHeight}`;
+    if (state === 'collapsed')
+      console.warn('GPX Viewer: the map area has no size; check the page stylesheet.');
+    if (state !== 'ready' || this.lastSize === before) return;
+    this.invalidate();
+    const hadNoSize = !before || before.startsWith('0x') || before.endsWith('x0');
+    if (hadNoSize && this.data) this.fit(false);
+  }
+
   destroy(): void {
+    this.resize.disconnect();
+    document.removeEventListener('visibilitychange', this.onVisible);
+    window.removeEventListener('pageshow', this.onPageShow);
     this.map.remove();
   }
 

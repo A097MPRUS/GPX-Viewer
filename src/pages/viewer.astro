@@ -78,10 +78,14 @@ import { url } from '../data/site';
 
     <div class="lite-map">
       <div class="map-host" data-map aria-label="Map"></div>
-      <p class="tile-notice" data-tile-notice hidden>
-        Map tiles are not loading. The track, graphs and statistics still work; try another map in
-        Settings.
-      </p>
+      <div class="tile-notice" role="status" data-tile-notice hidden>
+        <p data-tile-text>
+          Map images are not loading. The track, graphs and statistics still work.
+        </p>
+        <button type="button" class="btn" data-tile-none>
+          Show without a map
+        </button>
+      </div>
       <div class="empty" data-empty>
         <div class="empty-inner">
           <h2>Open a GPX file</h2>
@@ -328,6 +332,19 @@ import { url } from '../data/site';
   .map-host {
     position: absolute;
     inset: 0;
+  }
+  .tile-notice {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .tile-notice p {
+    margin: 0;
+  }
+  .tile-notice .btn {
+    flex: none;
+    white-space: nowrap;
   }
   .tile-notice {
     position: absolute;
@@ -731,5 +748,5 @@ import { url } from '../data/site';
 <script>
   import { initViewer } from '../lib/viewer/app';
   const root = document.querySelector<HTMLElement>('[data-app]');
-  if (root) initViewer(root);
+  if (root) void initViewer(root);
 </script>
