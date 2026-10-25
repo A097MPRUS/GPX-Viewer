@@ -4,7 +4,7 @@
 // - Only allowlisted external hosts appear: no analytics, tracking or font services, and no host
 //   that could receive GPX data.
 // - Web Lite code contains no network call other than fetching the bundled sample and the worker.
-// - Preview builds carry noindex; public builds do not.
+// - Preview builds carry noindex (page, header, robots.txt); public builds do not and list a sitemap.
 // - Visible text contains no em or en dashes.
 // - Map styles: the map hosts are positioned by the stylesheet and Leaflet's canvases and tiles are
 //   exempt from the global max-width rule (both once left the map blank).
@@ -155,6 +155,34 @@ for (const [rule, label] of [
   [/\.leaflet-container\{[^}]*overflow:hidden/, 'Leaflet stylesheet missing from the build'],
 ])
   if (!rule.test(css)) fail(`map styles: ${label}`);
+
+// Indexing follows the stage: the noindex header and robots.txt for previews, a sitemap of
+// canonical addresses on the official host for the public build.
+const headers = readFileSync(join(dist, '_headers'), 'utf8');
+const robots = readFileSync(join(dist, 'robots.txt'), 'utf8');
+if (stage === 'preview') {
+  if (!/^\s+X-Robots-Tag: noindex/m.test(headers))
+    fail('_headers: preview build without X-Robots-Tag noindex');
+  if (!robots.includes('Disallow: /')) fail('robots.txt: preview build allows crawling');
+} else {
+  if (/^\s+X-Robots-Tag:/m.test(headers)) fail('_headers: public build still sends X-Robots-Tag');
+  if (!/^Sitemap: https:\/\/\S+\/sitemap\.xml$/m.test(robots)) fail('robots.txt: no sitemap line');
+}
+if (!existsSync(join(dist, 'sitemap.xml'))) fail('sitemap.xml missing');
+else {
+  const locs = [
+    ...readFileSync(join(dist, 'sitemap.xml'), 'utf8').matchAll(/<loc>([^<]+)<\/loc>/g),
+  ].map((m) => m[1]);
+  if (locs.length < 8) fail(`sitemap.xml lists only ${locs.length} pages`);
+  const site = new URL(process.env.SITE_URL || 'https://gpxviewerpro.pages.dev');
+  for (const loc of locs) {
+    const u = new URL(loc);
+    if (u.host !== site.host) fail(`sitemap.xml: ${loc} is not on ${site.host}`);
+    const rel = u.pathname.slice(base.length);
+    if (!existsSync(join(dist, rel, 'index.html')) && !existsSync(join(dist, rel)))
+      fail(`sitemap.xml: ${loc} has no page`);
+  }
+}
 
 if (errors.length) {
   console.error(

@@ -273,7 +273,7 @@ const P = g.profile;
   }
   @container (max-width: 620px) {
     .stage {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       grid-template-areas: 'map' 'readout' 'profile';
     }
     .readout {

@@ -39,7 +39,7 @@ const items = files.flatMap((file) => {
           class="slide"
           aria-roledescription="slide"
           aria-label={`${n + 1} of ${items.length}`}
-          style={`--ratio: ${item.image.width / item.image.height}`}
+          style={`--ratio: ${item.image.width / item.image.height}; --sharp: ${Math.round(item.image.width / 2)}px`}
         >
           <button
             type="button"
@@ -57,7 +57,7 @@ const items = files.flatMap((file) => {
               src={item.image}
               alt={item.alt}
               widths={[640, 1024, 1440, Math.min(2048, item.image.width)]}
-              sizes="(max-width: 700px) 92vw, 1000px"
+              sizes={`(max-width: 700px) 92vw, ${Math.min(1120, Math.round(item.image.width / 2))}px`}
               format="webp"
               quality={88}
               loading={n < 2 ? 'eager' : 'lazy'}
@@ -122,8 +122,9 @@ const items = files.flatMap((file) => {
     flex: none;
     margin: 0;
     scroll-snap-align: start;
-    /* Wide graph panels get more room than window-sized screenshots. */
-    width: min(86vw, calc(clamp(300px, 58svh, 620px) * var(--ratio)), 1120px);
+    /* Wide graph panels get more room than window-sized screenshots, but never more than half the
+       capture's width (its Retina size), so a slide is never enlarged beyond its pixels. */
+    width: min(86vw, calc(clamp(300px, 58svh, 620px) * var(--ratio)), 1120px, var(--sharp, 1120px));
   }
   .zoom {
     display: block;

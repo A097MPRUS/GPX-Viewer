@@ -16,8 +16,8 @@ interface Props {
 const { title, description, current, app = false } = Astro.props;
 const fullTitle = title === 'GPX Viewer' ? title : `${title} | GPX Viewer`;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-// Until the owner approves the public launch, every build is a private preview and asks search
-// engines not to index it (the preview host also requires sign-in).
+// Production builds (PUBLIC_SITE_STAGE=public) may be indexed. Every other build is a preview: it
+// asks search engines not to index it, and its host requires sign-in.
 const preview = import.meta.env.PUBLIC_SITE_STAGE !== 'public';
 ---
 
@@ -35,6 +35,9 @@ const preview = import.meta.env.PUBLIC_SITE_STAGE !== 'public';
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="GPX Viewer" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta property="og:image" content={new URL(url('og-image.png'), Astro.site).href} />
     {preview && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" type="image/png" sizes="32x32" href={url('favicon-32.png')} />

@@ -1,9 +1,9 @@
-# Cloudflare Pages headers for the private preview. Author: A097MPRUS.
+# Cloudflare Pages headers. Author: A097MPRUS. Preview builds get X-Robots-Tag: noindex added by
+# scripts/stage-headers.mjs; the public production build is indexable.
 # No Referrer-Policy stricter than the browser default: the OpenStreetMap tile policy requires a
 # valid Referer from web pages.
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Permissions-Policy: geolocation=(), camera=(), microphone=(), interest-cohort=()
-  X-Robots-Tag: noindex, nofollow
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org https://*.tile.opentopomap.org; connect-src 'self'; worker-src 'self' blob:; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'none'

@@ -606,7 +606,7 @@ import { url } from '../data/site';
     .lite-app {
       height: auto;
       min-height: 0;
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       grid-template-rows: auto auto auto auto auto auto;
       grid-template-areas: 'bar' 'error' 'map' 'keys' 'graph' 'side';
     }

@@ -68,7 +68,7 @@ const groups: { title: string; items: string[] }[] = release.sections
   }
   @media (max-width: 700px) {
     .note-group {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

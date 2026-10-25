@@ -297,7 +297,7 @@ const date = new Date(start).toLocaleDateString('en-GB', {
   }
   @container (max-width: 640px) {
     .wx {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       grid-template-areas: 'map' 'readout' 'timeline' 'note';
     }
     .wx-readout {

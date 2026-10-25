@@ -20,7 +20,7 @@ export interface Asset {
   maximumOS: string | null;
   signed: boolean;
   notarized: boolean;
-  /** The same file attached to the GitHub Release (needs a GitHub sign-in while the repository is private). */
+  /** The same file attached to the GitHub Release. */
   github?: string | null;
 }
 

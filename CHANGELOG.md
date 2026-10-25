@@ -48,7 +48,7 @@ Weather data by Open-Meteo.com (CC BY 4.0), based on data and products of ECMWF;
 | [GPX Viewer 0.3.0 Intel macOS 10.13-12.pkg](https://sourceforge.net/projects/gpx-viewer/files/macOS/0.3.0/X64/GPX%20Viewer%200.3.0%20Intel%20macOS%2010.13-12.pkg/download) ([GitHub](https://github.com/A097MPRUS/GPX-Viewer/releases/download/v0.3.0/GPX.Viewer.0.3.0.Intel.macOS.10.13-12.pkg)) | 6.2 MB | `70ea3288940ffacbeec8315dc607f21e4bf2201c76a03647a225af089707d312` |
 | [GPX-Viewer-0.3.0-source.zip](https://sourceforge.net/projects/gpx-viewer/files/macOS/0.3.0/GPX-Viewer-0.3.0-source.zip/download) ([GitHub](https://github.com/A097MPRUS/GPX-Viewer/releases/download/v0.3.0/GPX-Viewer-0.3.0-source.zip)) | 2.8 MB | `6cce8e6570e6cc0a7830ac438baf02e1deecf4dac47f774650e81b55e41f8476` |
 
-GitHub Release: https://github.com/A097MPRUS/GPX-Viewer/releases/tag/v0.3.0 (sign-in required while the repository is private).
+GitHub Release: https://github.com/A097MPRUS/GPX-Viewer/releases/tag/v0.3.0
 
 ## macOS 0.2.0 (build 3), 25 October 2026 (archived)
 
@@ -80,7 +80,7 @@ Known limitations:
 | [GPX Viewer 0.2.0 Intel macOS 10.13-12.pkg](https://sourceforge.net/projects/gpx-viewer/files/macOS/0.2.0/X64/GPX%20Viewer%200.2.0%20Intel%20macOS%2010.13-12.pkg/download) ([GitHub](https://github.com/A097MPRUS/GPX-Viewer/releases/download/v0.2.0/GPX.Viewer.0.2.0.Intel.macOS.10.13-12.pkg)) | 6.1 MB | `5d6c7953b02d8497ff82a512cabad6a4c7162954462a1443d1c3ade0ec06aaf3` |
 | [GPX-Viewer-0.2.0-source.zip](https://sourceforge.net/projects/gpx-viewer/files/macOS/0.2.0/GPX-Viewer-0.2.0-source.zip/download) ([GitHub](https://github.com/A097MPRUS/GPX-Viewer/releases/download/v0.2.0/GPX-Viewer-0.2.0-source.zip)) | 2.7 MB | `48e2c446ae813220dc67f5e516518ce2b4426ee9d782bb1cb28730759e70dd58` |
 
-GitHub Release: https://github.com/A097MPRUS/GPX-Viewer/releases/tag/v0.2.0 (sign-in required while the repository is private).
+GitHub Release: https://github.com/A097MPRUS/GPX-Viewer/releases/tag/v0.2.0
 
 ## Windows 0.3.0, 12 October 2026
 

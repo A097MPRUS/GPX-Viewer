@@ -280,11 +280,18 @@ th {
 .wrap-wide {
   max-width: calc(var(--page-wide) + 2 * var(--gutter));
 }
+/* One spacing step between topics. Neighbouring sections on the same background read as one
+   band, so the second one does not add its own top padding (two paddings stacked made empty
+   bands of 250 px and more, the largest under the Explore introduction). */
 .section {
-  padding: clamp(56px, 6vw + 4vh, 128px) 0;
+  padding: clamp(48px, 3.5vw + 2.5vh, 104px) 0;
 }
 .section-alt {
   background: var(--bg-alt);
+}
+.section:not(.section-alt) + .section:not(.section-alt),
+.section-alt + .section-alt {
+  padding-top: 0;
 }
 .section-head {
   max-width: 820px;
@@ -320,6 +327,7 @@ th {
 }
 .prose {
   max-width: var(--measure);
+  overflow-wrap: break-word;
 }
 .split {
   display: grid;
@@ -329,7 +337,7 @@ th {
 }
 @media (max-width: 960px) {
   .split {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -678,6 +686,8 @@ a.more:hover {
 /* Long-form text: documentation, legal notice, privacy, changelog. */
 .article {
   max-width: 760px;
+  /* Long paths in the legal texts (for example a macOS cache folder) must wrap on phones. */
+  overflow-wrap: break-word;
 }
 .article h1 {
   font-size: var(--step-3);

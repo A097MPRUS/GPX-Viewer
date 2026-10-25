@@ -8,7 +8,7 @@ Free software under the MIT License. No account, no analytics, no advertising: y
 
 This repository is the project's home on GitHub: documentation, release metadata, screenshots, the GitHub Releases with the installers, and the source of the official website in [`website/`](website/). The application's source code is published with each release on SourceForge and attached to the GitHub Releases.
 
-Official website: **https://gpxviewerpro.pages.dev/** (private while it is prepared; it becomes public when the project is launched).
+Official website: **https://gpxviewerpro.pages.dev/**
 
 ## Screenshots
 
@@ -79,8 +79,8 @@ The installers are not signed with a developer certificate. On macOS, Control-cl
 - [Installing and verifying downloads](docs/INSTALLING.md)
 - [Features by edition](docs/FEATURES.md)
 - [Changelog](CHANGELOG.md)
-- [Official website](https://gpxviewerpro.pages.dev/) with GPX Viewer Web Lite (a viewer that runs in the browser) and the full documentation; private until the public launch. Its source is in [`website/`](website/).
-- [GitHub Releases](https://github.com/A097MPRUS/GPX-Viewer/releases): installers, source archive and checksums of each macOS release (visible to authorized users while this repository is private; public downloads are on SourceForge).
+- [Official website](https://gpxviewerpro.pages.dev/) with GPX Viewer Web Lite (a viewer that runs in the browser) and the full documentation. Its source is in [`website/`](website/).
+- [GitHub Releases](https://github.com/A097MPRUS/GPX-Viewer/releases): installers, source archive and checksums of each macOS release (the same files are on SourceForge).
 - [SourceForge project](https://sourceforge.net/projects/gpx-viewer/): downloads, source archives, tickets.
 
 ## Reporting problems

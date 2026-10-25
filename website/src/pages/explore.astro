@@ -856,7 +856,7 @@ const sections = [
     .split-reverse,
     .graphs-head,
     .weather-detail {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
     .split-reverse > :global(.shot) {
       order: 2;
@@ -865,11 +865,11 @@ const sections = [
   @media (max-width: 760px) {
     .edition-grid,
     .three {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
     .fact-list div,
     .rule-list div {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       gap: 2px;
     }
   }

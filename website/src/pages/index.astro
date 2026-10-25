@@ -484,7 +484,7 @@ const fmtMinutes = (sec: number | null) => {
   }
   @media (max-width: 960px) {
     .weather-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
     .weather-facts {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -493,7 +493,7 @@ const fmtMinutes = (sec: number | null) => {
   }
   @media (max-width: 520px) {
     .weather-facts {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
   }
   .intro-stage {
@@ -542,6 +542,13 @@ const fmtMinutes = (sec: number | null) => {
   .step.is-current {
     opacity: 1;
   }
+  /* The last step only needs to reach the middle of the window; a full-height block left about
+     250 px of empty space under its text before the next section. */
+  @media (min-width: 961px) and (min-height: 621px) {
+    .step:last-of-type {
+      min-height: min(34svh, 300px);
+    }
+  }
   .step h3 {
     font-size: var(--step-2);
   }
@@ -551,7 +558,7 @@ const fmtMinutes = (sec: number | null) => {
      viewport (src/lib/stage.ts); the explanations below are all readable at once. */
   @media (max-width: 960px), (max-height: 620px) {
     .story-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       gap: 8px;
     }
     .story-stage {
@@ -602,7 +609,7 @@ const fmtMinutes = (sec: number | null) => {
   }
   @media (max-width: 760px) {
     .countries {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
     .countries div:nth-child(2) {
       border-top: 0;
@@ -618,12 +625,12 @@ const fmtMinutes = (sec: number | null) => {
   }
   @media (max-width: 960px) {
     .maps-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
   }
   @media (max-width: 520px) {
     .countries div {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       gap: 2px;
     }
   }
@@ -632,7 +639,7 @@ const fmtMinutes = (sec: number | null) => {
   .lite {
     background: #101113;
     color: #f1f2f4;
-    padding: clamp(56px, 6vw + 3vh, 112px) 0;
+    padding: clamp(48px, 3.5vw + 2.5vh, 104px) 0;
     --muted: #a3a7ae;
     --line: #2a2b30;
     --link: #78adff;
@@ -681,7 +688,7 @@ const fmtMinutes = (sec: number | null) => {
   }
   @media (max-width: 960px) {
     .lite-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
     .lite-preview {
       aspect-ratio: 4 / 3;
@@ -719,7 +726,7 @@ const fmtMinutes = (sec: number | null) => {
   }
   @media (max-width: 860px) {
     .platform-table {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
     .platform,
     .platform + .platform {

@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/stage-headers.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "typecheck": "astro check && tsc --noEmit -p tsconfig.json",
@@ -22,7 +22,7 @@
     "validate:data": "node scripts/validate-data.mjs",
     "validate:dist": "node scripts/check-dist.mjs",
     "verify": "npm run validate:data && npm run format:check && npm run lint && npm run typecheck && npm test && npm run build && npm run validate:dist",
-    "build:preview": "npm run validate:data && astro build && node scripts/check-dist.mjs",
+    "build:preview": "npm run validate:data && npm run build && node scripts/check-dist.mjs",
     "icons": "node scripts/make-icons.mjs"
   },
   "dependencies": {

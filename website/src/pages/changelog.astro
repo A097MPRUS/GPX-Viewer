@@ -195,7 +195,7 @@ const highlights = (r: Release) => (r.sections?.new ?? r.changes).slice(0, 4);
               {r.folder && <a href={r.folder}>Files on SourceForge</a>}
               {r.notes && <a href={r.notes}>README of this release</a>}
               {r.checksums && <a href={r.checksums}>SHA256SUMS.txt</a>}
-              {r.github && <a href={r.github}>GitHub Release (sign-in required while private)</a>}
+              {r.github && <a href={r.github}>GitHub Release</a>}
             </p>
           </details>
         </div>
@@ -236,9 +236,7 @@ const highlights = (r: Release) => (r.sections?.new ?? r.changes).slice(0, 4);
                   {r.folder && <a href={r.folder}>Archived files on SourceForge</a>}
                   {r.notes && <a href={r.notes}>README of this release</a>}
                   {r.checksums && <a href={r.checksums}>SHA256SUMS.txt</a>}
-                  {r.github && (
-                    <a href={r.github}>GitHub Release (sign-in required while private)</a>
-                  )}
+                  {r.github && <a href={r.github}>GitHub Release</a>}
                 </p>
               </div>
             </details>
@@ -502,10 +500,10 @@ const highlights = (r: Release) => (r.sections?.new ?? r.changes).slice(0, 4);
   }
   @media (max-width: 900px) {
     .current-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
     .shots-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
     .history summary {
       grid-template-columns: auto 1fr;

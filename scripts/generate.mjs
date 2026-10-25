@@ -81,7 +81,7 @@ function changelog() {
     out.push('| File | Size | SHA-256 |', '| --- | --- | --- |');
     for (const a of r.assets) out.push(`| [${a.file}](${a.url})${a.github ? ` ([GitHub](${a.github}))` : ''} | ${mb(a.size)} | \`${a.sha256}\` |`);
     out.push('');
-    if (r.github) out.push(`GitHub Release: ${r.github} (sign-in required while the repository is private).`, '');
+    if (r.github) out.push(`GitHub Release: ${r.github}`, '');
     if (r.hiddenUntil) out.push(`The files of this release are temporarily hidden on SourceForge until ${date(r.hiddenUntil.slice(0, 10))}.`, '');
   }
   return out.join('\n');

@@ -36,7 +36,7 @@ const {
   maxHeight = 'min(70svh, 720px)',
   set,
   density = 2,
-  sizes = '(max-width: 760px) 94vw, (max-width: 1400px) 70vw, 1200px',
+  sizes: givenSizes,
   eager = false,
   frame = true,
   class: className,
@@ -53,6 +53,12 @@ const image =
 const alt = givenAlt ?? meta?.alt ?? '';
 const caption = givenCaption ?? meta?.caption ?? '';
 const natural = image ? Math.round(image.width / density) : 0;
+// The figure is never wider than the capture's natural size or the wide page, so the last hint is
+// the larger of those limits that applies (a fixed 1200px hint made 1266 px wide screenshots pick a
+// 1200 pixel file on 1x screens).
+const sizes =
+  givenSizes ??
+  `(max-width: 760px) 94vw, (max-width: 1400px) 90vw, ${Math.min(natural || 1480, 1480)}px`;
 const candidates = image
   ? [...new Set([480, 800, 1200, 1600, 2000, 2600, image.width].filter((w) => w <= image.width))]
   : [];

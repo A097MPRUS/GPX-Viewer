@@ -54,8 +54,8 @@ Do not edit `src/data/*.json`, `src/content/legal/*`, `src/assets/icon-*.png` or
 
 ## Deployment
 
-- **One website, one address:** Cloudflare Pages project `gpxviewerpro` builds the `website/` folder of `A097MPRUS/GPX-Viewer` on every push to `main` and serves it at `https://gpxviewerpro.pages.dev/`. Root directory `website`, build command `npm ci && npm run build:preview`, output `dist`, environment `NODE_VERSION=24.19.0` and `PUBLIC_GITHUB_OWNER`. `public/_headers` adds security headers and `X-Robots-Tag: noindex`.
-- **Private until the owner decides:** Cloudflare Access lets only the owner open the site, its preview and deployment URLs and every asset. The public launch removes that restriction on the same project and address; there is no GitHub Pages or `github.io` site and no second website.
+- **One website, one address:** Cloudflare Pages project `gpxviewerpro` builds the `website/` folder of `A097MPRUS/GPX-Viewer` on every push to `main` and serves it at `https://gpxviewerpro.pages.dev/`. Root directory `website`, build command `npm ci && npm run verify` (a failing check stops the deployment), output `dist`, environment `NODE_VERSION=24.19.0`, `PUBLIC_GITHUB_OWNER` and `PUBLIC_SITE_STAGE` (`public` for production, `preview` for every other branch). `public/_headers` adds security headers; preview builds also send `X-Robots-Tag: noindex` (`scripts/stage-headers.mjs`), robots.txt disallows crawling and pages carry `noindex`. The public build lists every page in `sitemap.xml`.
+- **Public production, private previews:** `https://gpxviewerpro.pages.dev/` is public. Branch previews and deployment URLs (`*.gpxviewerpro.pages.dev`) stay behind Cloudflare Access (owner only). There is no GitHub Pages or `github.io` site and no second website.
 - **Validation:** `.github/workflows/website.yml` at the repository root runs `npm run verify` when `website/`, `release/` or `screenshots/` change.
 
 ## Licences

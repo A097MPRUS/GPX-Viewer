@@ -52,7 +52,7 @@ const setName = set ?? `gallery-${group ?? 'files'}`;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
   }
   .gallery.single {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .gallery :global(.gallery-caption) {
     text-align: left;

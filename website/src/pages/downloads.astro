@@ -159,11 +159,7 @@ const formatName: Record<string, string> = {
             <a href={url(`changelog/#${release.id}`)}>Release notes</a>
             {release.checksums && <a href={release.checksums}>SHA256SUMS.txt</a>}
             {release.folder && <a href={release.folder}>All files on SourceForge</a>}
-            {asset.github && (
-              <a href={asset.github}>
-                Same file on GitHub Releases (sign-in required while private)
-              </a>
-            )}
+            {asset.github && <a href={asset.github}>Same file on GitHub Releases</a>}
           </div>
           <details class="install">
             <summary>Installation</summary>
@@ -469,7 +465,7 @@ const formatName: Record<string, string> = {
   }
   @media (max-width: 860px) {
     .dl-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .dl-button {
@@ -482,7 +478,7 @@ const formatName: Record<string, string> = {
       grid-column: 1 / -1;
     }
     .others div {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       gap: 2px;
     }
   }
