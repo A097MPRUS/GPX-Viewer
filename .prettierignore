@@ -6,3 +6,4 @@ public/samples
 tests/fixtures
 samples/source
 src/data/*.json
+src/content/legal

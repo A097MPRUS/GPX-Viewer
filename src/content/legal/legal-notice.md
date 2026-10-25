@@ -42,67 +42,67 @@ Each service receives that data under its own privacy terms. The details are in 
 
 ### Map sources and their owners
 
-| Map in the app                                     | Owner and credit                                                                                        | License or terms as understood by the author                                                                                                    |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Apple Maps (Mac only)                              | © Apple Inc. and its data suppliers                                                                     | Shown through Apple's MapKit under Apple's terms                                                                                                |
-| Terrain Tiles (elevation data)                     | Terrain Tiles (Mapzen, AWS Open Data): SRTM, GMTED2010, ETOPO1, EU-DEM (Copernicus) and others          | AWS Open Data registry, free to use with attribution. Used for 3D relief and as the worldwide terrain fallback.                                 |
-| OpenStreetMap                                      | © OpenStreetMap contributors                                                                            | ODbL data. OSMF tile usage policy: identify the app, cache at least 7 days, no bulk or offline prefetching.                                     |
-| OpenTopoMap                                        | Map data © OpenStreetMap contributors, SRTM. Style © OpenTopoMap (CC BY-SA)                             | CC BY-SA 3.0. Free to use with attribution.                                                                                                     |
-| CyclOSM                                            | © OpenStreetMap contributors. Style CyclOSM, tiles OpenStreetMap France                                 | ODbL data, CC BY-SA style. Hosted by OpenStreetMap France for reasonable use.                                                                   |
-| OpenCycleMap (Thunderforest)                       | Maps © Thunderforest, data © OpenStreetMap contributors                                                 | Needs your own Thunderforest API key (free hobby tier). Without a key the server returns watermarked tiles, so the app does not request it.     |
-| Sentinel-2 cloudless 2016 (EOX)                    | Sentinel-2 cloudless by EOX IT Services GmbH (contains modified Copernicus Sentinel data 2016 and 2017) | CC BY 4.0 (the 2016 edition only; later editions are non-commercial). 10 m resolution, so it is the keyless last resort, not a close-up source. |
-| Esri World Imagery                                 | Esri, Vantor, Earthstar Geographics, and the GIS User Community                                         | Needs your own ArcGIS Location Platform API key. Non-commercial use only. Not stored in the disk cache.                                         |
-| Esri roads                                         | Esri, HERE, Garmin, OpenStreetMap contributors                                                          | Needs your own ArcGIS Location Platform API key. Non-commercial use only.                                                                       |
-| Esri place names and borders                       | Esri, HERE, Garmin, OpenStreetMap contributors                                                          | Needs your own ArcGIS Location Platform API key. Non-commercial use only.                                                                       |
-| Cycle infrastructure (CyclOSM lite)                | Cycle overlay CyclOSM, © OpenStreetMap contributors                                                     | ODbL data, CC BY-SA style.                                                                                                                      |
-| Hiking routes (Waymarked Trails)                   | Hiking routes © waymarkedtrails.org, OpenStreetMap contributors (CC BY-SA)                              | CC BY-SA 3.0.                                                                                                                                   |
-| MTB routes (Waymarked Trails)                      | MTB routes © waymarkedtrails.org, OpenStreetMap contributors (CC BY-SA)                                 | CC BY-SA 3.0.                                                                                                                                   |
-| Signposted cycle routes (Waymarked Trails)         | Cycle routes © waymarkedtrails.org, OpenStreetMap contributors (CC BY-SA)                               | CC BY-SA 3.0.                                                                                                                                   |
-| Geoportail Luxembourg Aerial                       | Orthophoto © Administration du cadastre et de la topographie (ACT), geoportail.lu                       | ACT open data WMTS: no fees, no access constraints, CC0 or CC BY depending on layer.                                                            |
-| Geoportail Luxembourg Aerial (leaf-off)            | Orthophoto © Administration du cadastre et de la topographie (ACT), geoportail.lu                       | ACT open data WMTS: no fees, no access constraints.                                                                                             |
-| Geoportail Luxembourg Hybrid                       | Hybrid map © Administration du cadastre et de la topographie (ACT), geoportail.lu                       | ACT open data WMTS: no fees, no access constraints.                                                                                             |
-| Geoportail Luxembourg Map                          | Basemap © ACT, geoportail.lu, © OpenStreetMap contributors                                              | ACT open data WMTS: no fees, no access constraints.                                                                                             |
-| Geoportail Luxembourg Topographic                  | Topographic map © ACT, geoportail.lu                                                                    | ACT open data WMTS: no fees, no access constraints.                                                                                             |
-| Geoportail Luxembourg 1:20,000                     | Carte topographique 1:20 000 © ACT, geoportail.lu                                                       | ACT open data WMTS: no fees, no access constraints.                                                                                             |
-| Wallonia Aerial (SPW)                              | Orthophotos © SPW, Service public de Wallonie                                                           | SPW open geodata, free reuse with attribution.                                                                                                  |
-| Flanders Aerial (Digitaal Vlaanderen)              | Orthofoto © Digitaal Vlaanderen                                                                         | Free service ("Het gebruik van de service is kosteloos"), Modellicentie Gratis Hergebruik.                                                      |
-| Brussels Aerial (UrbIS)                            | Orthophoto © UrbIS, paradigm.brussels                                                                   | UrbIS open data, free reuse with attribution.                                                                                                   |
-| Belgium Topographic (NGI CartoWeb)                 | © NGI/IGN Belgium, CartoWeb.be                                                                          | CartoWeb.be: free for non-commercial use.                                                                                                       |
-| Belgium roads and names (NGI)                      | © NGI/IGN Belgium, CartoWeb.be                                                                          | CartoWeb.be: free for non-commercial use.                                                                                                       |
-| France Aerial (IGN)                                | © IGN, Geoplateforme                                                                                    | Etalab Open Licence 2.0.                                                                                                                        |
-| France Map (Plan IGN)                              | © IGN, Geoplateforme                                                                                    | Etalab Open Licence 2.0.                                                                                                                        |
-| France roads (IGN)                                 | © IGN, Geoplateforme                                                                                    | Etalab Open Licence 2.0.                                                                                                                        |
-| France place names (IGN)                           | © IGN, Geoplateforme                                                                                    | Etalab Open Licence 2.0.                                                                                                                        |
-| Netherlands Aerial (PDOK)                          | Luchtfoto © Beeldmateriaal.nl, PDOK                                                                     | CC BY 4.0.                                                                                                                                      |
-| Netherlands Map (BRT, PDOK)                        | © Kadaster, PDOK                                                                                        | CC BY 4.0.                                                                                                                                      |
-| Switzerland Aerial (swisstopo SWISSIMAGE)          | © swisstopo                                                                                             | Swiss federal open government data: free use with source attribution.                                                                           |
-| Switzerland National Map (swisstopo)               | © swisstopo                                                                                             | Swiss federal open government data: free use with source attribution.                                                                           |
-| Switzerland cycle routes (SwitzerlandMobility)     | Cycle routes © FEDRO, SwitzerlandMobility, swisstopo                                                    | Swiss federal open government data: free use with source attribution.                                                                           |
-| Austria Aerial (basemap.at)                        | Datenquelle: basemap.at                                                                                 | CC BY 4.0.                                                                                                                                      |
-| Austria roads and names (basemap.at)               | Datenquelle: basemap.at                                                                                 | CC BY 4.0.                                                                                                                                      |
-| Austria Map (basemap.at)                           | Datenquelle: basemap.at                                                                                 | CC BY 4.0.                                                                                                                                      |
-| Germany Map (basemap.de)                           | © basemap.de / BKG                                                                                      | CC BY 4.0.                                                                                                                                      |
-| Rhineland-Palatinate Aerial (DOP20)                | © GeoBasis-DE / LVermGeoRP, dl-de/by-2-0                                                                | Datenlizenz Deutschland Namensnennung 2.0.                                                                                                      |
-| Saarland Aerial (DOP20)                            | © GeoBasis DE/LVGL-SL                                                                                   | Free WMS ("freewms"), service states no fees and no limitations.                                                                                |
-| North Rhine-Westphalia Aerial (DOP)                | © Geobasis NRW, dl-de/zero-2-0                                                                          | Datenlizenz Deutschland Zero 2.0.                                                                                                               |
-| Bavaria Aerial (DOP40)                             | © Bayerische Vermessungsverwaltung, CC BY 4.0                                                           | Bavarian open data, CC BY 4.0.                                                                                                                  |
-| Microsoft Azure Maps (both Mac apps, your own key) | © Microsoft and its suppliers, as returned by Azure Maps                                                | Microsoft Azure terms, under your own Azure account.                                                                                            |
-| TomTom (both Mac apps, your own key)               | © TomTom; satellite imagery © Maxar                                                                     | TomTom developer terms, under your own TomTom account.                                                                                          |
-| HERE (both Mac apps, your own key)                 | © HERE and its suppliers, as returned by HERE                                                           | HERE terms and supplier notices, under your own HERE account.                                                                                   |
-| Mapbox (both Mac apps, your own key)               | © Mapbox © OpenStreetMap; satellite imagery © Maxar and others                                          | Mapbox terms of service, under your own Mapbox account.                                                                                         |
+| Map in the app | Owner and credit | License or terms as understood by the author |
+| --- | --- | --- |
+| Apple Maps (Mac only) | © Apple Inc. and its data suppliers | Shown through Apple's MapKit under Apple's terms |
+| Terrain Tiles (elevation data) | Terrain Tiles (Mapzen, AWS Open Data): SRTM, GMTED2010, ETOPO1, EU-DEM (Copernicus) and others | AWS Open Data registry, free to use with attribution. Used for 3D relief and as the worldwide terrain fallback. |
+| OpenStreetMap | © OpenStreetMap contributors | ODbL data. OSMF tile usage policy: identify the app, cache at least 7 days, no bulk or offline prefetching. |
+| OpenTopoMap | Map data © OpenStreetMap contributors, SRTM. Style © OpenTopoMap (CC BY-SA) | CC BY-SA 3.0. Free to use with attribution. |
+| CyclOSM | © OpenStreetMap contributors. Style CyclOSM, tiles OpenStreetMap France | ODbL data, CC BY-SA style. Hosted by OpenStreetMap France for reasonable use. |
+| OpenCycleMap (Thunderforest) | Maps © Thunderforest, data © OpenStreetMap contributors | Needs your own Thunderforest API key (free hobby tier). Without a key the server returns watermarked tiles, so the app does not request it. |
+| Sentinel-2 cloudless 2016 (EOX) | Sentinel-2 cloudless by EOX IT Services GmbH (contains modified Copernicus Sentinel data 2016 and 2017) | CC BY 4.0 (the 2016 edition only; later editions are non-commercial). 10 m resolution, so it is the keyless last resort, not a close-up source. |
+| Esri World Imagery | Esri, Vantor, Earthstar Geographics, and the GIS User Community | Needs your own ArcGIS Location Platform API key. Non-commercial use only. Not stored in the disk cache. |
+| Esri roads | Esri, HERE, Garmin, OpenStreetMap contributors | Needs your own ArcGIS Location Platform API key. Non-commercial use only. |
+| Esri place names and borders | Esri, HERE, Garmin, OpenStreetMap contributors | Needs your own ArcGIS Location Platform API key. Non-commercial use only. |
+| Cycle infrastructure (CyclOSM lite) | Cycle overlay CyclOSM, © OpenStreetMap contributors | ODbL data, CC BY-SA style. |
+| Hiking routes (Waymarked Trails) | Hiking routes © waymarkedtrails.org, OpenStreetMap contributors (CC BY-SA) | CC BY-SA 3.0. |
+| MTB routes (Waymarked Trails) | MTB routes © waymarkedtrails.org, OpenStreetMap contributors (CC BY-SA) | CC BY-SA 3.0. |
+| Signposted cycle routes (Waymarked Trails) | Cycle routes © waymarkedtrails.org, OpenStreetMap contributors (CC BY-SA) | CC BY-SA 3.0. |
+| Geoportail Luxembourg Aerial | Orthophoto © Administration du cadastre et de la topographie (ACT), geoportail.lu | ACT open data WMTS: no fees, no access constraints, CC0 or CC BY depending on layer. |
+| Geoportail Luxembourg Aerial (leaf-off) | Orthophoto © Administration du cadastre et de la topographie (ACT), geoportail.lu | ACT open data WMTS: no fees, no access constraints. |
+| Geoportail Luxembourg Hybrid | Hybrid map © Administration du cadastre et de la topographie (ACT), geoportail.lu | ACT open data WMTS: no fees, no access constraints. |
+| Geoportail Luxembourg Map | Basemap © ACT, geoportail.lu, © OpenStreetMap contributors | ACT open data WMTS: no fees, no access constraints. |
+| Geoportail Luxembourg Topographic | Topographic map © ACT, geoportail.lu | ACT open data WMTS: no fees, no access constraints. |
+| Geoportail Luxembourg 1:20,000 | Carte topographique 1:20 000 © ACT, geoportail.lu | ACT open data WMTS: no fees, no access constraints. |
+| Wallonia Aerial (SPW) | Orthophotos © SPW, Service public de Wallonie | SPW open geodata, free reuse with attribution. |
+| Flanders Aerial (Digitaal Vlaanderen) | Orthofoto © Digitaal Vlaanderen | Free service ("Het gebruik van de service is kosteloos"), Modellicentie Gratis Hergebruik. |
+| Brussels Aerial (UrbIS) | Orthophoto © UrbIS, paradigm.brussels | UrbIS open data, free reuse with attribution. |
+| Belgium Topographic (NGI CartoWeb) | © NGI/IGN Belgium, CartoWeb.be | CartoWeb.be: free for non-commercial use. |
+| Belgium roads and names (NGI) | © NGI/IGN Belgium, CartoWeb.be | CartoWeb.be: free for non-commercial use. |
+| France Aerial (IGN) | © IGN, Geoplateforme | Etalab Open Licence 2.0. |
+| France Map (Plan IGN) | © IGN, Geoplateforme | Etalab Open Licence 2.0. |
+| France roads (IGN) | © IGN, Geoplateforme | Etalab Open Licence 2.0. |
+| France place names (IGN) | © IGN, Geoplateforme | Etalab Open Licence 2.0. |
+| Netherlands Aerial (PDOK) | Luchtfoto © Beeldmateriaal.nl, PDOK | CC BY 4.0. |
+| Netherlands Map (BRT, PDOK) | © Kadaster, PDOK | CC BY 4.0. |
+| Switzerland Aerial (swisstopo SWISSIMAGE) | © swisstopo | Swiss federal open government data: free use with source attribution. |
+| Switzerland National Map (swisstopo) | © swisstopo | Swiss federal open government data: free use with source attribution. |
+| Switzerland cycle routes (SwitzerlandMobility) | Cycle routes © FEDRO, SwitzerlandMobility, swisstopo | Swiss federal open government data: free use with source attribution. |
+| Austria Aerial (basemap.at) | Datenquelle: basemap.at | CC BY 4.0. |
+| Austria roads and names (basemap.at) | Datenquelle: basemap.at | CC BY 4.0. |
+| Austria Map (basemap.at) | Datenquelle: basemap.at | CC BY 4.0. |
+| Germany Map (basemap.de) | © basemap.de / BKG | CC BY 4.0. |
+| Rhineland-Palatinate Aerial (DOP20) | © GeoBasis-DE / LVermGeoRP, dl-de/by-2-0 | Datenlizenz Deutschland Namensnennung 2.0. |
+| Saarland Aerial (DOP20) | © GeoBasis DE/LVGL-SL | Free WMS ("freewms"), service states no fees and no limitations. |
+| North Rhine-Westphalia Aerial (DOP) | © Geobasis NRW, dl-de/zero-2-0 | Datenlizenz Deutschland Zero 2.0. |
+| Bavaria Aerial (DOP40) | © Bayerische Vermessungsverwaltung, CC BY 4.0 | Bavarian open data, CC BY 4.0. |
+| Microsoft Azure Maps (both Mac apps, your own key) | © Microsoft and its suppliers, as returned by Azure Maps | Microsoft Azure terms, under your own Azure account. |
+| TomTom (both Mac apps, your own key) | © TomTom; satellite imagery © Maxar | TomTom developer terms, under your own TomTom account. |
+| HERE (both Mac apps, your own key) | © HERE and its suppliers, as returned by HERE | HERE terms and supplier notices, under your own HERE account. |
+| Mapbox (both Mac apps, your own key) | © Mapbox © OpenStreetMap; satellite imagery © Maxar and others | Mapbox terms of service, under your own Mapbox account. |
 
 The licence column summarises the author's understanding when this notice was written. It is not legal advice, and the provider's own current terms always prevail.
 
 ### Other online services used by the app
 
-| Service                                             | Owner                                                                                                          | Used for                                                      |
-| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| Apple Maps search and addresses (Mac)               | Apple Inc.                                                                                                     | Place search and addresses                                    |
-| Geoportail Luxembourg APIs                          | Administration du cadastre et de la topographie, Luxembourg                                                    | Terrain heights, search, addresses, land cover, cycle network |
-| IGN Geoplateforme                                   | Institut national de l'information géographique et forestière, France                                          | Terrain heights in France                                     |
-| Terrain Tiles on AWS Open Data                      | Mapzen data hosted by Amazon Web Services, with SRTM, GMTED2010, ETOPO1, EU-DEM (Copernicus) and other sources | Terrain heights elsewhere and 3D relief                       |
-| Overpass API (overpass-api.de and fallback servers) | Their operators, serving OpenStreetMap data © OpenStreetMap contributors (ODbL)                                | Roads, paths, surfaces and points of interest                 |
-| BRouter (brouter.de)                                | Its operator, using OpenStreetMap data © OpenStreetMap contributors (ODbL)                                     | Route planning                                                |
+| Service | Owner | Used for |
+| --- | --- | --- |
+| Apple Maps search and addresses (Mac) | Apple Inc. | Place search and addresses |
+| Geoportail Luxembourg APIs | Administration du cadastre et de la topographie, Luxembourg | Terrain heights, search, addresses, land cover, cycle network |
+| IGN Geoplateforme | Institut national de l'information géographique et forestière, France | Terrain heights in France |
+| Terrain Tiles on AWS Open Data | Mapzen data hosted by Amazon Web Services, with SRTM, GMTED2010, ETOPO1, EU-DEM (Copernicus) and other sources | Terrain heights elsewhere and 3D relief |
+| Overpass API (overpass-api.de and fallback servers) | Their operators, serving OpenStreetMap data © OpenStreetMap contributors (ODbL) | Roads, paths, surfaces and points of interest |
+| BRouter (brouter.de) | Its operator, using OpenStreetMap data © OpenStreetMap contributors (ODbL) | Route planning |
 
 ### Your own keys and accounts
 
