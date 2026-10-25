@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="fixture" xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:ns3="http://www.garmin.com/xmlschemas/TrackPointExtension/v2"><trk><trkseg>
+  <trkpt lat="50" lon="6"><ele>300</ele><time>2026-03-01T09:00:00Z</time><extensions><power>210</power><gpxtpx:TrackPointExtension><gpxtpx:atemp>12.5</gpxtpx:atemp><gpxtpx:hr>130</gpxtpx:hr><gpxtpx:cad>85</gpxtpx:cad></gpxtpx:TrackPointExtension></extensions></trkpt>
+  <trkpt lat="50.001" lon="6"><ele>301</ele><time>2026-03-01T09:00:10Z</time><extensions><ns3:TrackPointExtension><ns3:hr>134</ns3:hr><ns3:cad>0</ns3:cad><ns3:speed>8.5</ns3:speed></ns3:TrackPointExtension></extensions></trkpt>
+  <trkpt lat="50.002" lon="6"><ele>302</ele><time>2026-03-01T09:00:20Z</time></trkpt>
+</trkseg></trk></gpx>

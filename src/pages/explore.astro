@@ -1,0 +1,359 @@
+---
+// Explore the project: implemented features per edition, screenshots, platform status.
+// Author: A097MPRUS.
+import Base from '../layouts/Base.astro';
+import Gallery from '../components/Gallery.astro';
+import Carousel from '../components/Carousel.astro';
+import { features, manifest, screenshots, url, type FeatureStatus } from '../data/site';
+
+const editions = features.editions;
+const statusText: Record<FeatureStatus, string> = {
+  yes: 'Available',
+  partial: 'Partly',
+  no: 'Not in this edition',
+  unverified: 'Not verified',
+};
+const shotGroups = screenshots.groups
+  .map((g) => ({
+    ...g,
+    count: screenshots.items.filter((s) => s.group === g.id && s.status === 'available').length,
+  }))
+  .filter((g) => g.count > 0);
+const others = manifest.platforms.filter((p) => p.status !== 'released');
+let footnote = 0;
+const notes: { n: number; text: string }[] = [];
+const noteFor = (text: string) => {
+  footnote += 1;
+  notes.push({ n: footnote, text });
+  return footnote;
+};
+const tables = features.categories.map((c) => ({
+  ...c,
+  rows: c.features.map((f) => ({
+    ...f,
+    cells: editions.map((e) => {
+      const status = (f.status[e.id] ?? 'no') as FeatureStatus;
+      const note = f.note?.[e.id];
+      return { status, note: note ? noteFor(`${f.title}, ${e.name}: ${note}`) : null };
+    }),
+  })),
+}));
+---
+
+<Base
+  title="Explore the project"
+  description="What GPX Viewer does on each platform: files, maps, graphs, statistics, terrain, editing and privacy, with screenshots of the macOS application."
+  current="explore/"
+>
+  <section class="section head-section">
+    <div class="wrap wrap-wide">
+      <p class="kicker">Explore the project</p>
+      <h1>What GPX Viewer does</h1>
+      <p class="lede">
+        GPX Viewer opens GPX files, shows them on official and open maps, and analyses them with
+        graphs and statistics. It is a native application on macOS, with a separate Windows edition.
+        This page lists what each edition provides, based on the source code and release notes;
+        nothing here is planned work presented as finished.
+      </p>
+      <nav class="jump small" aria-label="On this page">
+        {tables.map((t) => (
+          <a href={`#${t.id}`}>{t.title}</a>
+        ))}
+        <a href="#screenshots">Screenshots</a>
+        <a href="#platforms">Other platforms</a>
+      </nav>
+    </div>
+  </section>
+
+  <section class="section section-alt editions" aria-labelledby="editions-title">
+    <div class="wrap wrap-wide">
+      <h2 id="editions-title">Three editions, one file format</h2>
+      <div class="edition-grid">
+        <div>
+          <h3>macOS, Apple silicon</h3>
+          <p class="muted">
+            SwiftUI and AppKit with Apple's MapKit, Liquid Glass on macOS 26 and later. The most
+            complete edition: selectable main graph, combined and stacked graphs, time axes,
+            commercial maps with your own key, playback and the measure tool.
+          </p>
+        </div>
+        <div>
+          <h3>macOS, Intel</h3>
+          <p class="muted">
+            A separate AppKit application for macOS 10.13 to 12 with the same core and the same
+            features as the Apple silicon edition, adapted to older systems (Apple Maps falls back
+            to open maps on 10.13, a narrow certificate path for official servers).
+          </p>
+        </div>
+        <div>
+          <h3>Windows</h3>
+          <p class="muted">
+            A separate code base with the same GPX model, gradient colours and statistics, official
+            maps, terrain, route analysis and editing tools. Features added to the Mac editions in
+            October 2026 are listed as not verified until the Windows edition is re-checked.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {tables.map((t) => (
+    <section class="section feature-section" id={t.id} aria-labelledby={`${t.id}-title`}>
+      <div class="wrap wrap-wide">
+        <h2 id={`${t.id}-title`}>{t.title}</h2>
+        <div
+          class="table-scroll"
+          tabindex="0"
+          role="region"
+          aria-label={`${t.title}, availability by edition`}
+        >
+          <table class="matrix">
+            <thead>
+              <tr>
+                <th scope="col">Feature</th>
+                {editions.map((e) => (
+                  <th scope="col">{e.name}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {t.rows.map((r) => (
+                <tr>
+                  <th scope="row">
+                    <span class="feature-title">{r.title}</span>
+                    {r.detail && <span class="feature-detail">{r.detail}</span>}
+                  </th>
+                  {r.cells.map((c) => (
+                    <td class={`st st-${c.status}`}>
+                      <span class="mark" aria-hidden="true" />
+                      {statusText[c.status]}
+                      {c.note && (
+                        <sup>
+                          <a href={`#note-${c.note}`} aria-label={`Note ${c.note}`}>
+                            {c.note}
+                          </a>
+                        </sup>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="section notes-section" aria-labelledby="notes-title">
+    <div class="wrap wrap-wide">
+      <h2 id="notes-title" class="small-title">
+        Notes and sources
+      </h2>
+      <ol class="notes small muted">
+        {notes.map((n) => (
+          <li id={`note-${n.n}`}>{n.text}</li>
+        ))}
+      </ol>
+      <ul class="sources small muted">
+        {editions.map((e) => (
+          <li>
+            <strong>{e.name}:</strong> {features.sources[e.id]}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="screenshots" aria-labelledby="shots-title">
+    <div class="wrap wrap-wide section-head">
+      <h2 id="shots-title">Screenshots</h2>
+      <p class="lede">
+        Screenshots of GPX Viewer for macOS with synthetic test files. Select a screenshot to see it
+        at full size.
+      </p>
+    </div>
+    {shotGroups.map((g) =>
+      g.id === 'graphs' ? (
+        <div class="shot-group">
+          <h3 class="wrap wrap-wide">{g.title}</h3>
+          <Carousel
+            id={`explore-${g.id}`}
+            label={g.title}
+            files={screenshots.items
+              .filter((s) => s.group === g.id && s.status === 'available')
+              .map((s) => s.file)}
+          />
+        </div>
+      ) : (
+        <div class="wrap wrap-wide shot-group">
+          <h3>{g.title}</h3>
+          <Gallery group={g.id} />
+        </div>
+      ),
+    )}
+  </section>
+
+  <section class="section" id="platforms" aria-labelledby="platforms-title">
+    <div class="wrap wrap-wide">
+      <h2 id="platforms-title">Other platforms</h2>
+      <dl class="other">
+        {others.map((p) => (
+          <div>
+            <dt>{p.name}</dt>
+            <dd>{p.note}</dd>
+          </div>
+        ))}
+      </dl>
+      <p class="small muted">
+        Only released editions have downloads. See <a href={url('downloads/')}>Downloads</a>.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head-section h1 {
+    font-size: var(--step-4);
+  }
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin-top: 24px;
+  }
+  .jump a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .jump a:hover {
+    color: var(--text);
+    text-decoration: underline;
+  }
+  .edition-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(20px, 3vw, 48px);
+    margin-top: 28px;
+  }
+  .edition-grid h3 {
+    font-size: var(--step-1);
+  }
+  @media (max-width: 900px) {
+    .edition-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .feature-section {
+    padding-top: clamp(40px, 4vw, 72px);
+    padding-bottom: clamp(40px, 4vw, 72px);
+  }
+  .table-scroll {
+    overflow-x: auto;
+    margin: 0 calc(-1 * var(--gutter));
+    padding: 0 var(--gutter);
+    outline: none;
+  }
+  .table-scroll:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--focus);
+  }
+  .matrix {
+    min-width: 720px;
+    font-size: var(--step--1);
+  }
+  .matrix th[scope='row'] {
+    font-weight: 400;
+    color: var(--text);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: var(--step--1);
+    width: 44%;
+  }
+  .feature-title {
+    display: block;
+    font-weight: 600;
+  }
+  .feature-detail {
+    display: block;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .matrix thead th {
+    vertical-align: bottom;
+  }
+  .st {
+    white-space: nowrap;
+    color: var(--muted);
+  }
+  .mark {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 8px;
+    border: 1.5px solid var(--faint);
+    vertical-align: 0.05em;
+  }
+  .st-yes {
+    color: var(--text);
+  }
+  .st-yes .mark {
+    background: var(--ok);
+    border-color: var(--ok);
+  }
+  .st-partial .mark {
+    background: linear-gradient(90deg, var(--warn) 50%, transparent 50%);
+    border-color: var(--warn);
+  }
+  .st-unverified .mark {
+    border-style: dotted;
+  }
+  sup a {
+    margin-left: 3px;
+    text-decoration: none;
+  }
+  .small-title {
+    font-size: var(--step-1);
+  }
+  .notes {
+    padding-left: 20px;
+  }
+  .sources {
+    list-style: none;
+    padding: 0;
+    margin-top: 16px;
+    display: grid;
+    gap: 6px;
+  }
+  .shot-group + .shot-group {
+    margin-top: 56px;
+  }
+  .shot-group h3 {
+    font-size: var(--step-1);
+    margin-bottom: 18px;
+  }
+  .other {
+    margin: 20px 0;
+    display: grid;
+    gap: 0;
+  }
+  .other div {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .other dt {
+    font-weight: 600;
+  }
+  .other dd {
+    margin: 0;
+    color: var(--muted);
+  }
+  @media (max-width: 600px) {
+    .other div {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+  }
+</style>

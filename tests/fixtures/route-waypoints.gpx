@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="fixture" xmlns="http://www.topografix.com/GPX/1/1">
+  <wpt lat="49.6" lon="6.1"><ele>300</ele><name>Start &amp; finish &lt;b&gt;bold&lt;/b&gt;</name><sym>Flag</sym></wpt>
+  <wpt lat="91" lon="6.1"><name>Invalid latitude</name></wpt>
+  <rte><name>Planned</name>
+    <rtept lat="49.6" lon="6.1"/>
+    <rtept lat="49.61" lon="6.12"/>
+    <rtept lat="49.62" lon="6.15"/>
+  </rte>
+</gpx>

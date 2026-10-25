@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "updated": "2026-10-25",
+  "rules": [
+    "Only genuine screenshots of a released GPX Viewer build.",
+    "Only synthetic or otherwise non-personal GPX files; never a real person's recording or location history.",
+    "Keep the map attribution visible; do not crop it away.",
+    "Originals go in Setup/public/screenshots/ as PNG; the website builds optimised versions and keeps the aspect ratio."
+  ],
+  "groups": [
+    {
+      "id": "overview",
+      "title": "Overview"
+    },
+    {
+      "id": "maps",
+      "title": "Maps"
+    },
+    {
+      "id": "graphs",
+      "title": "Graphs"
+    },
+    {
+      "id": "analysis",
+      "title": "Statistics and analysis"
+    }
+  ],
+  "items": [
+    {
+      "file": "main-window.png",
+      "group": "overview",
+      "edition": "macOS 0.2.0, Apple silicon",
+      "caption": "Main window: the route on the map, the elevation profile coloured by gradient below it and the statistics on the right.",
+      "alt": "GPX Viewer main window with a route on a map, an elevation profile and a statistics panel.",
+      "status": "requested",
+      "hero": true
+    },
+    {
+      "file": "map-layers.png",
+      "group": "maps",
+      "edition": "macOS 0.2.0, Apple silicon",
+      "caption": "Maps and Layers: base maps, official imagery by country and overlays with their own opacity.",
+      "alt": "The Maps and Layers panel listing base maps, official imagery and overlays.",
+      "status": "requested"
+    },
+    {
+      "file": "official-aerial.png",
+      "group": "maps",
+      "edition": "macOS 0.2.0, Apple silicon",
+      "caption": "Official aerial imagery from Geoportail Luxembourg with its credit shown on the map.",
+      "alt": "A route drawn over official aerial imagery of Luxembourg.",
+      "status": "requested"
+    },
+    {
+      "file": "statistics.png",
+      "group": "analysis",
+      "edition": "macOS 0.2.0, Apple silicon",
+      "caption": "Statistics with gain hysteresis, moving and stopped time, and the selected point with recorded and calculated values labelled.",
+      "alt": "The statistics and selected point panel.",
+      "status": "requested"
+    },
+    {
+      "file": "graph-elevation.png",
+      "group": "graphs",
+      "edition": "macOS 0.2.0, Apple silicon",
+      "caption": "Elevation as the main graph, coloured by gradient, with the graph switches above it. Synthetic test file.",
+      "alt": "Elevation profile coloured by gradient with a toolbar of graph switches.",
+      "status": "available"
+    },
+    {
+      "file": "graph-combined.png",
+      "group": "graphs",
+      "edition": "macOS 0.2.0, Apple silicon",
+      "caption": "Combined layout: elevation with calculated speed on its own scale on the right axis, and the route grade.",
+      "alt": "Combined graph showing elevation and speed with separate axes.",
+      "status": "available"
+    },
+    {
+      "file": "graph-stacked.png",
+      "group": "graphs",
+      "edition": "macOS 0.2.0, Apple silicon",
+      "caption": "Stacked layout: elevation, speed and heart rate in separate plots sharing one cursor and zoom.",
+      "alt": "Three stacked graphs for elevation, speed and heart rate with a shared cursor.",
+      "status": "available"
+    },
+    {
+      "file": "graph-speed-elapsed.png",
+      "group": "graphs",
+      "edition": "macOS 0.2.0, Apple silicon",
+      "caption": "Speed as the main graph on an elapsed time axis; the hover tooltip labels every value as recorded or calculated. Synthetic test file.",
+      "alt": "Speed graph plotted against elapsed time.",
+      "status": "available"
+    },
+    {
+      "file": "graph-heart-rate.png",
+      "group": "graphs",
+      "edition": "macOS 0.2.0, Apple silicon",
+      "caption": "Heart rate chosen as the main graph, with the calculated route grade on the right axis. Synthetic test file.",
+      "alt": "Heart rate graph with the route grade on a second axis.",
+      "status": "available"
+    }
+  ]
+}

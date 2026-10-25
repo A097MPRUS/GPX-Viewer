@@ -1,0 +1,133 @@
+---
+// Documentation index with client-side search. Author: A097MPRUS.
+import Base from '../../layouts/Base.astro';
+import { SECTIONS, allDocs, plainText } from '../../lib/docs';
+import { url } from '../../data/site';
+
+const docs = await allDocs();
+const index = docs.map((d) => ({
+  id: d.id,
+  text: `${d.data.title} ${d.data.description} ${plainText(d.body ?? '')}`.toLowerCase(),
+}));
+---
+
+<Base
+  title="Documentation"
+  description="How to install and use GPX Viewer and GPX Viewer Web Lite: files, maps, graphs, metrics, compatibility, troubleshooting and licences."
+  current="docs/"
+>
+  <section class="section">
+    <div class="wrap wrap-wide">
+      <h1>Documentation</h1>
+      <p class="lede">
+        Installing and using GPX Viewer, how its values are calculated, and reference information.
+      </p>
+      <div class="search">
+        <label for="doc-search" class="visually-hidden">
+          Search the documentation
+        </label>
+        <input
+          id="doc-search"
+          type="search"
+          placeholder="Search the documentation"
+          autocomplete="off"
+          data-search
+        />
+        <p class="small muted" role="status" aria-live="polite" data-search-status></p>
+      </div>
+      <div class="sections" data-index={JSON.stringify(index)}>
+        {SECTIONS.map((s) => (
+          <section class="doc-section" data-section>
+            <h2>{s}</h2>
+            <ul>
+              {docs
+                .filter((d) => d.data.section === s)
+                .map((d) => (
+                  <li data-doc={d.id}>
+                    <a href={url(`docs/${d.id}/`)}>{d.data.title}</a>
+                    <p class="small muted">{d.data.description}</p>
+                  </li>
+                ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  h1 {
+    font-size: var(--step-4);
+  }
+  .search {
+    margin: 28px 0 40px;
+    max-width: 560px;
+  }
+  input[type='search'] {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+  }
+  .sections {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px clamp(24px, 4vw, 64px);
+  }
+  .doc-section h2 {
+    font-size: var(--step-1);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  li a {
+    font-weight: 600;
+    text-decoration: none;
+  }
+  li a:hover {
+    text-decoration: underline;
+  }
+  li p {
+    margin: 4px 0 0;
+  }
+  @media (max-width: 760px) {
+    .sections {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const input = document.querySelector<HTMLInputElement>('[data-search]');
+  const holder = document.querySelector<HTMLElement>('[data-index]');
+  const status = document.querySelector<HTMLElement>('[data-search-status]');
+  const index = JSON.parse(holder?.dataset['index'] ?? '[]') as { id: string; text: string }[];
+  input?.addEventListener('input', () => {
+    const terms = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+    let shown = 0;
+    for (const item of index) {
+      const li = document.querySelector<HTMLElement>(`[data-doc="${CSS.escape(item.id)}"]`);
+      const match = terms.every((t) => item.text.includes(t));
+      if (li) li.hidden = !match;
+      if (match) shown++;
+    }
+    document.querySelectorAll<HTMLElement>('[data-section]').forEach((s) => {
+      s.hidden = ![...s.querySelectorAll('li')].some((li) => !li.hidden);
+    });
+    if (status)
+      status.textContent = terms.length ? `${shown} article${shown === 1 ? '' : 's'} found` : '';
+  });
+</script>

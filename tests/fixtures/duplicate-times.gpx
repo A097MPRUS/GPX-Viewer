@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="fixture" xmlns="http://www.topografix.com/GPX/1/1"><trk><trkseg>
+  <trkpt lat="50" lon="6"><time>2026-03-01T09:00:00Z</time></trkpt>
+  <trkpt lat="50.0001" lon="6"><time>2026-03-01T09:00:00Z</time></trkpt>
+  <trkpt lat="50.0002" lon="6"><time>2026-03-01T09:00:00Z</time></trkpt>
+  <trkpt lat="50.0010" lon="6"><time>2026-03-01T09:00:10Z</time></trkpt>
+</trkseg></trk></gpx>
