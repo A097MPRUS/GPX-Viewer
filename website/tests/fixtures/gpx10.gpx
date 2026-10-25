@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.0" creator="fixture" xmlns="http://www.topografix.com/GPX/1/0">
+  <name>Old logger</name><time>2025-06-01T06:00:00Z</time>
+  <trk><trkseg>
+    <trkpt lat="48.0" lon="11.0"><ele>520</ele><time>2025-06-01T06:00:00Z</time><speed>4.2</speed><course>10</course></trkpt>
+    <trkpt lat="48.0004" lon="11.0"><ele>521</ele><time>2025-06-01T06:00:10Z</time><speed>4.4</speed></trkpt>
+  </trkseg></trk>
+</gpx>

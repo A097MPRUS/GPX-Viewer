@@ -1,0 +1,122 @@
+---
+// Release history from the release manifest. Author: A097MPRUS.
+import Base from '../layouts/Base.astro';
+import { longDate, manifest, url } from '../data/site';
+
+const releases = [...manifest.releases].sort(
+  (a, b) => b.date.localeCompare(a.date) || a.family.localeCompare(b.family),
+);
+const family = (f: string) => (f === 'macos' ? 'macOS' : 'Windows');
+---
+
+<Base
+  title="Changelog"
+  description="Release history of GPX Viewer for macOS and Windows."
+  current="changelog/"
+>
+  <div class="section">
+    <div class="wrap">
+      <h1>Changelog</h1>
+      <p class="lede">
+        Public releases of GPX Viewer. Downloads and checksums are on the{' '}
+        <a href={url('downloads/')}>Downloads</a> page.
+      </p>
+      <ol class="timeline">
+        {releases.map((r) => (
+          <li class="entry" id={r.id}>
+            <div class="when">
+              <time datetime={r.date}>{longDate(r.date)}</time>
+            </div>
+            <article>
+              <h2>
+                {family(r.family)} {r.version}
+                {r.build && <span class="muted build"> build {r.build}</span>}
+                <span class:list={['tag', r.status === 'current' && 'tag-ok']}>
+                  {r.status === 'current' ? 'Current' : 'Archived'}
+                </span>
+              </h2>
+              <p class="muted">{r.summary}</p>
+              {r.changes.length > 0 && (
+                <ul>
+                  {r.changes.map((c) => (
+                    <li>{c}</li>
+                  ))}
+                </ul>
+              )}
+              {r.limitations.length > 0 && (
+                <>
+                  <h3>Known limitations</h3>
+                  <ul class="muted">
+                    {r.limitations.map((c) => (
+                      <li>{c}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              <p class="small">
+                <a href={r.folder}>Files on SourceForge</a>
+                {r.notes && (
+                  <>
+                    {' '}
+                    <span aria-hidden="true">/</span> <a href={r.notes}>Release notes</a>
+                  </>
+                )}
+              </p>
+            </article>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</Base>
+
+<style>
+  h1 {
+    font-size: var(--step-4);
+  }
+  .timeline {
+    list-style: none;
+    padding: 0;
+    margin: 48px 0 0;
+  }
+  .entry {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 24px;
+    padding: 32px 0;
+    border-top: 1px solid var(--line);
+  }
+  .when {
+    color: var(--muted);
+    font-size: var(--step--1);
+    padding-top: 6px;
+  }
+  .entry h2 {
+    font-size: var(--step-2);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .build {
+    font-size: var(--step-0);
+    font-weight: 400;
+  }
+  .entry h3 {
+    font-size: var(--step-0);
+    margin-top: 1.4em;
+  }
+  .entry ul {
+    padding-left: 1.2em;
+    max-width: 72ch;
+  }
+  .entry li + li {
+    margin-top: 0.3em;
+  }
+  @media (max-width: 720px) {
+    .entry {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+  }
+</style>

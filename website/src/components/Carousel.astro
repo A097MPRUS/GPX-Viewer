@@ -1,0 +1,264 @@
+---
+// Horizontal gallery of real screenshots. Native scrolling with snap points (trackpad, touch and
+// wheel work as usual), previous and next buttons, arrow keys, full-size view. Author: A097MPRUS.
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { screenshots } from '../data/site';
+
+interface Props {
+  id: string;
+  label: string;
+  files: string[];
+}
+const { id, label, files } = Astro.props;
+const images = import.meta.glob<{ default: ImageMetadata }>('../assets/screenshots/*.png', {
+  eager: true,
+});
+const byName = new Map(
+  Object.entries(images).map(([p, m]) => [p.split('/').pop() ?? '', m.default]),
+);
+const items = files.flatMap((file) => {
+  const meta = screenshots.items.find((s) => s.file === file && s.status === 'available');
+  const image = byName.get(file);
+  return meta && image ? [{ ...meta, image }] : [];
+});
+---
+
+{items.length > 0 && (
+  <section class="carousel" aria-roledescription="carousel" aria-label={label} data-carousel>
+    <div
+      class="track"
+      id={id}
+      tabindex="0"
+      data-track
+      aria-label={`${label}, ${items.length} screenshots`}
+    >
+      {items.map((item, n) => (
+        <figure
+          class="slide"
+          aria-roledescription="slide"
+          aria-label={`${n + 1} of ${items.length}`}
+          style={`--ratio: ${item.image.width / item.image.height}`}
+        >
+          <button
+            type="button"
+            class="zoom"
+            data-full={item.image.src}
+            data-caption={item.caption}
+            data-alt={item.alt}
+            aria-label={`View full size: ${item.alt}`}
+          >
+            <Image
+              src={item.image}
+              alt={item.alt}
+              widths={[640, 1024, 1440, Math.min(2048, item.image.width)]}
+              sizes="(max-width: 700px) 92vw, 1000px"
+              format="webp"
+              quality={88}
+              loading={n < 2 ? 'eager' : 'lazy'}
+            />
+          </button>
+          <figcaption>{item.caption}</figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="wrap wrap-wide controls">
+      <p class="count small muted" aria-live="polite" data-count-label>
+        1 of {items.length}
+      </p>
+      <div class="buttons">
+        <button
+          type="button"
+          class="nav-btn"
+          data-prev
+          aria-controls={id}
+          aria-label="Previous screenshot"
+        >
+          <span class="flip">
+            <Icon name="arrow" />
+          </span>
+        </button>
+        <button
+          type="button"
+          class="nav-btn"
+          data-next
+          aria-controls={id}
+          aria-label="Next screenshot"
+        >
+          <Icon name="arrow" />
+        </button>
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .carousel {
+    --edge: max(var(--gutter), calc((100vw - var(--page-wide)) / 2));
+  }
+  .track {
+    display: flex;
+    gap: clamp(14px, 2vw, 28px);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--edge);
+    padding: 4px var(--edge) 8px;
+    scrollbar-width: none;
+    outline: none;
+  }
+  .track::-webkit-scrollbar {
+    display: none;
+  }
+  .track:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--focus);
+  }
+  .slide {
+    flex: none;
+    margin: 0;
+    scroll-snap-align: start;
+    /* Wide graph panels get more room than window-sized screenshots. */
+    width: min(86vw, calc(clamp(300px, 58svh, 620px) * var(--ratio)), 1120px);
+  }
+  .zoom {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #1e1e1e;
+    cursor: zoom-in;
+  }
+  .zoom :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: var(--ratio);
+  }
+  figcaption {
+    margin-top: 12px;
+    max-width: 60ch;
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 18px;
+  }
+  .count {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .buttons {
+    display: flex;
+    gap: 10px;
+  }
+  .nav-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition:
+      border-color var(--t-feedback) var(--ease),
+      opacity var(--t-feedback) var(--ease);
+  }
+  .nav-btn:hover:not([disabled]) {
+    border-color: var(--text);
+  }
+  .nav-btn[disabled] {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .flip {
+    display: inline-flex;
+    transform: scaleX(-1);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .track {
+      scroll-behavior: smooth;
+    }
+  }
+</style>
+
+<script>
+  import { openLightbox } from '../lib/lightbox';
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-track]');
+    const prev = root.querySelector<HTMLButtonElement>('[data-prev]');
+    const next = root.querySelector<HTMLButtonElement>('[data-next]');
+    const label = root.querySelector<HTMLElement>('[data-count-label]');
+    if (!track || !prev || !next) return;
+    const slides = [...track.querySelectorAll<HTMLElement>('.slide')];
+    const current = () => {
+      const left =
+        track.getBoundingClientRect().left +
+        parseFloat(getComputedStyle(track).scrollPaddingInlineStart || '0');
+      let best = 0;
+      let bestDistance = Infinity;
+      slides.forEach((s, i) => {
+        const d = Math.abs(s.getBoundingClientRect().left - left);
+        if (d < bestDistance) {
+          bestDistance = d;
+          best = i;
+        }
+      });
+      return best;
+    };
+    const go = (i: number) => {
+      const target = slides[Math.max(0, Math.min(slides.length - 1, i))];
+      if (target) track.scrollTo({ left: target.offsetLeft - slides[0]!.offsetLeft });
+    };
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const i = current();
+      const max = track.scrollWidth - track.clientWidth;
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= max - 2;
+      if (label) label.textContent = `${i + 1} of ${slides.length}`;
+    };
+    track.addEventListener(
+      'scroll',
+      () => {
+        if (!queued) {
+          queued = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+    window.addEventListener('resize', update, { passive: true });
+    prev.addEventListener('click', () => go(current() - 1));
+    next.addEventListener('click', () => go(current() + 1));
+    track.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        go(current() + 1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        go(current() - 1);
+      }
+    });
+    track
+      .querySelectorAll<HTMLButtonElement>('.zoom')
+      .forEach((b) =>
+        b.addEventListener('click', () =>
+          openLightbox(
+            b.dataset['full'] ?? '',
+            b.dataset['alt'] ?? '',
+            b.dataset['caption'] ?? '',
+            b,
+          ),
+        ),
+      );
+    update();
+  });
+</script>

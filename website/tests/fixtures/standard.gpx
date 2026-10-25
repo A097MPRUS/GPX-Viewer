@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="fixture" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata><name>Standard</name><time>2026-01-01T10:00:00Z</time></metadata>
+  <trk><name>Line north</name><trkseg>
+    <trkpt lat="0.000000" lon="0"><ele>100</ele><time>2026-01-01T10:00:00Z</time></trkpt>
+    <trkpt lat="0.000900" lon="0"><ele>110</ele><time>2026-01-01T10:00:10Z</time></trkpt>
+    <trkpt lat="0.001800" lon="0"><ele>100</ele><time>2026-01-01T10:00:20Z</time></trkpt>
+    <trkpt lat="0.002700" lon="0"><ele>120</ele><time>2026-01-01T10:00:30Z</time></trkpt>
+  </trkseg></trk>
+</gpx>

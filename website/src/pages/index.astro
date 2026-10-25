@@ -1,0 +1,651 @@
+---
+// Homepage. Author: A097MPRUS.
+import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import RouteStage from '../components/RouteStage.astro';
+import mainWindow from '../assets/screenshots/main-window.png';
+import aerialShot from '../assets/screenshots/official-aerial.png';
+import Carousel from '../components/Carousel.astro';
+import {
+  currentRelease,
+  github,
+  manifest,
+  platform,
+  product,
+  screenshots,
+  url,
+} from '../data/site';
+import { sampleGeometry } from '../lib/sample';
+
+const mac = currentRelease('macos')!;
+const win = currentRelease('windows')!;
+const g = sampleGeometry();
+const s = g.stats;
+const km = s.distance / 1000;
+const graphShots = [
+  'graph-stacked.png',
+  'graph-combined.png',
+  'graph-speed-elapsed.png',
+  'graph-elevation.png',
+  'graph-heart-rate.png',
+];
+const aerial = screenshots.items.find(
+  (i) => i.file === 'official-aerial.png' && i.status === 'available',
+);
+const others = manifest.platforms.filter((p) => p.status !== 'released');
+const countries = [
+  [
+    'Luxembourg',
+    'Geoportail aerial (summer and leaf-off), topographic maps, 1:20,000, hybrid, full layer catalogue',
+  ],
+  [
+    'Belgium',
+    'Wallonia (SPW), Flanders (Digitaal Vlaanderen) and Brussels (UrbIS) aerial imagery, NGI topographic maps',
+  ],
+  ['France', 'IGN aerial imagery and Plan IGN, with roads and place names'],
+  ['Netherlands', 'PDOK aerial imagery and the BRT map'],
+  ['Switzerland', 'swisstopo SWISSIMAGE, the national map and SwitzerlandMobility cycle routes'],
+  ['Austria', 'basemap.at aerial imagery and map'],
+  [
+    'Germany',
+    'basemap.de, and state aerial imagery for Rhineland-Palatinate, Saarland, North Rhine-Westphalia and Bavaria',
+  ],
+];
+const fmtMinutes = (sec: number | null) => {
+  if (sec === null) return '-';
+  const h = Math.floor(sec / 3600);
+  const m = Math.round((sec % 3600) / 60);
+  return `${h}:${String(m).padStart(2, '0')}`;
+};
+---
+
+<Base
+  title="GPX Viewer"
+  description="A desktop application for viewing, analysing and editing GPX tracks, with official maps, terrain and detailed graphs, for macOS and Windows."
+  current=""
+>
+  <section class="intro">
+    <div class="wrap intro-text center">
+      <h1>GPX Viewer</h1>
+      <p class="lede">
+        A desktop application for viewing, analysing and editing GPS tracks, with official and open
+        maps, elevation profiles coloured by gradient and detailed activity data.
+      </p>
+      <div class="actions">
+        <a class="btn btn-primary" href={url('downloads/')}>
+          Download
+        </a>
+        <a class="btn" href={url('explore/')}>
+          Explore the project
+        </a>
+      </div>
+      <p class="small muted platforms-line">
+        macOS {mac.version} for Apple silicon and Intel. Windows {win.version}.
+        <a href={url('viewer/')}>Open a GPX file in your browser</a>
+      </p>
+    </div>
+    <figure class="wrap wrap-wide intro-shot" data-enter="scale">
+      <Image
+        src={mainWindow}
+        alt="GPX Viewer for macOS: the synthetic sample route on OpenTopoMap, its elevation profile coloured by gradient and the statistics panel."
+        widths={[800, 1280, 1800, 2400, mainWindow.width]}
+        sizes="(max-width: 1560px) 96vw, 1480px"
+        format="webp"
+        quality={88}
+        loading="eager"
+        fetchpriority="high"
+      />
+      <figcaption class="small muted">
+        GPX Viewer {mac.version} for macOS with the synthetic sample file on OpenTopoMap.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="story section" data-story aria-labelledby="story-title">
+    <div class="wrap wrap-wide story-grid">
+      <div class="story-stage">
+        <RouteStage
+          id="story"
+          mode="story"
+          label="The sample route, its profile and a position marker"
+        />
+      </div>
+      <div class="story-steps">
+        <h2 id="story-title" class="visually-hidden">
+          How a GPX file becomes a map and a profile
+        </h2>
+        <article data-step="1" class="step">
+          <p class="kicker">Positions</p>
+          <h3>A GPX file is a sequence of recorded positions.</h3>
+          <p class="muted">
+            GPX Viewer draws each track segment on the map exactly as recorded. Segments are never
+            joined, so a gap in the recording stays a gap.
+          </p>
+        </article>
+        <article data-step="2" class="step">
+          <p class="kicker">Distance and elevation</p>
+          <h3>Distance along the route becomes the profile.</h3>
+          <p class="muted">
+            Geodesic distance between points forms the horizontal axis. The elevation is smoothed
+            over 25 m and coloured by its gradient over 50 m.
+          </p>
+        </article>
+        <article data-step="3" class="step">
+          <p class="kicker">One position, two views</p>
+          <h3>The map and the graph follow the same point.</h3>
+          <p class="muted">
+            Inspect the profile and the marker moves on the map; hover the route and the cursor
+            moves on the graph. Values are labelled as recorded or calculated.
+          </p>
+        </article>
+        <article data-step="4" class="step">
+          <p class="kicker">More measurements</p>
+          <h3>Other channels share the same axis.</h3>
+          <p class="muted">
+            Speed, heart rate, cadence, power and temperature can be combined on their own scales or
+            stacked, against distance, elapsed time or moving time.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt graphs" aria-labelledby="graphs-title">
+    <div class="wrap wrap-wide">
+      <div class="section-head">
+        <p class="kicker">Graphs</p>
+        <h2 id="graphs-title">Choose what the graph shows.</h2>
+        <p class="lede">
+          Fourteen measurements as the main graph, combined or stacked layouts, and three horizontal
+          axes in both Mac editions. Screenshots of GPX Viewer {mac.version} with a synthetic test
+          file.
+        </p>
+      </div>
+    </div>
+    <Carousel id="graph-gallery" label="Graph screenshots" files={graphShots} />
+  </section>
+
+  <section class="section maps" aria-labelledby="maps-title">
+    <div class="wrap wrap-wide maps-grid">
+      <div class="maps-text" data-enter="rise">
+        <p class="kicker">Maps</p>
+        <h2 id="maps-title">Official imagery where it exists. Open maps everywhere.</h2>
+        <p class="lede">
+          Apple Maps on Mac, OpenStreetMap, OpenTopoMap and CyclOSM, national aerial and topographic
+          services, and Thunderforest, Esri, Azure Maps, TomTom, HERE or Mapbox with your own key.
+          Every map keeps its owner's credit visible.
+        </p>
+        <a class="more" href={url('docs/maps/')}>
+          Map sources and attribution
+        </a>
+      </div>
+      {aerial && (
+        <figure class="maps-shot" data-enter="fade" data-enter-delay="1">
+          <Image
+            src={aerialShot}
+            alt={aerial.alt}
+            widths={[640, 1024, 1600, aerialShot.width]}
+            sizes="(max-width: 960px) 92vw, 760px"
+            format="webp"
+            quality={86}
+            loading="lazy"
+          />
+          <figcaption class="small muted">{aerial.caption}</figcaption>
+        </figure>
+      )}
+    </div>
+    <div class="wrap wrap-wide">
+      <dl class="countries">
+        {countries.map(([country, detail]) => (
+          <div>
+            <dt>{country}</dt>
+            <dd>{detail}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="lite" aria-labelledby="lite-title">
+    <div class="wrap wrap-wide lite-grid">
+      <div class="lite-text">
+        <p class="kicker">GPX Viewer Web Lite</p>
+        <h2 id="lite-title">Open a GPX file without installing anything.</h2>
+        <p>
+          A lighter viewer that runs in this website: map, elevation and speed graphs, heart rate,
+          cadence and power, statistics and playback. Your file is read in your browser and never
+          uploaded.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href={url('viewer/')}>
+            Open a GPX file
+          </a>
+          <a class="btn" href={url('viewer/?sample')}>
+            Try the sample
+          </a>
+        </div>
+      </div>
+      <div
+        class="lite-preview"
+        data-lite-preview
+        data-sample={url('samples/gpx-viewer-sample-mullerthal.gpx')}
+      >
+        <p class="preview-placeholder small">The map preview loads when this section is visible.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section numbers" aria-labelledby="numbers-title">
+    <div class="wrap wrap-wide">
+      <div class="section-head">
+        <p class="kicker">Statistics</p>
+        <h2 id="numbers-title">Numbers you can check.</h2>
+        <p class="lede">
+          The statistics of the sample, calculated with the rules of the application: gain counts
+          changes of at least 5 m, moving time counts steps of up to 300 s at 0.5 m/s or more, and
+          distance never bridges a recording gap.
+        </p>
+      </div>
+      <dl class="figures">
+        <div>
+          <dt>Distance</dt>
+          <dd>
+            <span data-count={km.toFixed(2)} data-decimals="2">
+              {km.toFixed(2)}
+            </span>
+            <small> km</small>
+          </dd>
+        </div>
+        <div>
+          <dt>Elevation gain</dt>
+          <dd>
+            <span data-count={Math.round(s.gain ?? 0)}>{Math.round(s.gain ?? 0)}</span>
+            <small> m</small>
+          </dd>
+        </div>
+        <div>
+          <dt>Moving time</dt>
+          <dd>
+            {fmtMinutes(s.moving)}
+            <small> h</small>
+          </dd>
+        </div>
+        <div>
+          <dt>Stopped</dt>
+          <dd>
+            {Math.round((s.stopped ?? 0) / 60)}
+            <small> min</small>
+          </dd>
+        </div>
+        <div>
+          <dt>Moving average</dt>
+          <dd>
+            <span data-count={((s.movingSpeed ?? 0) * 3.6).toFixed(1)} data-decimals="1">
+              {((s.movingSpeed ?? 0) * 3.6).toFixed(1)}
+            </span>
+            <small> km/h</small>
+          </dd>
+        </div>
+        <div>
+          <dt>Points, in {g.segments} segments</dt>
+          <dd>{g.points.toLocaleString('en')}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section section-alt platforms" aria-labelledby="platforms-title">
+    <div class="wrap wrap-wide">
+      <div class="section-head">
+        <p class="kicker">Platforms</p>
+        <h2 id="platforms-title">Native on macOS. Available for Windows.</h2>
+      </div>
+      <div class="platform-table" role="list">
+        {['macos-arm64', 'macos-x86_64', 'windows-x64'].map((id, n) => {
+          const p = platform(id)!;
+          return (
+            <div class="platform" role="listitem" data-enter="rise" data-enter-delay={String(n)}>
+              <h3>{p.name}</h3>
+              <p class="version">
+                Version {p.current}
+                {p.architecture && <span class="tag">{p.architecture}</span>}
+              </p>
+              <p class="small muted">{p.requirements}</p>
+              <p class="small muted">{p.note}</p>
+              <a class="more" href={url(`downloads/#${id}`)}>
+                Download
+              </a>
+            </div>
+          );
+        })}
+      </div>
+      <ul class="status-list small muted">
+        {others.map((p) => (
+          <li>
+            <strong>{p.name}:</strong> {p.note}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section closing" aria-labelledby="closing-title">
+    <div class="wrap center">
+      <h2 id="closing-title">Get GPX Viewer</h2>
+      <p class="lede">
+        Free, MIT License. Downloads are hosted on SourceForge with SHA-256 checksums. Not signed or
+        notarised: your system asks you to confirm the first time.
+      </p>
+      <div class="actions">
+        <a class="btn btn-primary" href={url('downloads/')}>
+          Downloads
+        </a>
+        <a class="btn" href={url('docs/')}>
+          Documentation
+        </a>
+        <a class="btn" href={url('changelog/')}>
+          Changelog
+        </a>
+        {github.project && (
+          <a class="btn" href={github.project}>
+            GitHub
+          </a>
+        )}
+        <a class="btn" href={product.sourceforge}>
+          SourceForge
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .intro {
+    padding: clamp(36px, 4vw + 3vh, 88px) 0 clamp(48px, 5vw, 88px);
+  }
+  .intro-text h1 {
+    margin-bottom: 0.25em;
+  }
+  .intro-text .lede {
+    font-size: var(--step-2);
+    color: var(--muted);
+    margin-bottom: 1.4em;
+  }
+  .platforms-line {
+    margin-top: 18px;
+  }
+  .platforms-line a {
+    margin-left: 6px;
+  }
+  .intro-shot {
+    margin-top: clamp(28px, 3vw + 2vh, 64px);
+    margin-bottom: 0;
+  }
+  .intro-shot :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-lift);
+  }
+  .intro-shot figcaption,
+  .maps-shot figcaption {
+    margin-top: 12px;
+    text-align: center;
+  }
+  .maps-shot {
+    margin: 0;
+  }
+  .maps-shot :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+  }
+  .maps-shot figcaption {
+    text-align: left;
+  }
+  .intro-stage {
+    margin-top: clamp(28px, 3vw + 2vh, 64px);
+  }
+  .stage-note {
+    margin-top: 12px;
+    text-align: center;
+  }
+  @media (max-width: 600px) {
+    .intro-text .lede {
+      font-size: var(--step-1);
+    }
+  }
+  /* Short laptop windows: keep the introduction compact. */
+  @media (max-height: 760px) and (min-width: 900px) {
+    .intro {
+      padding-top: 28px;
+    }
+    .intro-text .lede {
+      font-size: var(--step-1);
+    }
+  }
+
+  .story {
+    border-top: 1px solid var(--line);
+  }
+  .story-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: clamp(28px, 4vw, 72px);
+  }
+  .story-stage {
+    position: sticky;
+    top: calc(var(--header-h) + env(safe-area-inset-top) + 24px);
+    align-self: start;
+  }
+  .step {
+    min-height: 72svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0.38;
+    transition: opacity var(--t-content) var(--ease);
+  }
+  .step.is-current {
+    opacity: 1;
+  }
+  .step h3 {
+    font-size: var(--step-2);
+  }
+  @media (max-width: 960px), (max-height: 620px) {
+    .story-grid {
+      grid-template-columns: 1fr;
+    }
+    .story-stage {
+      top: calc(var(--header-h) + env(safe-area-inset-top) + 8px);
+      z-index: 2;
+    }
+    .story-steps {
+      position: relative;
+      z-index: 1;
+    }
+    .step {
+      min-height: 46svh;
+      justify-content: flex-start;
+      padding-top: 24px;
+    }
+  }
+
+  .maps-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(28px, 5vw, 96px);
+    align-items: start;
+  }
+  .countries {
+    margin: clamp(32px, 4vw, 56px) 0 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(24px, 4vw, 64px);
+    display: grid;
+    gap: 0;
+  }
+  .countries div {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .countries div:nth-child(-n + 2) {
+    border-top: 1px solid var(--line);
+  }
+  @media (max-width: 760px) {
+    .countries {
+      grid-template-columns: 1fr;
+    }
+    .countries div:nth-child(2) {
+      border-top: 0;
+    }
+  }
+  .countries dt {
+    font-weight: 600;
+  }
+  .countries dd {
+    margin: 0;
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+  @media (max-width: 960px) {
+    .maps-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 520px) {
+    .countries div {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+  }
+
+  /* Web Lite band: a contrasting surface in both appearances. */
+  .lite {
+    background: #101113;
+    color: #f1f2f4;
+    padding: clamp(56px, 6vw + 3vh, 112px) 0;
+    --muted: #a3a7ae;
+    --line: #2a2b30;
+    --link: #78adff;
+  }
+  :global(:root[data-theme='dark']) .lite,
+  .lite {
+    border-top: 1px solid #1d1e22;
+  }
+  .lite .kicker,
+  .lite p {
+    color: #a3a7ae;
+  }
+  .lite h2 {
+    color: #f1f2f4;
+  }
+  .lite .btn {
+    background: transparent;
+    color: #f1f2f4;
+    border-color: #4a4c52;
+  }
+  .lite .btn-primary {
+    background: #f1f2f4;
+    color: #101113;
+    border-color: #f1f2f4;
+  }
+  .lite-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: clamp(28px, 4vw, 72px);
+    align-items: center;
+  }
+  .lite-preview {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border: 1px solid #2a2b30;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #17181b;
+  }
+  .preview-placeholder {
+    position: absolute;
+    inset: auto 0 0 0;
+    margin: 0;
+    padding: 12px 16px;
+    color: #8b9098 !important;
+  }
+  @media (max-width: 960px) {
+    .lite-grid {
+      grid-template-columns: 1fr;
+    }
+    .lite-preview {
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  .platform-table {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+  }
+  .platform {
+    padding: 24px 24px 24px 0;
+  }
+  .platform + .platform {
+    padding-left: 24px;
+    border-left: 1px solid var(--line);
+  }
+  .platform h3 {
+    font-size: var(--step-1);
+    margin-bottom: 4px;
+  }
+  .version {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .status-list {
+    list-style: none;
+    padding: 0;
+    margin: 28px 0 0;
+    display: grid;
+    gap: 6px;
+  }
+  @media (max-width: 860px) {
+    .platform-table {
+      grid-template-columns: 1fr;
+    }
+    .platform,
+    .platform + .platform {
+      padding: 20px 0;
+      border-left: 0;
+      border-bottom: 1px solid var(--line);
+    }
+  }
+  .closing .actions {
+    margin-top: 8px;
+  }
+</style>
+
+<script>
+  import { bindStory, playIntro } from '../lib/stage';
+  const intro = document.querySelector<HTMLElement>('[data-intro] [data-stage]');
+  if (intro) playIntro(intro);
+  const story = document.querySelector<HTMLElement>('[data-story]');
+  if (story) bindStory(story);
+  const preview = document.querySelector<HTMLElement>('[data-lite-preview]');
+  if (preview && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      async (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        observer.disconnect();
+        const { mountPreview } = await import('../lib/viewer/preview');
+        mountPreview(preview, preview.dataset['sample'] ?? '');
+      },
+      { rootMargin: '200px 0px' },
+    );
+    observer.observe(preview);
+  }
+</script>

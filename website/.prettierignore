@@ -1,0 +1,9 @@
+dist
+node_modules
+.astro
+package-lock.json
+public/samples
+tests/fixtures
+samples/source
+src/data/*.json
+src/content/legal

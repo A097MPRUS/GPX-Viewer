@@ -1,0 +1,83 @@
+---
+// Line icons drawn for this site on a 24 px grid, 1.75 px stroke. Author: A097MPRUS.
+interface Props {
+  name:
+    | 'download'
+    | 'map'
+    | 'chart'
+    | 'book'
+    | 'repo'
+    | 'arrow'
+    | 'check'
+    | 'copy'
+    | 'sun'
+    | 'moon'
+    | 'menu'
+    | 'close'
+    | 'external'
+    | 'file'
+    | 'route'
+    | 'shield'
+    | 'layers'
+    | 'stats'
+    | 'tool'
+    | 'mountain'
+    | 'apple'
+    | 'windows'
+    | 'phone'
+    | 'pause'
+    | 'search'
+    | 'expand';
+  size?: number;
+  label?: string;
+}
+const { name, size = 20, label } = Astro.props;
+const paths: Record<Props['name'], string> = {
+  download: 'M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14',
+  map: 'M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4Zm0 0v14m6-12v14',
+  chart: 'M4 19h16M5 16l4-6 4 3 6-8',
+  book: 'M5 4.5h9.5A3.5 3.5 0 0 1 18 8v11.5H8.5A3.5 3.5 0 0 1 5 16V4.5Zm0 11.5a3 3 0 0 1 3-3h10',
+  repo: 'M6 3.5h11.5v14H7.5A1.5 1.5 0 0 0 6 19m0-15.5V19m0 0a1.5 1.5 0 0 0 1.5 1.5h10M10 7.5h4',
+  arrow: 'M5 12h14m0 0-5-5m5 5-5 5',
+  check: 'm5 12.5 4.5 4.5L19 7.5',
+  copy: 'M8.5 8.5h10v11h-10zM15.5 8.5V4.5h-10v11h3',
+  sun: 'M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0-13v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4',
+  moon: 'M19.5 14.5A7.5 7.5 0 0 1 9.5 4.5a7.5 7.5 0 1 0 10 10Z',
+  menu: 'M4 7h16M4 12h16M4 17h16',
+  close: 'M6 6l12 12M18 6 6 18',
+  external: 'M13.5 4.5h6v6m0-6-8 8M18 14v5.5H4.5V6H10',
+  file: 'M7 3.5h7l4 4v13H7zM14 3.5V8h4',
+  route:
+    'M6 18.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm12-9a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM7.5 15l3-5.5c1-1.8 2.8-2 4.5-2.2',
+  shield: 'M12 3.5 5 6v5.5c0 4.5 3 7.7 7 9 4-1.3 7-4.5 7-9V6l-7-2.5Zm-3 8.5 2.2 2.2L15.5 10',
+  layers: 'm12 4 8.5 4.5L12 13 3.5 8.5 12 4Zm-8.5 8L12 16.5 20.5 12M3.5 15.5 12 20l8.5-4.5',
+  stats: 'M5 20V11m5 9V5m5 15v-7m5 7V8',
+  tool: 'M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 1 1-3-3l7.5-7.5a4 4 0 0 1-2-2Z',
+  mountain: 'M3 19 9.5 8l4 6.5 2-3L21 19H3Z',
+  apple:
+    'M12 7.5c1-1.8 2.5-3 4-3-0.2 1.6-1.3 3-3 3.5M8.5 7.5c1.3 0 2.2.7 3.5.7s2-.8 3.6-.8c1.7 0 3.2 1 4 2.6-2.8 1.6-2.3 5.6.6 6.6-.8 2.2-2.4 4.4-4 4.4-1.4 0-1.8-.9-3.6-.9s-2.3.9-3.6.9c-2.2 0-5-4.4-5-8.4 0-3.4 2.2-5.1 4.5-5.1Z',
+  windows: 'M4 5.5 11 4.5v7H4zM13 4.2l7-1v8.3h-7zM4 12.5h7v7l-7-1zM13 12.5h7v8.3l-7-1z',
+  phone:
+    'M8 3.5h8a1.5 1.5 0 0 1 1.5 1.5v14a1.5 1.5 0 0 1-1.5 1.5H8A1.5 1.5 0 0 1 6.5 19V5A1.5 1.5 0 0 1 8 3.5ZM11 17.5h2',
+  pause: 'M9 5.5v13m6-13v13',
+  search: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14Zm5-2 4 4',
+  expand: 'M9 4.5H4.5V9M15 4.5h4.5V9M9 19.5H4.5V15m15 0v4.5H15',
+};
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  focusable="false"
+>
+  <path d={paths[name]}></path>
+</svg>

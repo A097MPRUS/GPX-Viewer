@@ -1,0 +1,752 @@
+---
+// GPX Viewer Web Lite. Author: A097MPRUS.
+import Base from '../layouts/Base.astro';
+import { url } from '../data/site';
+---
+
+<Base
+  title="Web Lite"
+  description="Open a GPX file in your browser: map, elevation profile, speed, heart rate, cadence and power graphs, statistics and playback. Files are read locally and never uploaded."
+  current="viewer/"
+  app
+>
+  <div class="lite-app" data-app data-sample={url('samples/gpx-viewer-sample-mullerthal.gpx')}>
+    <header class="lite-bar">
+      <div class="file">
+        <h1 class="file-name" data-file-name>
+          GPX Viewer Web Lite
+        </h1>
+        <p class="file-meta" data-file-meta>
+          Files are read in this browser and never uploaded.
+        </p>
+      </div>
+      <div class="bar-actions">
+        <label class="btn btn-primary file-button">
+          <input type="file" class="visually-hidden" data-file-input aria-label="Open a GPX file" />
+          <span>
+            Open<span class="long">&nbsp;GPX file</span>
+          </span>
+        </label>
+        <button type="button" class="btn" data-load-sample>
+          Sample
+        </button>
+        <button type="button" class="btn" data-fit>
+          <span>
+            Fit<span class="long">&nbsp;route</span>
+          </span>
+        </button>
+        <details class="settings">
+          <summary class="btn">Settings</summary>
+          <div class="settings-panel">
+            <label>
+              Map
+              <select data-basemap>
+                <option value="osm">OpenStreetMap</option>
+                <option value="opentopomap">OpenTopoMap</option>
+                <option value="none">No basemap</option>
+              </select>
+            </label>
+            <label>
+              Units
+              <select data-units>
+                <option value="metric">Metric</option>
+                <option value="imperial">Imperial</option>
+              </select>
+            </label>
+            <label>
+              Clock
+              <select data-clock>
+                <option value="24">24 hour</option>
+                <option value="12">12 hour</option>
+              </select>
+            </label>
+            <label>
+              Gain threshold
+              <select data-gain>
+                <option value="5">5 m</option>
+                <option value="2">2 m</option>
+                <option value="1">1 m</option>
+              </select>
+            </label>
+          </div>
+        </details>
+      </div>
+    </header>
+
+    <p class="error" role="alert" data-error hidden></p>
+    <p class="visually-hidden" role="status" aria-live="polite" data-status></p>
+
+    <div class="lite-map">
+      <div class="map-host" data-map aria-label="Map"></div>
+      <div class="tile-notice" role="status" data-tile-notice hidden>
+        <p data-tile-text>
+          Map images are not loading. The track, graphs and statistics still work.
+        </p>
+        <button type="button" class="btn" data-tile-none>
+          Show without a map
+        </button>
+      </div>
+      <div class="empty" data-empty>
+        <div class="empty-inner">
+          <h2>Open a GPX file</h2>
+          <p>
+            Drop a file here or choose one. GPX 1.0 and 1.1 tracks, routes and waypoints. The file
+            stays on your device; only map images for the visible area are downloaded.
+          </p>
+          <div class="actions">
+            <button type="button" class="btn btn-primary" data-empty-open>
+              Choose a file
+            </button>
+            <button type="button" class="btn" data-empty-sample>
+              Try the sample
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <dl class="key-stats" data-key-stats aria-label="Key figures"></dl>
+
+    <section class="lite-graph" aria-label="Graph">
+      <div class="graph-bar">
+        <button type="button" class="graph-toggle" data-graph-toggle aria-expanded="true">
+          Graph
+        </button>
+        <label>
+          Main{' '}
+          <select data-main>
+            <option>Elevation</option>
+          </select>
+        </label>
+        <label>
+          Compare{' '}
+          <select data-compare>
+            <option value="none">None</option>
+          </select>
+        </label>
+        <label>
+          Axis
+          <select data-axis>
+            <option value="distance">Distance</option>
+            <option value="elapsed">Elapsed time</option>
+            <option value="moving">Moving time</option>
+          </select>
+        </label>
+        <span class="range" data-range-label>
+          Whole file
+        </span>
+        <button type="button" class="btn btn-small" data-reset disabled>
+          Show all
+        </button>
+      </div>
+      <div class="chart-wrap">
+        <div
+          class="chart"
+          data-chart
+          tabindex="0"
+          role="application"
+          aria-label="Graph. Left and right arrows move the cursor, Shift moves faster, Escape shows the whole file. Drag with a mouse to zoom to a section."
+        ></div>
+        <dl class="tooltip" data-tooltip hidden></dl>
+      </div>
+      <div class="play-bar">
+        <button type="button" class="btn btn-small" data-play aria-pressed="false">
+          Play
+        </button>
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="1"
+          value="0"
+          data-seek
+          aria-label="Playback position"
+        />
+        <span class="play-time" data-play-time>
+          0:00
+        </span>
+        <label>
+          Speed
+          <select data-speed>
+            <option value="1">1x</option>
+            <option value="10">10x</option>
+            <option value="30">30x</option>
+            <option value="60">60x</option>
+            <option value="120">120x</option>
+          </select>
+        </label>
+        <label class="check">
+          <input type="checkbox" data-follow /> Map follows
+        </label>
+        <span class="play-note" data-play-note></span>
+      </div>
+    </section>
+
+    <aside class="lite-side" aria-label="Statistics and point details">
+      <section>
+        <h2 class="side-title" data-stats-title>
+          Whole file
+        </h2>
+        <dl class="stats" data-stats></dl>
+      </section>
+      <section>
+        <h2 class="side-title">Point</h2>
+        <dl class="point" data-point></dl>
+      </section>
+      <ul class="warnings" data-warnings hidden></ul>
+      <p class="side-note small muted">
+        Calculations: geodesic distance on the WGS 84 ellipsoid; gain with the chosen threshold per
+        segment; moving time counts steps of up to 300 s at 0.5 m/s or more.{' '}
+        <a href={url('docs/metrics/')}>How values are calculated</a>
+      </p>
+    </aside>
+
+    <div class="drop" data-drop hidden>
+      <p>Drop the GPX file to open it</p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  :global(body.is-app) {
+    overflow-x: hidden;
+  }
+  .lite-app {
+    --side: clamp(300px, 24vw, 420px);
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--side);
+    grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      'bar bar'
+      'error error'
+      'map side'
+      'keys side'
+      'graph side';
+    height: calc(100dvh - var(--header-h) - env(safe-area-inset-top));
+    min-height: 560px;
+    background: var(--bg);
+  }
+  .lite-bar {
+    grid-area: bar;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px max(16px, env(safe-area-inset-left));
+    border-bottom: 1px solid var(--line);
+    min-width: 0;
+  }
+  .file {
+    min-width: 0;
+  }
+  .file-name {
+    font-size: var(--step-0);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .file-meta {
+    margin: 0;
+    font-size: var(--step--2);
+    color: var(--muted);
+  }
+  .bar-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .bar-actions .btn,
+  .settings summary {
+    min-height: 36px;
+    padding: 0 12px;
+  }
+  .file-button {
+    position: relative;
+  }
+  .file-button:focus-within {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .settings {
+    position: relative;
+  }
+  .settings summary {
+    list-style: none;
+  }
+  .settings summary::-webkit-details-marker {
+    display: none;
+  }
+  .settings-panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 1200;
+    display: grid;
+    gap: 10px;
+    width: 230px;
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lift);
+  }
+  .settings-panel label,
+  .graph-bar label,
+  .play-bar label {
+    display: grid;
+    gap: 4px;
+    font-size: var(--step--2);
+    color: var(--muted);
+  }
+  .graph-bar select {
+    max-width: 210px;
+  }
+  select {
+    min-height: 34px;
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font: 400 var(--step--1) / 1.2 var(--font-sans);
+    padding: 0 8px;
+  }
+  .error {
+    grid-area: error;
+    margin: 0;
+    padding: 10px 16px;
+    background: color-mix(in srgb, var(--danger) 12%, var(--bg));
+    color: var(--text);
+    border-bottom: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+    font-size: var(--step--1);
+  }
+  .lite-map {
+    grid-area: map;
+    position: relative;
+    min-height: 0;
+    background: var(--bg-alt);
+  }
+  .map-host {
+    position: absolute;
+    inset: 0;
+  }
+  .tile-notice {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .tile-notice p {
+    margin: 0;
+  }
+  .tile-notice .btn {
+    flex: none;
+    white-space: nowrap;
+  }
+  .tile-notice {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 28px;
+    z-index: 800;
+    margin: 0 auto;
+    max-width: 520px;
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: var(--step--1);
+  }
+  .empty {
+    position: absolute;
+    inset: 0;
+    z-index: 900;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+  }
+  .empty-inner {
+    max-width: 460px;
+    text-align: center;
+  }
+  .empty-inner p {
+    color: var(--muted);
+  }
+  .empty .actions {
+    justify-content: center;
+  }
+  .key-stats {
+    grid-area: keys;
+    display: none;
+    margin: 0;
+  }
+  .lite-graph {
+    grid-area: graph;
+    border-top: 1px solid var(--line);
+    min-width: 0;
+  }
+  .graph-bar,
+  .play-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px 16px;
+    padding: 6px 16px;
+    flex-wrap: wrap;
+  }
+  .graph-bar label,
+  .play-bar label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .graph-toggle {
+    display: none;
+  }
+  .range {
+    margin-left: auto;
+    font-size: var(--step--1);
+    color: var(--muted);
+    align-self: center;
+  }
+  .btn-small {
+    min-height: 34px;
+    padding: 0 12px;
+  }
+  .chart-wrap {
+    position: relative;
+  }
+  .chart {
+    position: relative;
+    height: clamp(150px, 24dvh, 300px);
+    touch-action: pan-y;
+    cursor: crosshair;
+    outline: none;
+  }
+  .chart:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--focus);
+  }
+  .chart :global(canvas) {
+    position: absolute;
+    inset: 0;
+  }
+  .tooltip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    margin: 0;
+    padding: 8px 10px;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 2px 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    font-size: 12px;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .tooltip :global(dt) {
+    color: var(--muted);
+  }
+  .tooltip :global(dd),
+  .stats :global(dd),
+  .point :global(dd) {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  :global(.kind) {
+    font: 400 10px/1 var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--faint);
+  }
+  :global(.kind-recorded) {
+    color: var(--link);
+  }
+  .play-bar {
+    border-top: 1px solid var(--line);
+    align-items: center;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+  .play-bar input[type='range'] {
+    flex: 1 1 160px;
+    min-width: 120px;
+    accent-color: var(--marker);
+  }
+  .play-time {
+    font: 400 var(--step--1) var(--font-mono);
+    min-width: 60px;
+  }
+  .play-bar label {
+    grid-auto-flow: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .check input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--route);
+  }
+  .play-note {
+    flex: 1 1 200px;
+    font-size: var(--step--2);
+    color: var(--muted);
+  }
+  @media (min-width: 1024px) and (max-height: 820px) {
+    .chart {
+      height: 150px;
+    }
+    .play-note {
+      display: none;
+    }
+  }
+  .lite-side {
+    grid-area: side;
+    border-left: 1px solid var(--line);
+    overflow-y: auto;
+    padding: 16px 18px max(16px, env(safe-area-inset-bottom));
+    min-height: 0;
+  }
+  .side-title {
+    font-size: var(--step--1);
+    color: var(--muted);
+    font-weight: 600;
+    margin: 4px 0 10px;
+  }
+  .point {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 14px;
+    margin: 0 0 22px;
+    font-size: var(--step--1);
+  }
+  .stats {
+    display: grid;
+    gap: 6px;
+    margin: 0 0 22px;
+    font-size: var(--step--1);
+  }
+  .stats :global(div) {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .stats :global(dt),
+  .point :global(dt) {
+    color: var(--muted);
+  }
+  .stats :global(dd) {
+    text-align: right;
+    font-weight: 500;
+  }
+  .warnings {
+    font-size: var(--step--1);
+    color: var(--warn);
+    padding-left: 18px;
+  }
+  .drop {
+    position: absolute;
+    inset: 8px;
+    z-index: 1300;
+    display: grid;
+    place-items: center;
+    border: 2px dashed var(--route);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    font-weight: 600;
+    pointer-events: none;
+  }
+  .lite-app.is-loading .lite-map::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    z-index: 1000;
+    background: var(--route);
+    transform-origin: left;
+    animation: loading 1.1s var(--ease-in-out) infinite;
+  }
+  @keyframes loading {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+      opacity: 0.2;
+    }
+  }
+  .lite-app.just-opened .lite-bar {
+    background: color-mix(in srgb, var(--route) 7%, var(--bg));
+    transition: background-color var(--t-content) var(--ease);
+  }
+  .lite-app.no-points .lite-graph {
+    display: none;
+  }
+  :global(.leaflet-container) {
+    font: inherit;
+    background: var(--bg-alt);
+  }
+
+  /* Large monitors: more room for the side panel and graph. */
+  @media (min-width: 1920px) {
+    .chart {
+      height: clamp(220px, 28dvh, 360px);
+    }
+  }
+  /* Tablets and narrow windows: map, graph, then the panel, in one scrolling column. */
+  @media (max-width: 1023px) {
+    .lite-app {
+      height: auto;
+      min-height: 0;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto auto auto auto;
+      grid-template-areas: 'bar' 'error' 'map' 'keys' 'graph' 'side';
+    }
+    .lite-map {
+      height: clamp(320px, 58dvh, 720px);
+    }
+    .lite-side {
+      border-left: 0;
+      border-top: 1px solid var(--line);
+      overflow: visible;
+    }
+    .stats {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 14px 18px;
+    }
+    .stats :global(div) {
+      display: block;
+    }
+    .stats :global(dd) {
+      text-align: left;
+      font-size: var(--step-1);
+    }
+  }
+  /* Phones: the map first; statistics as a compact strip; graph panel can collapse. */
+  @media (max-width: 640px) {
+    .long {
+      display: none;
+    }
+    .bar-actions {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .bar-actions .btn,
+    .settings summary {
+      width: 100%;
+      justify-content: center;
+      padding: 0 6px;
+    }
+    .settings-panel {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      top: auto;
+      width: auto;
+    }
+    .lite-app.has-file .key-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+    }
+    .key-stats :global(div) {
+      padding: 8px 10px;
+    }
+    .key-stats :global(div + div) {
+      border-left: 1px solid var(--line);
+    }
+    .key-stats :global(dt) {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .key-stats :global(dd) {
+      margin: 0;
+      font-weight: 600;
+      font-size: var(--step--1);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .lite-bar {
+      flex-wrap: wrap;
+      padding: 8px 12px;
+    }
+    .bar-actions {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    .bar-actions .btn,
+    .settings summary {
+      min-height: 44px;
+    }
+    .settings-panel {
+      left: auto;
+      right: 0;
+      width: min(80vw, 260px);
+    }
+    .lite-map {
+      height: 54dvh;
+    }
+    .graph-toggle {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      border: 0;
+      background: none;
+      color: var(--text);
+      font-weight: 600;
+      padding: 0;
+    }
+    .graph-toggle::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      margin-left: 8px;
+      border-right: 1.5px solid currentColor;
+      border-bottom: 1.5px solid currentColor;
+      transform: rotate(45deg) translateY(-2px);
+    }
+    .graph-bar {
+      gap: 8px 10px;
+    }
+    .graph-bar label {
+      flex: 1 1 40%;
+    }
+    .lite-app.graph-collapsed .chart-wrap,
+    .lite-app.graph-collapsed .play-bar,
+    .lite-app.graph-collapsed .graph-bar label,
+    .lite-app.graph-collapsed .graph-bar .range,
+    .lite-app.graph-collapsed .graph-bar [data-reset] {
+      display: none;
+    }
+    .lite-app.graph-collapsed .graph-toggle::after {
+      transform: rotate(-45deg);
+    }
+    .chart {
+      height: 200px;
+    }
+    .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  /* Landscape phones: map and graph side by side would be too small; keep them stacked but short. */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .lite-map {
+      height: 78dvh;
+    }
+  }
+</style>
+
+<script>
+  import { initViewer } from '../lib/viewer/app';
+  const root = document.querySelector<HTMLElement>('[data-app]');
+  if (root) void initViewer(root);
+</script>

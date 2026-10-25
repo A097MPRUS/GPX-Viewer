@@ -1,0 +1,61 @@
+---
+// Privacy for the website and Web Lite, followed by the applications' privacy statement
+// (release/PRIVACY.md, synced). Author: A097MPRUS.
+import Base from '../layouts/Base.astro';
+import { compiledContent } from '../content/legal/app-privacy.md';
+// The synced file starts with its own top-level heading; on this page it is a section.
+const appPrivacy = (await compiledContent()).replace(
+  /<h1([^>]*)>Privacy<\/h1>/,
+  '<h2$1>The desktop applications</h2>',
+);
+---
+
+<Base
+  title="Privacy"
+  description="How GPX Viewer and GPX Viewer Web Lite handle your files: read locally, never uploaded, no analytics, no tracking. Map providers receive requests for the visible area."
+>
+  <div class="section">
+    <div class="wrap">
+      <article class="article">
+        <h1>Privacy</h1>
+        <h2>This website and GPX Viewer Web Lite</h2>
+        <ul>
+          <li>
+            <strong>Your GPX files stay on your device.</strong> Web Lite reads a file you choose or
+            drop with your browser's File API and analyses it in your browser. The file, its
+            coordinates and any heart rate, cadence, power or temperature values are never uploaded,
+            stored on a server or sent to any analytics service.
+          </li>
+          <li>
+            <strong>Map images.</strong> To show a map, your browser requests the map images for the
+            visible area from OpenStreetMap or OpenTopoMap. Those servers therefore receive your IP
+            address, the area you are looking at and the address of this website (the HTTP Referer),
+            as with any online map. They do not receive your file. Choose "No basemap" in Web Lite
+            to make no map requests at all.
+          </li>
+          <li>
+            <strong>No analytics, no advertising, no tracking, no cookies.</strong> The website
+            loads no third-party scripts or fonts; everything it needs is served from the website
+            itself.
+          </li>
+          <li>
+            <strong>Browser storage.</strong> Your choice of appearance and the Web Lite settings
+            (map, units, clock, gain threshold, graph options) are kept in your browser's local
+            storage on your device only. Clear the website data in your browser to remove them.
+          </li>
+          <li>
+            <strong>Hosting.</strong> The hosting service records technical access logs (such as IP
+            addresses and requested pages) under its own privacy terms. Downloads are served by
+            SourceForge under its terms.
+          </li>
+          <li>
+            <strong>Offline use.</strong> Web Lite needs an internet connection for map images.
+            Without them, the graphs and statistics still work.
+          </li>
+        </ul>
+        <hr />
+        <Fragment set:html={appPrivacy} />
+      </article>
+    </div>
+  </div>
+</Base>

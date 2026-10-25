@@ -1,0 +1,408 @@
+---
+// Downloads, generated from the release manifest. Author: A097MPRUS.
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import {
+  archivedReleases,
+  currentRelease,
+  longDate,
+  manifest,
+  megabytes,
+  platform,
+  product,
+  temporarilyHidden,
+  url,
+} from '../data/site';
+
+const mac = currentRelease('macos')!;
+const win = currentRelease('windows')!;
+const rows = [
+  {
+    release: mac,
+    asset: mac.assets.find((a) => a.platform === 'macos-arm64')!,
+    platform: platform('macos-arm64')!,
+  },
+  {
+    release: mac,
+    asset: mac.assets.find((a) => a.platform === 'macos-x86_64')!,
+    platform: platform('macos-x86_64')!,
+  },
+  {
+    release: win,
+    asset: win.assets.find((a) => a.platform === 'windows-x64')!,
+    platform: platform('windows-x64')!,
+  },
+];
+const macSource = mac.assets.find((a) => a.kind === 'source');
+const others = manifest.platforms.filter((p) => p.status !== 'released');
+const formatName: Record<string, string> = {
+  pkg: 'macOS Installer package (.pkg)',
+  exe: 'Windows installer (.exe)',
+  dmg: 'Disk image (.dmg)',
+  zip: 'ZIP archive',
+};
+---
+
+<Base
+  title="Downloads"
+  description="Download GPX Viewer for macOS (Apple silicon and Intel) and Windows, with SHA-256 checksums, requirements and installation steps."
+  current="downloads/"
+>
+  <section class="section head-section">
+    <div class="wrap wrap-wide">
+      <h1>Downloads</h1>
+      <p class="lede">
+        Current releases: macOS {mac.version} (build {mac.build}, {longDate(mac.date)}) and Windows
+        {win.version} ({longDate(win.date)}). Files are hosted on
+        <a href={product.sourceforgeFiles}>SourceForge</a>. Free under the MIT License.
+      </p>
+      <p class="note">
+        Not signed with a developer certificate and not notarised: macOS and Windows ask you to
+        confirm before the first launch. Download only from the links on this page or the GPX Viewer
+        SourceForge project, and compare the SHA-256 checksum.
+      </p>
+    </div>
+  </section>
+
+  {rows.map(({ release, asset, platform: p }) => (
+    <section class="section dl-row" id={p.id} aria-labelledby={`${p.id}-title`}>
+      <div class="wrap wrap-wide dl-grid">
+        <div class="dl-info">
+          <p class="kicker">{p.family === 'macos' ? 'macOS' : 'Windows'}</p>
+          <h2 id={`${p.id}-title`}>{p.name}</h2>
+          <dl class="facts">
+            <div>
+              <dt>Version</dt>
+              <dd>
+                {release.version}
+                {release.build && ` (build ${release.build})`}
+              </dd>
+            </div>
+            <div>
+              <dt>Released</dt>
+              <dd>{longDate(release.date)}</dd>
+            </div>
+            <div>
+              <dt>Requires</dt>
+              <dd>{p.requirements}</dd>
+            </div>
+            <div>
+              <dt>Architecture</dt>
+              <dd>{p.architecture}</dd>
+            </div>
+            <div>
+              <dt>Format</dt>
+              <dd>{formatName[asset.format] ?? asset.format}</dd>
+            </div>
+            {p.testedOn && (
+              <div>
+                <dt>Tested on</dt>
+                <dd>{p.testedOn}</dd>
+              </div>
+            )}
+          </dl>
+          <p class="small muted">{p.note}</p>
+        </div>
+        <div class="dl-file">
+          <a class="btn btn-primary dl-button" href={asset.url}>
+            <Icon name="download" /> Download {megabytes(asset.size)}
+          </a>
+          <p class="file-name mono">{asset.file}</p>
+          <div class="checksum">
+            <span class="label">SHA-256</span>
+            <code class="hash">{asset.sha256}</code>
+            <button
+              type="button"
+              class="btn copy"
+              data-copy={asset.sha256}
+              aria-label={`Copy the SHA-256 checksum of ${asset.file}`}
+            >
+              <Icon name="copy" size={16} /> <span data-copy-label>Copy</span>
+            </button>
+          </div>
+          <div class="links small">
+            {release.notes && <a href={release.notes}>Release notes</a>}
+            {release.checksums && <a href={release.checksums}>SHA256SUMS.txt</a>}
+            <a href={release.folder}>All files of this release</a>
+          </div>
+          <details class="install">
+            <summary>Installation</summary>
+            {p.family === 'macos' ? (
+              <ol>
+                <li>
+                  Check your Mac: Apple menu, About This Mac shows "Apple M..." (Apple silicon) or
+                  "Intel".
+                </li>
+                <li>
+                  Open the downloaded .pkg. If macOS refuses to open it, Control-click it and choose
+                  Open. On macOS 15 and later, open System Settings, Privacy and Security, and
+                  choose Open Anyway.
+                </li>
+                <li>
+                  Follow the installer: it shows the read-me and the licence and installs GPX Viewer
+                  in the Applications folder.
+                </li>
+                {p.id === 'macos-x86_64' && (
+                  <li>
+                    The Intel package refuses Apple silicon Macs; use the Apple silicon edition
+                    there.
+                  </li>
+                )}
+              </ol>
+            ) : (
+              <ol>
+                <li>
+                  Run the installer. Microsoft Defender SmartScreen may warn about an unknown
+                  publisher: choose More info, then Run anyway, only for a file from this page or
+                  the GPX Viewer SourceForge project.
+                </li>
+                <li>Follow the installer steps.</li>
+              </ol>
+            )}
+          </details>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="section section-alt" aria-labelledby="source-title">
+    <div class="wrap wrap-wide">
+      <h2 id="source-title">Source code</h2>
+      {macSource && (
+        <p>
+          <a href={macSource.url}>{macSource.file}</a>
+          <span class="muted">
+            {' '}
+            ({megabytes(macSource.size)}, MIT License, macOS {mac.version})
+          </span>
+        </p>
+      )}
+      {macSource && <p class="small muted mono hash-line">SHA-256 {macSource.sha256}</p>}
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="verify-title">
+    <div class="wrap wrap-wide prose-wide">
+      <h2 id="verify-title">Verify a download</h2>
+      <p>Compare the printed value with the SHA-256 shown above.</p>
+      <p class="small muted">macOS (Terminal):</p>
+      <pre><code>shasum -a 256 ~/Downloads/"GPX Viewer {mac.version} Apple Silicon macOS 13+.pkg"</code></pre>
+      <p class="small muted">Windows (PowerShell):</p>
+      <pre><code>Get-FileHash $env:USERPROFILE\Downloads\GpxViewer-{win.version}-Setup-x64.exe -Algorithm SHA256</code></pre>
+    </div>
+  </section>
+
+  <section class="section section-alt" aria-labelledby="archive-title">
+    <div class="wrap wrap-wide">
+      <h2 id="archive-title">Archived releases</h2>
+      <p class="muted">Kept for reference. Use the current releases for new installations.</p>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Archived releases">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Release</th>
+              <th scope="col">Date</th>
+              <th scope="col">File</th>
+              <th scope="col">Size</th>
+              <th scope="col">SHA-256</th>
+            </tr>
+          </thead>
+          <tbody>
+            {archivedReleases.flatMap((r) =>
+              r.assets.map((a, n) => (
+                <tr>
+                  <td>
+                    {n === 0 ? `${r.family === 'macos' ? 'macOS' : 'Windows'} ${r.version}` : ''}
+                  </td>
+                  <td>{n === 0 ? longDate(r.date) : ''}</td>
+                  <td>
+                    {temporarilyHidden(r) ? <span>{a.file}</span> : <a href={a.url}>{a.file}</a>}
+                  </td>
+                  <td>{megabytes(a.size)}</td>
+                  <td>
+                    <code class="hash small-hash">{a.sha256}</code>
+                  </td>
+                </tr>
+              )),
+            )}
+          </tbody>
+        </table>
+      </div>
+      {archivedReleases.some((r) => temporarilyHidden(r)) && (
+        <p class="small muted">
+          The macOS 0.1.0 files are temporarily hidden on SourceForge and become available again on
+          28 October 2026.
+        </p>
+      )}
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="others-title">
+    <div class="wrap wrap-wide">
+      <h2 id="others-title">Other platforms</h2>
+      <dl class="others">
+        {others.map((p) => (
+          <div>
+            <dt>{p.name}</dt>
+            <dd>{p.note}</dd>
+          </div>
+        ))}
+      </dl>
+      <p class="small muted">
+        Without installing anything you can use <a href={url('viewer/')}>GPX Viewer Web Lite</a> in
+        your browser.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head-section h1 {
+    font-size: var(--step-4);
+  }
+  .head-section .note {
+    max-width: 760px;
+    margin-top: 20px;
+  }
+  .dl-row {
+    padding-top: clamp(40px, 4vw, 72px);
+    padding-bottom: clamp(40px, 4vw, 72px);
+  }
+  .dl-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(24px, 4vw, 72px);
+    align-items: start;
+  }
+  .dl-info h2 {
+    font-size: var(--step-3);
+  }
+  .facts {
+    margin: 20px 0;
+    display: grid;
+    gap: 0;
+  }
+  .facts div {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: var(--step--1);
+  }
+  .facts dt {
+    color: var(--muted);
+  }
+  .facts dd {
+    margin: 0;
+  }
+  .dl-button {
+    min-height: 52px;
+    padding: 0 24px;
+    font-size: var(--step-0);
+  }
+  .file-name {
+    margin: 14px 0 18px;
+    font-size: var(--step--1);
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+  .checksum {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .label {
+    font-size: var(--step--2);
+    color: var(--muted);
+  }
+  .hash {
+    background: none;
+    border: 0;
+    padding: 0;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+    word-break: break-all;
+  }
+  .copy {
+    min-height: 34px;
+    padding: 0 10px;
+    font-size: var(--step--2);
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin: 14px 0;
+  }
+  .install summary {
+    cursor: pointer;
+    font-weight: 500;
+    padding: 6px 0;
+  }
+  .install ol {
+    padding-left: 20px;
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+  .hash-line {
+    overflow-wrap: anywhere;
+  }
+  .prose-wide {
+    max-width: calc(860px + 2 * var(--gutter));
+  }
+  .table-scroll {
+    overflow-x: auto;
+    margin-top: 18px;
+  }
+  .table-scroll table {
+    min-width: 720px;
+  }
+  .small-hash {
+    font-size: 11px;
+  }
+  .others {
+    margin: 18px 0;
+  }
+  .others div {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .others dt {
+    font-weight: 600;
+  }
+  .others dd {
+    margin: 0;
+    color: var(--muted);
+  }
+  @media (max-width: 860px) {
+    .dl-grid {
+      grid-template-columns: 1fr;
+    }
+    .dl-button {
+      width: 100%;
+    }
+    .checksum {
+      grid-template-columns: 1fr auto;
+    }
+    .checksum .label {
+      grid-column: 1 / -1;
+    }
+    .others div {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+  }
+</style>
+
+<script>
+  import { initCopyButtons } from '../lib/site';
+  initCopyButtons();
+</script>

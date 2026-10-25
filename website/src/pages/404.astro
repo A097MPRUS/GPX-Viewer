@@ -1,0 +1,25 @@
+---
+// Not found. Author: A097MPRUS.
+import Base from '../layouts/Base.astro';
+import { url } from '../data/site';
+---
+
+<Base title="Page not found" description="This page does not exist.">
+  <section class="section">
+    <div class="wrap center">
+      <h1>Page not found</h1>
+      <p class="lede">This address does not exist on the GPX Viewer website.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href={url()}>
+          Home
+        </a>
+        <a class="btn" href={url('docs/')}>
+          Documentation
+        </a>
+        <a class="btn" href={url('downloads/')}>
+          Downloads
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>

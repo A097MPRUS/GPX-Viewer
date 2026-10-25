@@ -1,0 +1,137 @@
+---
+// Site footer. Author: A097MPRUS.
+import { github, product, url } from '../data/site';
+const year = new Date().getUTCFullYear();
+// Private preview builds name the commit they were built from (set by Cloudflare Pages).
+const preview = import.meta.env.PUBLIC_SITE_STAGE !== 'public';
+const commit = (process.env['CF_PAGES_COMMIT_SHA'] ?? '').slice(0, 7);
+---
+
+<footer class="site-footer">
+  <div class="wrap cols">
+    <div class="about">
+      <p class="name">GPX Viewer</p>
+      <p class="muted small">
+        A personal, non-commercial project by {product.author}. Free software under the MIT License.
+        No account, no analytics, no advertising.
+      </p>
+    </div>
+    <nav aria-label="Project">
+      <p class="head">Project</p>
+      <ul>
+        <li>
+          <a href={url('explore/')}>Explore</a>
+        </li>
+        <li>
+          <a href={url('downloads/')}>Downloads</a>
+        </li>
+        <li>
+          <a href={url('changelog/')}>Changelog</a>
+        </li>
+        <li>
+          <a href={product.sourceforge}>SourceForge</a>
+        </li>
+        {github.project && (
+          <li>
+            <a href={github.project}>GitHub repository</a>
+          </li>
+        )}
+      </ul>
+    </nav>
+    <nav aria-label="Help">
+      <p class="head">Help</p>
+      <ul>
+        <li>
+          <a href={url('docs/')}>Documentation</a>
+        </li>
+        <li>
+          <a href={url('docs/troubleshooting/')}>Troubleshooting</a>
+        </li>
+        <li>
+          <a href={product.tickets}>Report a problem</a>
+        </li>
+      </ul>
+    </nav>
+    <nav aria-label="Legal">
+      <p class="head">Legal</p>
+      <ul>
+        <li>
+          <a href={url('privacy/')}>Privacy</a>
+        </li>
+        <li>
+          <a href={url('legal/')}>Legal notice (version {product.legalNoticeVersion})</a>
+        </li>
+        <li>
+          <a href={url('docs/licences/')}>Licences and notices</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  <div class="wrap fine">
+    <p class="small muted">
+      © {year}
+      {product.author}. Maps shown in GPX Viewer belong to their providers. Apple, Mac and macOS are
+      trademarks of Apple Inc.; Windows is a trademark of Microsoft Corporation. GPX Viewer is not
+      affiliated with them.
+    </p>
+    {preview && <p class="small muted build">Private preview{commit && `, build ${commit}`}</p>}
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    background: var(--bg-raised);
+    padding: 48px 0 24px;
+    margin-top: 0;
+  }
+  .cols {
+    display: grid;
+    gap: 28px;
+    grid-template-columns: 2fr repeat(3, 1fr);
+  }
+  .name {
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .head {
+    font: 500 var(--step--2) / 1.4 var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 10px;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 6px;
+  }
+  a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: var(--step--1);
+  }
+  a:hover {
+    color: var(--text);
+    text-decoration: underline;
+  }
+  .fine {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+  .build {
+    margin-top: 8px;
+    font-family: var(--font-mono);
+  }
+  @media (max-width: 760px) {
+    .cols {
+      grid-template-columns: 1fr 1fr;
+    }
+    .about {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

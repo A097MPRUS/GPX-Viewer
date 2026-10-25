@@ -1,0 +1,43 @@
+---
+// Legal notice: the text shipped with the applications (release/LEGAL_NOTICE.md, synced
+// byte for byte), followed by notes specific to this website. Author: A097MPRUS.
+import Base from '../layouts/Base.astro';
+import { Content as Notice } from '../content/legal/legal-notice.md';
+import { product, url } from '../data/site';
+---
+
+<Base
+  title="Legal notice"
+  description={`GPX Viewer legal notice, version ${product.legalNoticeVersion}: licence, no navigation use, maps and data owners, privacy, trademarks and liability.`}
+>
+  <div class="section">
+    <div class="wrap">
+      <article class="article">
+        <Notice />
+        <h2 id="website">About this website</h2>
+        <p>
+          The notice above applies to the GPX Viewer applications and to GPX Viewer Web Lite on this
+          website. In addition:
+        </p>
+        <ul>
+          <li>
+            <strong>Web Lite maps:</strong> the map images come from OpenStreetMap (© OpenStreetMap
+            contributors, tile usage policy of the OpenStreetMap Foundation) and OpenTopoMap (CC
+            BY-SA). They are shown, not distributed, and their credits stay visible on the map.
+          </li>
+          <li>
+            <strong>Software used by the website:</strong> listed in{' '}
+            <a href={url('docs/licences/')}>Licences and notices</a>.
+          </li>
+          <li>
+            <strong>Sample file:</strong> the route geometry is derived from OpenStreetMap data
+            (ODbL 1.0) through BRouter; all times and measurements in it are synthetic.
+          </li>
+          <li>
+            <strong>Privacy:</strong> see <a href={url('privacy/')}>Privacy</a>.
+          </li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</Base>
