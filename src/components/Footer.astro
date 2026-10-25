@@ -2,6 +2,9 @@
 // Site footer. Author: A097MPRUS.
 import { github, product, url } from '../data/site';
 const year = new Date().getUTCFullYear();
+// Private preview builds name the commit they were built from (set by Cloudflare Pages).
+const preview = import.meta.env.PUBLIC_SITE_STAGE !== 'public';
+const commit = (process.env['CF_PAGES_COMMIT_SHA'] ?? '').slice(0, 7);
 ---
 
 <footer class="site-footer">
@@ -71,6 +74,7 @@ const year = new Date().getUTCFullYear();
       trademarks of Apple Inc.; Windows is a trademark of Microsoft Corporation. GPX Viewer is not
       affiliated with them.
     </p>
+    {preview && <p class="small muted build">Private preview{commit && `, build ${commit}`}</p>}
   </div>
 </footer>
 
@@ -117,6 +121,10 @@ const year = new Date().getUTCFullYear();
     margin-top: 32px;
     padding-top: 20px;
     border-top: 1px solid var(--line);
+  }
+  .build {
+    margin-top: 8px;
+    font-family: var(--font-mono);
   }
   @media (max-width: 760px) {
     .cols {
