@@ -1,0 +1,300 @@
+{
+  "schema": 1,
+  "updated": "2026-10-25",
+  "product": {
+    "name": "GPX Viewer",
+    "author": "A097MPRUS",
+    "license": "MIT",
+    "legalNoticeVersion": 5,
+    "legalNoticeDate": "2026-10-25",
+    "sourceforge": "https://sourceforge.net/projects/gpx-viewer/",
+    "sourceforgeFiles": "https://sourceforge.net/projects/gpx-viewer/files/",
+    "tickets": "https://sourceforge.net/p/gpx-viewer/tickets/"
+  },
+  "platforms": [
+    {
+      "id": "macos-arm64",
+      "family": "macos",
+      "name": "macOS for Apple silicon",
+      "status": "released",
+      "current": "0.2.0",
+      "architecture": "arm64",
+      "requirements": "macOS 13 Ventura or later on a Mac with Apple silicon (M1 or later)",
+      "testedOn": "macOS 27",
+      "note": "Liquid Glass design on macOS 26 and later."
+    },
+    {
+      "id": "macos-x86_64",
+      "family": "macos",
+      "name": "macOS for Intel",
+      "status": "released",
+      "current": "0.2.0",
+      "architecture": "x86_64",
+      "requirements": "macOS 10.13 High Sierra to macOS 12 Monterey on an Intel Mac",
+      "testedOn": "macOS 27 under Rosetta; macOS 10.13 on a 2011 MacBook Pro for the 0.1.0 edition",
+      "note": "Later Intel systems are not tested. The installer refuses Apple silicon Macs, which should use the Apple silicon edition."
+    },
+    {
+      "id": "windows-x64",
+      "family": "windows",
+      "name": "Windows",
+      "status": "released",
+      "current": "0.3.0",
+      "architecture": "x64",
+      "requirements": "Windows 10 version 1809 or later, or Windows 11, 64-bit",
+      "testedOn": null,
+      "note": "Separate code base. Feature parity with the Mac editions is not complete."
+    },
+    {
+      "id": "ios",
+      "family": "ios",
+      "name": "iPhone",
+      "status": "in-development",
+      "current": null,
+      "architecture": "arm64",
+      "requirements": null,
+      "testedOn": null,
+      "note": "Private development builds only. No public release and no download."
+    },
+    {
+      "id": "android",
+      "family": "android",
+      "name": "Android",
+      "status": "not-released",
+      "current": null,
+      "architecture": null,
+      "requirements": null,
+      "testedOn": null,
+      "note": "No public Android build exists."
+    },
+    {
+      "id": "wear-os",
+      "family": "wear-os",
+      "name": "Wear OS extension",
+      "status": "on-hold",
+      "current": null,
+      "architecture": null,
+      "requirements": null,
+      "testedOn": null,
+      "note": "On hold. Not a released product."
+    }
+  ],
+  "releases": [
+    {
+      "id": "macos-0.2.0",
+      "family": "macos",
+      "version": "0.2.0",
+      "build": "3",
+      "date": "2026-10-25",
+      "status": "current",
+      "folder": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.2.0/",
+      "checksums": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.2.0/SHA256SUMS.txt/download",
+      "notes": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.2.0/README.md/download",
+      "summary": "Native Installer packages replace the disk images; selectable main graph with combined and stacked layouts and time axes; commercial map services with your own key in both Mac editions.",
+      "assets": [
+        {
+          "id": "macos-0.2.0-arm64",
+          "platform": "macos-arm64",
+          "kind": "installer",
+          "format": "pkg",
+          "file": "GPX Viewer 0.2.0 Apple Silicon macOS 13+.pkg",
+          "path": "macOS/0.2.0/ARM64/GPX Viewer 0.2.0 Apple Silicon macOS 13+.pkg",
+          "url": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.2.0/ARM64/GPX%20Viewer%200.2.0%20Apple%20Silicon%20macOS%2013%2B.pkg/download",
+          "size": 4362967,
+          "sha256": "02026cc723525aa78e775a4d77714644ba49e30c91845f9b109f93b0a4f6fa2a",
+          "minimumOS": "macOS 13",
+          "maximumOS": null,
+          "signed": false,
+          "notarized": false
+        },
+        {
+          "id": "macos-0.2.0-x86_64",
+          "platform": "macos-x86_64",
+          "kind": "installer",
+          "format": "pkg",
+          "file": "GPX Viewer 0.2.0 Intel macOS 10.13-12.pkg",
+          "path": "macOS/0.2.0/X64/GPX Viewer 0.2.0 Intel macOS 10.13-12.pkg",
+          "url": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.2.0/X64/GPX%20Viewer%200.2.0%20Intel%20macOS%2010.13-12.pkg/download",
+          "size": 6062324,
+          "sha256": "5d6c7953b02d8497ff82a512cabad6a4c7162954462a1443d1c3ade0ec06aaf3",
+          "minimumOS": "macOS 10.13",
+          "maximumOS": "macOS 12",
+          "signed": false,
+          "notarized": false
+        },
+        {
+          "id": "macos-0.2.0-source",
+          "platform": "source",
+          "kind": "source",
+          "format": "zip",
+          "file": "GPX-Viewer-0.2.0-source.zip",
+          "path": "macOS/0.2.0/GPX-Viewer-0.2.0-source.zip",
+          "url": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.2.0/GPX-Viewer-0.2.0-source.zip/download",
+          "size": 2733127,
+          "sha256": "48e2c446ae813220dc67f5e516518ce2b4426ee9d782bb1cb28730759e70dd58",
+          "minimumOS": null,
+          "maximumOS": null,
+          "signed": false,
+          "notarized": false
+        }
+      ],
+      "changes": [
+        "Choose the graph's main measurement: elevation, speed, recorded speed, slope, vertical speed, heart rate, cadence, temperature, power, GPS accuracy, barometric altitude, air pressure or device temperature.",
+        "Combined graphs (up to three measurements on their own scales) and stacked graphs (one plot each, shared cursor and zoom).",
+        "Distance, elapsed time or moving time as the horizontal axis.",
+        "Microsoft Azure Maps, TomTom, HERE and Mapbox with your own key, now also in the Intel edition; live map credits for Azure Maps and HERE.",
+        "New app icon for the Apple silicon edition.",
+        "Native Installer packages with read-me, licence and architecture checks.",
+        "Distinct graph switch icons with explanatory tooltips; VoiceOver reads each switch and tool by name.",
+        "Map credits, Apple's Legal link, compass and zoom buttons no longer overlap; the tool strip scrolls on small windows.",
+        "Intel edition: sharper commercial maps on Retina screens and lighter 256 pixel tiles on non-Retina screens.",
+        "Map tiles: no patches of mismatched detail while tiles load.",
+        "Terrain Tiles (elevation data) is no longer offered as a map.",
+        "Two graph and tool icons that were missing on macOS 13 now show."
+      ],
+      "limitations": [
+        "Not signed with an Apple Developer ID and not notarized: Control-click the installer and choose Open (macOS 15 and later: System Settings, Privacy and Security, Open Anyway).",
+        "Tested on macOS 27 (Apple silicon; the Intel edition under Rosetta). Earlier macOS versions have not been tested by the author since 7 October 2026.",
+        "Microsoft Azure Maps has not been tested with a real key.",
+        "An older GPX Viewer Intel app installed by drag and drop stays in Applications; delete it after installing."
+      ],
+      "hiddenUntil": null
+    },
+    {
+      "id": "windows-0.3.0",
+      "family": "windows",
+      "version": "0.3.0",
+      "build": null,
+      "date": "2026-10-12",
+      "status": "current",
+      "folder": "https://sourceforge.net/projects/gpx-viewer/files/Windows/0.3.0/",
+      "checksums": null,
+      "notes": null,
+      "summary": "Current Windows release. Release notes for this version have not been published.",
+      "assets": [
+        {
+          "id": "windows-0.3.0-x64",
+          "platform": "windows-x64",
+          "kind": "installer",
+          "format": "exe",
+          "file": "GpxViewer-0.3.0-Setup-x64.exe",
+          "path": "Windows/0.3.0/GpxViewer-0.3.0-Setup-x64.exe",
+          "url": "https://sourceforge.net/projects/gpx-viewer/files/Windows/0.3.0/GpxViewer-0.3.0-Setup-x64.exe/download",
+          "size": 45290045,
+          "sha256": "691445205bed57f0ca5578252836cbc1c686e0ed46b382f3a369ae77acab7626",
+          "minimumOS": "Windows 10 1809",
+          "maximumOS": null,
+          "signed": false,
+          "notarized": false
+        }
+      ],
+      "changes": [],
+      "limitations": [
+        "The installer is not code-signed: Microsoft Defender SmartScreen may warn about an unknown publisher. Choose More info, then Run anyway, only for a file downloaded from the GPX Viewer SourceForge project."
+      ],
+      "hiddenUntil": null
+    },
+    {
+      "id": "macos-0.1.0",
+      "family": "macos",
+      "version": "0.1.0",
+      "build": null,
+      "date": "2026-10-07",
+      "status": "archived",
+      "folder": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.1.0/",
+      "checksums": null,
+      "notes": null,
+      "summary": "First public macOS release, distributed as disk images. Archived; use 0.2.0 for new installations.",
+      "assets": [
+        {
+          "id": "macos-0.1.0-arm64",
+          "platform": "macos-arm64",
+          "kind": "disk-image",
+          "format": "dmg",
+          "file": "GPX Viewer 0.1.0 macOS 13-27.dmg",
+          "path": "macOS/0.1.0/ARM64/GPX Viewer 0.1.0 macOS 13-27.dmg",
+          "url": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.1.0/ARM64/GPX%20Viewer%200.1.0%20macOS%2013-27.dmg/download",
+          "size": 3300220,
+          "sha256": "769b747fbea9ad2014ae244dcbabb2b6bb3be218c959ee62c8b02ec686d9c367",
+          "minimumOS": "macOS 13",
+          "maximumOS": null,
+          "signed": false,
+          "notarized": false
+        },
+        {
+          "id": "macos-0.1.0-x86_64",
+          "platform": "macos-x86_64",
+          "kind": "disk-image",
+          "format": "dmg",
+          "file": "GPX Viewer Intel 0.1.0 macOS 10.13-12.dmg",
+          "path": "macOS/0.1.0/X64/GPX Viewer Intel 0.1.0 macOS 10.13-12.dmg",
+          "url": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.1.0/X64/GPX%20Viewer%20Intel%200.1.0%20macOS%2010.13-12.dmg/download",
+          "size": 7003255,
+          "sha256": "e1525c90ed40b203c3d64029fe47c3ed6886a3508e92b01247a5192554889bf4",
+          "minimumOS": "macOS 10.13",
+          "maximumOS": "macOS 12",
+          "signed": false,
+          "notarized": false
+        },
+        {
+          "id": "macos-0.1.0-source",
+          "platform": "source",
+          "kind": "source",
+          "format": "zip",
+          "file": "GPX-Viewer-0.1.0-source.zip",
+          "path": "macOS/0.1.0/GPX-Viewer-0.1.0-source.zip",
+          "url": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.1.0/GPX-Viewer-0.1.0-source.zip/download",
+          "size": 1563589,
+          "sha256": "1d97c79b39b4e4469801aab2f6b7dfeb93d0a6691b73e93f75cebcb28e8c37e6",
+          "minimumOS": null,
+          "maximumOS": null,
+          "signed": false,
+          "notarized": false
+        }
+      ],
+      "changes": [
+        "Native Mac applications: an Apple silicon edition for macOS 13 to 27 and an Intel edition for macOS 10.13 to 12.",
+        "Published under the MIT License without any Garmin FIT SDK code; GPX is the only supported file format."
+      ],
+      "limitations": [
+        "Disk images, unsigned and not notarized.",
+        "Superseded by 0.2.0."
+      ],
+      "hiddenUntil": "2026-10-27T23:43:26Z"
+    },
+    {
+      "id": "windows-0.2.0",
+      "family": "windows",
+      "version": "0.2.0",
+      "build": null,
+      "date": "2026-10-07",
+      "status": "archived",
+      "folder": "https://sourceforge.net/projects/gpx-viewer/files/Windows/",
+      "checksums": null,
+      "notes": null,
+      "summary": "First public Windows release. Superseded by 0.3.0.",
+      "assets": [
+        {
+          "id": "windows-0.2.0-x64",
+          "platform": "windows-x64",
+          "kind": "installer",
+          "format": "exe",
+          "file": "GpxViewer-0.2.0-Setup-x64.exe",
+          "path": "Windows/GpxViewer-0.2.0-Setup-x64.exe",
+          "url": "https://sourceforge.net/projects/gpx-viewer/files/Windows/GpxViewer-0.2.0-Setup-x64.exe/download",
+          "size": 45273093,
+          "sha256": "2d930642e98cd270cd4689bb52b7c7484216e5d6d2ca2d3f4a28d9c519f68df0",
+          "minimumOS": "Windows 10 1809",
+          "maximumOS": null,
+          "signed": false,
+          "notarized": false
+        }
+      ],
+      "changes": [],
+      "limitations": [
+        "Superseded by 0.3.0."
+      ],
+      "hiddenUntil": null
+    }
+  ]
+}

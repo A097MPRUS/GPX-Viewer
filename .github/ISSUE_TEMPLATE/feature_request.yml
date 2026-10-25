@@ -1,0 +1,14 @@
+name: Suggestion
+description: An idea for GPX Viewer or its documentation.
+labels: [suggestion]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like GPX Viewer to do?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: What would it help you with?
