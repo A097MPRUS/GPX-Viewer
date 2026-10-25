@@ -627,3 +627,17 @@ a.more:hover {
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
 }
+
+/* Large and ultrawide monitors: use more of the width for visuals, keep text measure readable. */
+@media (min-width: 2200px) {
+  :root {
+    --page: 1360px;
+    --page-wide: 1840px;
+    --step-0: 1.125rem;
+  }
+}
+@media (min-width: 3000px) {
+  :root {
+    --page-wide: 2160px;
+  }
+}

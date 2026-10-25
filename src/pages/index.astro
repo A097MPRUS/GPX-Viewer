@@ -1,7 +1,10 @@
 ---
 // Homepage. Author: A097MPRUS.
 import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
 import RouteStage from '../components/RouteStage.astro';
+import mainWindow from '../assets/screenshots/main-window.png';
+import aerialShot from '../assets/screenshots/official-aerial.png';
 import Carousel from '../components/Carousel.astro';
 import {
   currentRelease,
@@ -81,17 +84,21 @@ const fmtMinutes = (sec: number | null) => {
         <a href={url('viewer/')}>Open a GPX file in your browser</a>
       </p>
     </div>
-    <div class="wrap wrap-wide intro-stage" data-intro>
-      <RouteStage
-        id="intro"
-        mode="intro"
-        label={`The ${km.toFixed(1)} km synthetic sample route`}
+    <figure class="wrap wrap-wide intro-shot" data-enter="scale">
+      <Image
+        src={mainWindow}
+        alt="GPX Viewer for macOS: the synthetic sample route on OpenTopoMap, its elevation profile coloured by gradient and the statistics panel."
+        widths={[800, 1280, 1800, 2400, mainWindow.width]}
+        sizes="(max-width: 1560px) 96vw, 1480px"
+        format="webp"
+        quality={88}
+        loading="eager"
+        fetchpriority="high"
       />
-      <p class="small muted stage-note">
-        Synthetic sample, calculated in your browser with the same rules as the application. Drag
-        along the profile to inspect it.
-      </p>
-    </div>
+      <figcaption class="small muted">
+        GPX Viewer {mac.version} for macOS with the synthetic sample file on OpenTopoMap.
+      </figcaption>
+    </figure>
   </section>
 
   <section class="story section" data-story aria-labelledby="story-title">
@@ -172,16 +179,30 @@ const fmtMinutes = (sec: number | null) => {
           Map sources and attribution
         </a>
       </div>
-      {aerial ? null : (
-        <dl class="countries" data-enter="fade" data-enter-delay="1">
-          {countries.map(([country, detail]) => (
-            <div>
-              <dt>{country}</dt>
-              <dd>{detail}</dd>
-            </div>
-          ))}
-        </dl>
+      {aerial && (
+        <figure class="maps-shot" data-enter="fade" data-enter-delay="1">
+          <Image
+            src={aerialShot}
+            alt={aerial.alt}
+            widths={[640, 1024, 1600, aerialShot.width]}
+            sizes="(max-width: 960px) 92vw, 760px"
+            format="webp"
+            quality={86}
+            loading="lazy"
+          />
+          <figcaption class="small muted">{aerial.caption}</figcaption>
+        </figure>
       )}
+    </div>
+    <div class="wrap wrap-wide">
+      <dl class="countries">
+        {countries.map(([country, detail]) => (
+          <div>
+            <dt>{country}</dt>
+            <dd>{detail}</dd>
+          </div>
+        ))}
+      </dl>
     </div>
   </section>
 
@@ -356,6 +377,34 @@ const fmtMinutes = (sec: number | null) => {
   .platforms-line a {
     margin-left: 6px;
   }
+  .intro-shot {
+    margin-top: clamp(28px, 3vw + 2vh, 64px);
+    margin-bottom: 0;
+  }
+  .intro-shot :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-lift);
+  }
+  .intro-shot figcaption,
+  .maps-shot figcaption {
+    margin-top: 12px;
+    text-align: center;
+  }
+  .maps-shot {
+    margin: 0;
+  }
+  .maps-shot :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+  }
+  .maps-shot figcaption {
+    text-align: left;
+  }
   .intro-stage {
     margin-top: clamp(28px, 3vw + 2vh, 64px);
   }
@@ -431,7 +480,9 @@ const fmtMinutes = (sec: number | null) => {
     align-items: start;
   }
   .countries {
-    margin: 0;
+    margin: clamp(32px, 4vw, 56px) 0 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(24px, 4vw, 64px);
     display: grid;
     gap: 0;
   }
@@ -442,8 +493,16 @@ const fmtMinutes = (sec: number | null) => {
     padding: 14px 0;
     border-bottom: 1px solid var(--line);
   }
-  .countries div:first-child {
+  .countries div:nth-child(-n + 2) {
     border-top: 1px solid var(--line);
+  }
+  @media (max-width: 760px) {
+    .countries {
+      grid-template-columns: 1fr;
+    }
+    .countries div:nth-child(2) {
+      border-top: 0;
+    }
   }
   .countries dt {
     font-weight: 600;

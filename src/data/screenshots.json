@@ -30,34 +30,34 @@
       "file": "main-window.png",
       "group": "overview",
       "edition": "macOS 0.2.0, Apple silicon",
-      "caption": "Main window: the route on the map, the elevation profile coloured by gradient below it and the statistics on the right.",
-      "alt": "GPX Viewer main window with a route on a map, an elevation profile and a statistics panel.",
-      "status": "requested",
+      "caption": "Main window with the synthetic sample on OpenTopoMap: the route on the map, the elevation profile coloured by gradient and the statistics.",
+      "alt": "GPX Viewer main window with a route on a topographic map, an elevation profile and a statistics panel.",
+      "status": "available",
       "hero": true
     },
     {
       "file": "map-layers.png",
       "group": "maps",
       "edition": "macOS 0.2.0, Apple silicon",
-      "caption": "Maps and Layers: base maps, official imagery by country and overlays with their own opacity.",
-      "alt": "The Maps and Layers panel listing base maps, official imagery and overlays.",
-      "status": "requested"
+      "caption": "Maps and layers: general maps, official imagery and overlays, each overlay with its own layer properties.",
+      "alt": "The Maps and layers panel listing general maps and overlays next to the map.",
+      "status": "available"
     },
     {
       "file": "official-aerial.png",
       "group": "maps",
       "edition": "macOS 0.2.0, Apple silicon",
-      "caption": "Official aerial imagery from Geoportail Luxembourg with its credit shown on the map.",
+      "caption": "Official aerial imagery from Geoportail Luxembourg, with its credit on the map.",
       "alt": "A route drawn over official aerial imagery of Luxembourg.",
-      "status": "requested"
+      "status": "available"
     },
     {
       "file": "statistics.png",
       "group": "analysis",
       "edition": "macOS 0.2.0, Apple silicon",
-      "caption": "Statistics with gain hysteresis, moving and stopped time, and the selected point with recorded and calculated values labelled.",
-      "alt": "The statistics and selected point panel.",
-      "status": "requested"
+      "caption": "Statistics with the gain hysteresis choice, elapsed, moving and stopped time, speeds, gain and loss.",
+      "alt": "The statistics panel of GPX Viewer.",
+      "status": "available"
     },
     {
       "file": "graph-elevation.png",
