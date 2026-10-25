@@ -18,6 +18,14 @@ GPX Viewer's own source code is under the MIT License (see LICENSE). This file l
 
 The apps use Apple's system frameworks (SwiftUI, AppKit, MapKit, RealityKit, SceneKit, Swift Charts, WebKit). Apple Maps content is shown through MapKit under Apple's terms. Apple, Apple Maps and macOS are trademarks of Apple Inc.
 
+## Historical weather
+
+| Service | Server | Attribution shown | Terms noted for this use |
+| --- | --- | --- | --- |
+| Open-Meteo Historical Weather API | `archive-api.open-meteo.com` | Weather data by Open-Meteo.com (CC BY 4.0); based on data and products of ECMWF; contains modified Copernicus Climate Change Service information | Free for non-commercial use under the Open-Meteo terms (open-meteo.com/en/terms, checked 25 October 2026): fewer than 10,000 calls a day, 5,000 an hour and 600 a minute. Data under CC BY 4.0 with a credit next to every display (open-meteo.com/en/licence). Requested only when the user asks; at most 20 places per request and one request a second. |
+
+Weather condition symbols are Apple SF Symbols drawn by the system; no weather icon set is bundled.
+
 ## Map and data services
 
 | Service | Server | Attribution shown | Terms noted for this use |

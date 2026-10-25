@@ -44,6 +44,10 @@ const items = files.flatMap((file) => {
           <button
             type="button"
             class="zoom"
+            data-shot
+            data-set={id}
+            data-w={item.image.width}
+            data-h={item.image.height}
             data-full={item.image.src}
             data-caption={item.caption}
             data-alt={item.alt}
@@ -189,7 +193,6 @@ const items = files.flatMap((file) => {
 </style>
 
 <script>
-  import { openLightbox } from '../lib/lightbox';
   document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
     const track = root.querySelector<HTMLElement>('[data-track]');
     const prev = root.querySelector<HTMLButtonElement>('[data-prev]');
@@ -247,18 +250,6 @@ const items = files.flatMap((file) => {
         go(current() - 1);
       }
     });
-    track
-      .querySelectorAll<HTMLButtonElement>('.zoom')
-      .forEach((b) =>
-        b.addEventListener('click', () =>
-          openLightbox(
-            b.dataset['full'] ?? '',
-            b.dataset['alt'] ?? '',
-            b.dataset['caption'] ?? '',
-            b,
-          ),
-        ),
-      );
     update();
   });
 </script>

@@ -261,13 +261,14 @@ const P = g.profile;
   .stage.show-speed .axis-speed {
     opacity: 1;
   }
-  /* In the scroll story on small screens the stage stays pinned above the text: keep it short. */
+  /* In the scroll story on small screens the stage is in the page flow above the text, with a
+     bounded height so the explanations follow soon after it. */
   @media (max-width: 960px), (max-height: 620px) {
     .stage-story .map {
-      max-height: 30svh;
+      max-height: 42svh;
     }
     .stage-story .profile {
-      height: 64px;
+      height: 84px;
     }
   }
   @container (max-width: 620px) {

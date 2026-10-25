@@ -20,6 +20,8 @@ GPX Viewer Web Lite runs in your browser. It is a lighter companion to the deskt
 
 No editing, saving, route drawing, official imagery, terrain or 3D, route analysis, File Info, recording or keyed map services. Use the desktop application for those.
 
+Historical weather is not part of Web Lite. Retrieving it from a web page would send the places of your track from this website to a weather service and share that service's free quota among every visitor; it is therefore a feature of the macOS application (from version 0.3.0), where it runs only when you ask. See [Historical weather](../historical-weather/).
+
 ## Your file
 
 The file is read and analysed in your browser and never uploaded. Only map images for the visible area are downloaded from the map servers. See [Privacy and data handling](../privacy-data/).

@@ -1,7 +1,7 @@
 ---
 // Compact sticky header with primary navigation. Author: A097MPRUS.
 import { Image } from 'astro:assets';
-import icon from '../assets/icon-256.png';
+import icon from '../assets/icon-1024.png';
 import Icon from './Icon.astro';
 import { github, nav, url } from '../data/site';
 
@@ -14,7 +14,15 @@ const { current } = Astro.props;
 <header class="site-header" data-header>
   <div class="wrap wrap-wide bar">
     <a class="brand" href={url()} aria-label="GPX Viewer, home">
-      <Image src={icon} alt="" width={28} height={28} loading="eager" />
+      <Image
+        src={icon}
+        alt=""
+        width={28}
+        height={28}
+        densities={[1, 2, 3]}
+        format="png"
+        loading="eager"
+      />
       <span>GPX Viewer</span>
     </a>
     <nav class="primary" aria-label="Main">

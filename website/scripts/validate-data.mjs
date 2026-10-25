@@ -32,12 +32,31 @@ for (const r of manifest.releases) {
   if (!/^\d+\.\d+\.\d+$/.test(r.version)) fail(`${where}: version ${r.version}`);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(r.date) || Number.isNaN(Date.parse(r.date)))
     fail(`${where}: date ${r.date}`);
-  if (!['current', 'archived'].includes(r.status)) fail(`${where}: status ${r.status}`);
+  if (!['current', 'archived', 'upcoming'].includes(r.status)) fail(`${where}: status ${r.status}`);
+  if (r.status === 'upcoming') {
+    // Nothing of a release in preparation may look downloadable.
+    if (r.assets?.length) fail(`${where}: an upcoming release must not list downloads`);
+    if (r.folder || r.checksums || r.github)
+      fail(`${where}: an upcoming release must not link files`);
+    const current = manifest.releases.find((o) => o.family === r.family && o.status === 'current');
+    const v = (x) =>
+      x
+        .split('.')
+        .map(Number)
+        .reduce((a, n) => a * 1000 + n, 0);
+    if (current && v(r.version) <= v(current.version))
+      fail(`${where}: not newer than the current ${current.version}`);
+  }
+  for (const f of r.screenshots ?? [])
+    if (!existsSync(new URL(`../src/assets/screenshots/${f}`, import.meta.url)))
+      fail(`${where}: screenshot ${f} missing`);
+  if (r.github && !r.github.startsWith('https://github.com/A097MPRUS/GPX-Viewer/releases/'))
+    fail(`${where}: GitHub link is not a GPX-Viewer release`);
   if (r.status === 'current') {
     if (seenCurrent.has(r.family)) fail(`${where}: two current releases for ${r.family}`);
     seenCurrent.add(r.family);
   }
-  if (!r.assets?.length) fail(`${where}: no assets`);
+  if (r.status !== 'upcoming' && !r.assets?.length) fail(`${where}: no assets`);
   for (const a of r.assets ?? []) {
     const at = `${where} asset ${a.id}`;
     if (a.platform !== 'source' && !platformIds.has(a.platform))

@@ -1,0 +1,74 @@
+---
+// Detailed release notes in categories, from the release manifest. Author: A097MPRUS.
+// Releases with categorised notes (sections) show only the categories that have entries;
+// older releases show their change list and known limitations.
+import { noteSections, type Release } from '../data/site';
+
+interface Props {
+  release: Release;
+  headingLevel?: 3 | 4;
+}
+const { release, headingLevel = 3 } = Astro.props;
+const H = `h${headingLevel}` as 'h3' | 'h4';
+const groups: { title: string; items: string[] }[] = release.sections
+  ? noteSections
+      .map(([key, title]) => ({ title, items: release.sections?.[key] ?? [] }))
+      .filter((g) => g.items.length > 0)
+  : [
+      { title: 'Changes', items: release.changes },
+      { title: 'Known limitations', items: release.limitations },
+    ].filter((g) => g.items.length > 0);
+---
+
+<div class="notes">
+  {groups.map((g) => (
+    <section class="note-group">
+      <H class="note-title">{g.title}</H>
+      <ul>
+        {g.items.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </section>
+  ))}
+  {release.attribution && <p class="small muted attribution">{release.attribution}</p>}
+</div>
+
+<style>
+  .notes {
+    display: grid;
+    gap: clamp(20px, 2.4vw, 32px);
+  }
+  .note-group {
+    display: grid;
+    grid-template-columns: minmax(150px, 13rem) minmax(0, 1fr);
+    gap: 6px clamp(16px, 3vw, 40px);
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .note-title {
+    margin: 0;
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.01em;
+  }
+  ul {
+    margin: 0;
+    padding-left: 1.1em;
+    display: grid;
+    gap: 8px;
+    max-width: 76ch;
+  }
+  li::marker {
+    color: var(--faint);
+  }
+  .attribution {
+    margin: 0;
+  }
+  @media (max-width: 700px) {
+    .note-group {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

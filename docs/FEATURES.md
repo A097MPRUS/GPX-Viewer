@@ -57,6 +57,19 @@ Generated from `release/features.json`. "Not verified" means the feature exists 
 | **Surface and route context analysis**<br>Land cover per point, cycle network, OpenStreetMap ways, surfaces, bridges and tunnels. Optional; sends route coordinates to the named services. | Yes | Yes | Yes | No |
 | **Cross-section and line profile** | Yes | Yes | Yes | No |
 
+## Historical weather
+
+In GPX Viewer 0.3.0 for macOS, which is being prepared and not published yet.
+
+| Feature | macOS, Apple silicon | macOS, Intel | Windows | Web Lite |
+| --- | --- | --- | --- | --- |
+| **Historical weather for a recording**<br>Retrieved on request from the Open-Meteo archive for the recording's places and dates; nothing is sent until you ask. | Yes | Yes | No | No |
+| **Matched to timestamps and positions**<br>Places about every 10 km and at 300 m height changes; hourly values matched in UTC, blended between places; points without a timestamp get no weather. | Yes | Yes | No | No |
+| **Temperature, wind, precipitation, humidity, pressure, cloud cover**<br>Air and feels-like temperature, dew point, wind speed, direction and gusts, precipitation, rain and snowfall, sea-level and surface pressure, cloud cover, weather condition. Visibility is not provided by the source. | Yes | Yes | No | No |
+| **Weather timeline linked to map and graphs**<br>Temperature, hourly precipitation and wind over the recording time, sharing the pointer with the map and graphs. | Yes | Yes | No | No |
+| **Modelled weather lines on the graph**<br>Temperature, wind, gusts, headwind, precipitation, pressure, humidity and cloud cover beside any main measurement, marked Modelled. | Yes | Yes | No | No |
+| **Local weather cache and offline use**<br>Answers kept on the Mac (at most 20 MB) and shown offline; can be cleared. | Yes | Yes | No | No |
+
 ## Editing and tools
 
 | Feature | macOS, Apple silicon | macOS, Intel | Windows | Web Lite |

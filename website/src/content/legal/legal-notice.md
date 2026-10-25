@@ -1,6 +1,6 @@
 # GPX Viewer: legal notice
 
-Author and copyright holder: A097MPRUS. Last updated: 25 October 2026 (version 5).
+Author and copyright holder: A097MPRUS. Last updated: 25 October 2026 (version 6, adds historical weather).
 
 Please read this notice before downloading or using GPX Viewer. By downloading, installing or using the software you accept it. If you do not accept it, do not use the software.
 
@@ -24,7 +24,8 @@ GPX Viewer has no account, no analytics, no advertising and no tracking. Your fi
 
 - map tiles for the area you are looking at;
 - place searches and addresses;
-- the coordinates of a route when you ask for official terrain, route analysis or route planning.
+- the coordinates of a route when you ask for official terrain, route analysis or route planning;
+- the approximate places along a recording (rounded to about 1 km) and its dates when you ask for historical weather.
 
 Each service receives that data under its own privacy terms. The details are in PRIVACY.md. You are responsible for the files you open, edit and share, including any personal or location data in them, and for having the right to use them.
 
@@ -93,6 +94,15 @@ Each service receives that data under its own privacy terms. The details are in 
 
 The licence column summarises the author's understanding when this notice was written. It is not legal advice, and the provider's own current terms always prevail.
 
+### Historical weather (both Mac apps, version 0.3.0 and later)
+
+- **Source:** the Weather inspector shows historical weather from the Open-Meteo Historical Weather API (archive-api.open-meteo.com), operated by Open-Meteo. Weather data by Open-Meteo.com, under the Creative Commons Attribution 4.0 International licence (CC BY 4.0, creativecommons.org/licenses/by/4.0/). GPX Viewer uses the free service under Open-Meteo's terms for non-commercial use (open-meteo.com/en/terms); GPX Viewer is free and has no subscriptions or advertising.
+- **Underlying data:** the values are based on data and products of the European Centre for Medium-Range Weather Forecasts (ECMWF) and contain modified Copernicus Climate Change Service information (ERA5 and ERA5-Land reanalyses). Neither the European Commission nor ECMWF is responsible for any use that may be made of the Copernicus information or data it contains.
+- **Changes made:** GPX Viewer interpolates the hourly values to the times of the track points, blends neighbouring places along the route and calculates summaries and the wind along the direction of travel. These are modifications of the provider's data.
+- **Estimates, not measurements:** the values are model estimates for grid cells of about 9 to 25 km and for whole hours. They are not measurements at the track and can differ greatly from the conditions actually met, for example in valleys, on ridges, near lakes, in towns or during showers and storms. The most recent days can be missing or provisional. Do not rely on them for safety, insurance, legal or medical purposes (see sections 2 and 3). Values recorded by a sensor in your file are shown separately and are never replaced.
+- **Attribution:** the app shows "Weather data by Open-Meteo.com" with the licence wherever weather values are shown. Keep this credit when sharing screenshots or exports that contain them.
+- **Cached answers:** answers are kept in a local cache on your Mac for reuse and are not redistributed by GPX Viewer.
+
 ### Other online services used by the app
 
 | Service | Owner | Used for |
@@ -103,6 +113,7 @@ The licence column summarises the author's understanding when this notice was wr
 | Terrain Tiles on AWS Open Data | Mapzen data hosted by Amazon Web Services, with SRTM, GMTED2010, ETOPO1, EU-DEM (Copernicus) and other sources | Terrain heights elsewhere and 3D relief |
 | Overpass API (overpass-api.de and fallback servers) | Their operators, serving OpenStreetMap data © OpenStreetMap contributors (ODbL) | Roads, paths, surfaces and points of interest |
 | BRouter (brouter.de) | Its operator, using OpenStreetMap data © OpenStreetMap contributors (ODbL) | Route planning |
+| Open-Meteo Historical Weather API (archive-api.open-meteo.com) | Open-Meteo, with data from ECMWF and the Copernicus Climate Change Service (CC BY 4.0) | Historical weather, only when you ask for it |
 
 ### Your own keys and accounts
 
@@ -132,7 +143,9 @@ GPX Viewer is an independent project. It is not affiliated with, endorsed by, sp
 - Microsoft;
 - TomTom;
 - HERE;
-- Mapbox.
+- Mapbox;
+- Open-Meteo;
+- ECMWF, the European Commission and the Copernicus programme.
 
 All product names, logos, brands and trademarks belong to their owners. They are used only to describe compatibility, file formats or data sources.
 
@@ -144,7 +157,7 @@ GPX Viewer contains no Garmin software or Garmin data and does not open FIT file
 
 - **Unsigned:** the Mac installer packages and apps are not signed with an Apple Developer ID or notarised by Apple, so macOS asks you to confirm before opening the installer and before the first launch.
 - **Unsigned on Windows:** the Windows installer is not code-signed, so Microsoft Defender SmartScreen may warn that it comes from an unknown publisher. Choose More info, then Run anyway, only if you downloaded it from this SourceForge project.
-- **Where to download:** download GPX Viewer only from this SourceForge project, and compare the SHA-256 checksum published with each release (SourceForge also shows SHA1 and MD5).
+- **Where to download:** download GPX Viewer only from this SourceForge project or from the project's own GitHub Releases, and compare the SHA-256 checksum published with each release (SourceForge also shows SHA1 and MD5).
 - **Modified copies:** copies obtained elsewhere, or modified by others, are not the responsibility of the author.
 - **Back up first:** keep backups of your files. Saving overwrites the file you chose, and you should keep a copy of any original you care about.
 

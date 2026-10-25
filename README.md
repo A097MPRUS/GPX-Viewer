@@ -6,7 +6,9 @@ A desktop application for viewing, analysing and editing GPS tracks, with offici
 
 Free software under the MIT License. No account, no analytics, no advertising: your files stay on your computer.
 
-This repository holds the project's public documentation, release metadata and screenshots. The application's source code is published with each release on SourceForge.
+This repository is the project's home on GitHub: documentation, release metadata, screenshots, the GitHub Releases with the installers, and the source of the official website in [`website/`](website/). The application's source code is published with each release on SourceForge and attached to the GitHub Releases.
+
+Official website: **https://gpxviewerpro.pages.dev/** (private while it is prepared; it becomes public when the project is launched).
 
 ## Screenshots
 
@@ -29,6 +31,7 @@ GPX Viewer 0.2.0 for macOS with synthetic GPX files.
 - **Graphs:** elevation coloured by gradient; on Mac, a selectable main graph among fourteen measurements, combined and stacked layouts, distance, elapsed or moving time axes; graph and map in step.
 - **Analysis:** distance, elapsed, moving and stopped time, speeds, gain and loss with a selectable threshold, climbs, statistics for any section, point inspection with recorded and calculated values labelled.
 - **Terrain and context:** official terrain heights, 3D relief, surface and route context analysis.
+- **Historical weather (macOS 0.3.0, both Mac editions):** estimated weather for the time and places of a recording from the Open-Meteo archive, retrieved only when you ask: temperature, wind against your direction of travel, precipitation, humidity, pressure and cloud cover, a timeline linked to the map and graph, and eight weather lines on the graph. Values are model estimates, marked Modelled and kept apart from sensor readings. Not in the Windows edition or Web Lite.
 - **Editing:** route drawing with routing, split, merge, simplify, clean, reverse, time and elevation tools, all with undo.
 
 What each edition provides, feature by feature: [docs/FEATURES.md](docs/FEATURES.md).
@@ -75,7 +78,8 @@ The installers are not signed with a developer certificate. On macOS, Control-cl
 - [Installing and verifying downloads](docs/INSTALLING.md)
 - [Features by edition](docs/FEATURES.md)
 - [Changelog](CHANGELOG.md)
-- The project website, with GPX Viewer Web Lite (a viewer that runs in the browser) and the full documentation, will be linked here when it is published.
+- [Official website](https://gpxviewerpro.pages.dev/) with GPX Viewer Web Lite (a viewer that runs in the browser) and the full documentation; private until the public launch. Its source is in [`website/`](website/).
+- [GitHub Releases](https://github.com/A097MPRUS/GPX-Viewer/releases): installers, source archive and checksums of each macOS release (visible to authorized users while this repository is private; public downloads are on SourceForge).
 - [SourceForge project](https://sourceforge.net/projects/gpx-viewer/): downloads, source archives, tickets.
 
 ## Reporting problems
@@ -85,11 +89,11 @@ Open an issue with the templates in this repository, or a ticket on SourceForge.
 ## Licence and notices
 
 - GPX Viewer's own code and documentation: [MIT License](LICENSE), © 2026 A097MPRUS.
-- [Legal notice (version 5)](LEGAL_NOTICE.md): not for navigation, map and data owners, liability.
+- [Legal notice (version 6)](LEGAL_NOTICE.md): not for navigation, map, data and weather owners, liability.
 - [Privacy](PRIVACY.md) and [third-party services, data and software](THIRD_PARTY.md).
 
 ## Acknowledgements
 
-Maps and data belong to their owners: Apple, the OpenStreetMap contributors, OpenTopoMap, CyclOSM and OpenStreetMap France, Waymarked Trails, EOX, Thunderforest, Esri, Microsoft, TomTom, HERE, Mapbox, and the national mapping agencies of Luxembourg (ACT), Belgium (SPW, Digitaal Vlaanderen, UrbIS, NGI), France (IGN), the Netherlands (PDOK, Kadaster), Switzerland (swisstopo), Austria (basemap.at) and Germany (BKG and the state survey offices). Routing by BRouter. Terrain from Geoportail Luxembourg, IGN and the Terrain Tiles open dataset.
+Maps and data belong to their owners: Apple, the OpenStreetMap contributors, OpenTopoMap, CyclOSM and OpenStreetMap France, Waymarked Trails, EOX, Thunderforest, Esri, Microsoft, TomTom, HERE, Mapbox, and the national mapping agencies of Luxembourg (ACT), Belgium (SPW, Digitaal Vlaanderen, UrbIS, NGI), France (IGN), the Netherlands (PDOK, Kadaster), Switzerland (swisstopo), Austria (basemap.at) and Germany (BKG and the state survey offices). Routing by BRouter. Terrain from Geoportail Luxembourg, IGN and the Terrain Tiles open dataset. Historical weather: weather data by Open-Meteo.com (CC BY 4.0), based on data and products of ECMWF and containing modified Copernicus Climate Change Service information.
 
 Apple, Apple Maps, Mac and macOS are trademarks of Apple Inc. Windows is a trademark of Microsoft Corporation. GPX Viewer is an independent project and is not affiliated with them.

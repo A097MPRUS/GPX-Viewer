@@ -48,20 +48,40 @@ function platforms() {
 function limitations() {
   const r = manifest.releases.find((r) => r.family === 'macos' && r.status === 'current');
   const w = manifest.releases.find((r) => r.family === 'windows' && r.status === 'current');
-  return [...r.limitations, ...w.limitations].map((l) => `- ${l}`).join('\n');
+  const of = (x) => (x.sections?.limitations?.length ? x.sections.limitations : x.limitations);
+  return [...of(r), ...of(w)].map((l) => `- ${l}`).join('\n');
 }
 
+const SECTIONS = [
+  ['new', 'New features'],
+  ['improvements', 'Improvements'],
+  ['fixes', 'Bug fixes'],
+  ['performance', 'Performance'],
+  ['compatibility', 'Compatibility'],
+  ['privacy', 'Privacy and legal information'],
+  ['limitations', 'Known limitations'],
+];
+
 function changelog() {
-  const out = ['# Changelog', '', 'Public releases of GPX Viewer. Generated from `release/release-manifest.json`.', ''];
-  const sorted = [...manifest.releases].sort((a, b) => b.date.localeCompare(a.date) || a.family.localeCompare(b.family));
+  const out = ['# Changelog', '', 'Published releases of GPX Viewer. Generated from `release/release-manifest.json`; releases in preparation are not listed.', ''];
+  const sorted = manifest.releases
+    .filter((r) => r.status !== 'upcoming')
+    .sort((a, b) => b.date.localeCompare(a.date) || a.family.localeCompare(b.family));
   for (const r of sorted) {
-    out.push(`## ${fam(r.family)} ${r.version}${r.build ? ` (build ${r.build})` : ''}, ${date(r.date)}${r.status === 'archived' ? ' (archived)' : ''}`, '');
+    out.push(`## ${fam(r.family)} ${r.version}${r.build ? ` (build ${r.build})` : ''}${r.title ? `: ${r.title}` : ''}, ${date(r.date)}${r.status === 'archived' ? ' (archived)' : ''}`, '');
     out.push(r.summary, '');
-    if (r.changes.length) out.push(...r.changes.map((c) => `- ${c}`), '');
-    if (r.limitations.length) out.push('Known limitations:', '', ...r.limitations.map((c) => `- ${c}`), '');
+    if (r.sections) {
+      for (const [key, title] of SECTIONS)
+        if (r.sections[key]?.length) out.push(`### ${title}`, '', ...r.sections[key].map((c) => `- ${c}`), '');
+    } else {
+      if (r.changes.length) out.push(...r.changes.map((c) => `- ${c}`), '');
+      if (r.limitations.length) out.push('Known limitations:', '', ...r.limitations.map((c) => `- ${c}`), '');
+    }
+    if (r.attribution) out.push(r.attribution, '');
     out.push('| File | Size | SHA-256 |', '| --- | --- | --- |');
-    for (const a of r.assets) out.push(`| [${a.file}](${a.url}) | ${mb(a.size)} | \`${a.sha256}\` |`);
+    for (const a of r.assets) out.push(`| [${a.file}](${a.url})${a.github ? ` ([GitHub](${a.github}))` : ''} | ${mb(a.size)} | \`${a.sha256}\` |`);
     out.push('');
+    if (r.github) out.push(`GitHub Release: ${r.github} (sign-in required while the repository is private).`, '');
     if (r.hiddenUntil) out.push(`The files of this release are temporarily hidden on SourceForge until ${date(r.hiddenUntil.slice(0, 10))}.`, '');
   }
   return out.join('\n');
@@ -69,6 +89,7 @@ function changelog() {
 
 function featureDoc() {
   const text = { yes: 'Yes', partial: 'Partly', no: 'No', unverified: 'Not verified' };
+  const pending = (v) => v && manifest.releases.some((r) => r.version === v && r.family === 'macos' && r.status === 'upcoming');
   const eds = features.editions;
   const out = [
     '# Features by edition',
@@ -79,7 +100,9 @@ function featureDoc() {
   let n = 0;
   const notes = [];
   for (const c of features.categories) {
-    out.push(`## ${c.title}`, '', `| Feature | ${eds.map((e) => e.name).join(' | ')} |`, `| --- | ${eds.map(() => '---').join(' | ')} |`);
+    out.push(`## ${c.title}`, '');
+    if (pending(c.release)) out.push(`In GPX Viewer ${c.release} for macOS, which is being prepared and not published yet.`, '');
+    out.push(`| Feature | ${eds.map((e) => e.name).join(' | ')} |`, `| --- | ${eds.map(() => '---').join(' | ')} |`);
     for (const f of c.features) {
       const cells = eds.map((e) => {
         const note = f.note?.[e.id];

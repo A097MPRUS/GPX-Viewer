@@ -1,0 +1,49 @@
+# Validates the website (website/) when it or the public data it is built from changes.
+# Nothing is deployed here: Cloudflare Pages builds and serves the site from this repository.
+# Author: A097MPRUS.
+name: Validate website
+
+on:
+  push:
+    paths:
+      - "website/**"
+      - "release/**"
+      - "screenshots/**"
+      - ".github/workflows/website.yml"
+  pull_request:
+    paths:
+      - "website/**"
+      - "release/**"
+      - "screenshots/**"
+      - ".github/workflows/website.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: website-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: website
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: website/.nvmrc
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+      - run: npm ci
+      - name: Dependency vulnerabilities (high and critical)
+        run: npm audit --audit-level=high
+      - name: Metadata, formatting, lint, types, tests, build, built-site checks
+        run: npm run verify
+        env:
+          PUBLIC_GITHUB_OWNER: ${{ github.repository_owner }}

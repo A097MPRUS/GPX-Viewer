@@ -26,6 +26,8 @@ Distance (default), elapsed time or moving time. On time axes the line stops at 
 
 The switches above the graph add channels such as the GPX elevation compared with terrain, the route grade, speed, heart rate, cadence, temperature, power, land cover and infrastructure bands. Each switch explains itself in a tooltip and has an accessible name.
 
+From version 0.3.0, after retrieving [historical weather](../historical-weather/), eight weather lines (air temperature, wind speed, gusts, headwind, precipitation, sea-level pressure, humidity and cloud cover) can be drawn beside the main measurement or chosen as the main graph. They are marked Modelled and credited to Open-Meteo in the legend.
+
 ## Interaction
 
 - Hover to inspect a point; click to fix it.

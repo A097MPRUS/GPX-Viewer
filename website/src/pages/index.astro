@@ -1,11 +1,12 @@
 ---
 // Homepage. Author: A097MPRUS.
 import Base from '../layouts/Base.astro';
-import { Image } from 'astro:assets';
 import RouteStage from '../components/RouteStage.astro';
 import mainWindow from '../assets/screenshots/main-window.png';
 import aerialShot from '../assets/screenshots/official-aerial.png';
 import Carousel from '../components/Carousel.astro';
+import Shot from '../components/Shot.astro';
+import WeatherStage from '../components/WeatherStage.astro';
 import {
   currentRelease,
   github,
@@ -14,6 +15,8 @@ import {
   product,
   screenshots,
   url,
+  featurePending,
+  features,
 } from '../data/site';
 import { sampleGeometry } from '../lib/sample';
 
@@ -33,6 +36,11 @@ const aerial = screenshots.items.find(
   (i) => i.file === 'official-aerial.png' && i.status === 'available',
 );
 const others = manifest.platforms.filter((p) => p.status !== 'released');
+const weatherCategory = features.categories.find((c) => c.id === 'weather');
+const weatherPending = weatherCategory ? featurePending(weatherCategory) : true;
+const weatherShot = screenshots.items.find(
+  (i) => i.file === 'weather-inspector.png' && i.status === 'available',
+);
 const countries = [
   [
     'Luxembourg',
@@ -84,21 +92,17 @@ const fmtMinutes = (sec: number | null) => {
         <a href={url('viewer/')}>Open a GPX file in your browser</a>
       </p>
     </div>
-    <figure class="wrap wrap-wide intro-shot" data-enter="scale">
-      <Image
-        src={mainWindow}
+    <div class="wrap wrap-wide intro-shot" data-enter="scale">
+      <Shot
+        image={mainWindow}
         alt="GPX Viewer for macOS: the synthetic sample route on OpenTopoMap, its elevation profile coloured by gradient and the statistics panel."
-        widths={[800, 1280, 1800, 2400, mainWindow.width]}
-        sizes="(max-width: 1560px) 96vw, 1480px"
-        format="webp"
-        quality={88}
-        loading="eager"
-        fetchpriority="high"
+        caption={`GPX Viewer ${mac.version} for macOS with the synthetic sample file on OpenTopoMap.`}
+        maxHeight="min(74svh, 860px)"
+        sizes="(max-width: 1560px) 96vw, 1400px"
+        set="home"
+        eager
       />
-      <figcaption class="small muted">
-        GPX Viewer {mac.version} for macOS with the synthetic sample file on OpenTopoMap.
-      </figcaption>
-    </figure>
+    </div>
   </section>
 
   <section class="story section" data-story aria-labelledby="story-title">
@@ -165,6 +169,60 @@ const fmtMinutes = (sec: number | null) => {
     <Carousel id="graph-gallery" label="Graph screenshots" files={graphShots} />
   </section>
 
+  <section class="section weather" aria-labelledby="weather-title">
+    <div class="wrap wrap-wide">
+      <div class="weather-head">
+        <p class="kicker">
+          Historical weather{' '}
+          <span class:list={['wx-state', { pending: weatherPending }]}>
+            {weatherPending ? 'macOS 0.3.0, in preparation' : 'New in macOS 0.3.0'}
+          </span>
+        </p>
+        <h2 id="weather-title">The weather of the day you recorded.</h2>
+        <p class="lede">
+          GPX Viewer asks a weather archive for the places and hours of a recording and matches the
+          answer to every point: temperature, wind and its direction against your track, rain,
+          humidity, pressure and cloud cover. The values are model estimates, marked as such and
+          kept apart from anything your devices measured.
+        </p>
+      </div>
+      <div class="weather-grid">
+        <div class="weather-demo">
+          <WeatherStage />
+        </div>
+        {weatherShot && (
+          <div class="weather-shot">
+            <Shot
+              file="weather-inspector.png"
+              maxHeight="min(70svh, 720px)"
+              sizes="(max-width: 960px) 80vw, 420px"
+              set="home"
+            />
+          </div>
+        )}
+      </div>
+      <ul class="weather-facts">
+        <li>
+          <strong>Requested only when you ask.</strong> A few places rounded to about 1 km and the
+          dates; never the file.
+        </li>
+        <li>
+          <strong>Matched in UTC.</strong> Hourly values per point, precipitation as hourly totals,
+          wind as a vector.
+        </li>
+        <li>
+          <strong>On the graph.</strong> Eight modelled lines beside elevation, speed or heart rate.
+        </li>
+        <li>
+          <strong>Saved on your Mac.</strong> Shown again offline; one button clears it.
+        </li>
+      </ul>
+      <a class="more" href={url('docs/historical-weather/')}>
+        How historical weather works
+      </a>
+    </div>
+  </section>
+
   <section class="section maps" aria-labelledby="maps-title">
     <div class="wrap wrap-wide maps-grid">
       <div class="maps-text" data-enter="rise">
@@ -180,18 +238,16 @@ const fmtMinutes = (sec: number | null) => {
         </a>
       </div>
       {aerial && (
-        <figure class="maps-shot" data-enter="fade" data-enter-delay="1">
-          <Image
-            src={aerialShot}
+        <div class="maps-shot" data-enter="fade" data-enter-delay="1">
+          <Shot
+            image={aerialShot}
             alt={aerial.alt}
-            widths={[640, 1024, 1600, aerialShot.width]}
+            caption={aerial.caption}
+            maxHeight="min(62svh, 620px)"
             sizes="(max-width: 960px) 92vw, 760px"
-            format="webp"
-            quality={86}
-            loading="lazy"
+            set="home"
           />
-          <figcaption class="small muted">{aerial.caption}</figcaption>
-        </figure>
+        </div>
       )}
     </div>
     <div class="wrap wrap-wide">
@@ -382,28 +438,63 @@ const fmtMinutes = (sec: number | null) => {
     margin-bottom: 0;
   }
   .intro-shot :global(img) {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    border: 1px solid var(--line);
     box-shadow: var(--shadow-lift);
   }
-  .intro-shot figcaption,
-  .maps-shot figcaption {
-    margin-top: 12px;
-    text-align: center;
-  }
-  .maps-shot {
-    margin: 0;
-  }
-  .maps-shot :global(img) {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    border: 1px solid var(--line);
-  }
-  .maps-shot figcaption {
+  .maps-shot :global(.shot-caption) {
     text-align: left;
+    margin-left: 0;
+  }
+  .weather {
+    border-top: 1px solid var(--line);
+  }
+  .weather-head {
+    max-width: 860px;
+  }
+  .wx-state {
+    margin-left: 10px;
+    color: var(--ok);
+  }
+  .wx-state.pending {
+    color: var(--warn);
+  }
+  .weather-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);
+    gap: clamp(24px, 3vw, 56px);
+    align-items: start;
+    margin-top: clamp(24px, 3vw, 44px);
+  }
+  .weather-facts {
+    list-style: none;
+    padding: 0;
+    margin: clamp(24px, 3vw, 40px) 0 18px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0 clamp(16px, 2.5vw, 36px);
+  }
+  .weather-facts li {
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .weather-facts strong {
+    display: block;
+    color: var(--text);
+  }
+  @media (max-width: 960px) {
+    .weather-grid {
+      grid-template-columns: 1fr;
+    }
+    .weather-facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px 20px;
+    }
+  }
+  @media (max-width: 520px) {
+    .weather-facts {
+      grid-template-columns: 1fr;
+    }
   }
   .intro-stage {
     margin-top: clamp(28px, 3vw + 2vh, 64px);
@@ -454,22 +545,35 @@ const fmtMinutes = (sec: number | null) => {
   .step h3 {
     font-size: var(--step-2);
   }
+  /* Phones, small tablets and very short windows: the visualisation stays in the page flow
+     above the explanations (a pinned panel would cover them, as it did in iPhone Safari where
+     it took most of the screen). Its animation follows the panel's own position in the
+     viewport (src/lib/stage.ts); the explanations below are all readable at once. */
   @media (max-width: 960px), (max-height: 620px) {
     .story-grid {
       grid-template-columns: 1fr;
+      gap: 8px;
     }
     .story-stage {
-      top: calc(var(--header-h) + env(safe-area-inset-top) + 8px);
-      z-index: 2;
+      position: relative;
+      top: auto;
     }
     .story-steps {
-      position: relative;
-      z-index: 1;
+      display: grid;
+      gap: 4px;
     }
     .step {
-      min-height: 46svh;
+      min-height: 0;
+      opacity: 1;
       justify-content: flex-start;
-      padding-top: 24px;
+      padding: 20px 0 8px;
+      border-top: 1px solid var(--line);
+    }
+    .step:first-of-type {
+      border-top: 0;
+    }
+    .step h3 {
+      font-size: var(--step-1);
     }
   }
 

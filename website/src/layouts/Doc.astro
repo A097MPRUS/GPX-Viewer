@@ -3,16 +3,20 @@
 import Base from './Base.astro';
 import type { MarkdownHeading } from 'astro';
 import { SECTIONS, allDocs } from '../lib/docs';
-import { url } from '../data/site';
+import { manifest, url } from '../data/site';
 
 interface Props {
   title: string;
   description: string;
   slug: string;
   updated: string;
+  release?: string | undefined;
   headings: MarkdownHeading[];
 }
-const { title, description, slug, updated, headings } = Astro.props;
+const { title, description, slug, updated, release, headings } = Astro.props;
+const releaseState = release
+  ? manifest.releases.find((r) => r.family === 'macos' && r.version === release)?.status
+  : undefined;
 const docs = await allDocs();
 const index = docs.findIndex((d) => d.id === slug);
 const prev = index > 0 ? docs[index - 1] : undefined;
@@ -52,6 +56,13 @@ const outline = headings.filter((h) => h.depth === 2);
       </p>
       <h1>{title}</h1>
       <p class="lede">{description}</p>
+      {release && (
+        <p class:list={['release-note small', { pending: releaseState === 'upcoming' }]}>
+          {releaseState === 'upcoming'
+            ? `Describes GPX Viewer ${release} for macOS, which is being prepared and not published yet.`
+            : `Available from GPX Viewer ${release} for macOS.`}
+        </p>
+      )}
       <slot />
       <p class="updated small muted">Updated {updated}</p>
       <nav class="pager" aria-label="Previous and next article">
@@ -89,6 +100,16 @@ const outline = headings.filter((h) => h.depth === 2);
 </Base>
 
 <style>
+  .release-note {
+    margin: -8px 0 28px;
+    padding: 10px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .release-note.pending {
+    color: var(--warn);
+  }
   .doc-layout {
     display: grid;
     grid-template-columns: 230px minmax(0, 1fr) 200px;

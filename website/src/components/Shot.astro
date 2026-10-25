@@ -1,0 +1,91 @@
+---
+// One genuine application screenshot. Author: A097MPRUS.
+// Sizing rules (all pages): the image keeps its aspect ratio and is never cropped; it is shown at
+// most at its natural size on a Retina screen (captures are 2x, so half their pixel width) and at
+// most `maxHeight` tall, so a narrow inspector capture cannot grow to several screen heights in a
+// wide column. Selecting it opens the original in the full-size viewer; screenshots with the
+// same `set` can be browsed there.
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import { screenshots } from '../data/site';
+
+interface Props {
+  /** A file listed in screenshots.json, or an imported image with alt and caption. */
+  file?: string;
+  image?: ImageMetadata;
+  alt?: string;
+  caption?: string;
+  /** CSS length for the largest height, for example "min(70svh, 720px)". */
+  maxHeight?: string;
+  /** Screenshots sharing a set are browsable together in the viewer. */
+  set?: string;
+  /** Pixel density of the capture (2 for Retina captures). */
+  density?: number;
+  /** Responsive sizes hint for the browser. */
+  sizes?: string;
+  eager?: boolean;
+  frame?: boolean;
+  class?: string;
+  captionClass?: string;
+}
+const {
+  file,
+  image: given,
+  alt: givenAlt,
+  caption: givenCaption,
+  maxHeight = 'min(70svh, 720px)',
+  set,
+  density = 2,
+  sizes = '(max-width: 760px) 94vw, (max-width: 1400px) 70vw, 1200px',
+  eager = false,
+  frame = true,
+  class: className,
+  captionClass,
+} = Astro.props;
+const all = import.meta.glob<{ default: ImageMetadata }>('../assets/screenshots/*.png', {
+  eager: true,
+});
+const meta = file
+  ? screenshots.items.find((s) => s.file === file && s.status === 'available')
+  : undefined;
+const image =
+  given ?? (file ? all[`../assets/screenshots/${file}`]?.default : undefined) ?? undefined;
+const alt = givenAlt ?? meta?.alt ?? '';
+const caption = givenCaption ?? meta?.caption ?? '';
+const natural = image ? Math.round(image.width / density) : 0;
+const candidates = image
+  ? [...new Set([480, 800, 1200, 1600, 2000, 2600, image.width].filter((w) => w <= image.width))]
+  : [];
+---
+
+{image && (
+  <figure
+    class:list={['shot', className]}
+    style={`--shot-w: ${natural}px; --shot-h: ${maxHeight}; --shot-r: ${(image.width / image.height).toFixed(4)}`}
+  >
+    <button
+      type="button"
+      class:list={['shot-open', { 'shot-frame': frame }]}
+      data-shot
+      data-set={set}
+      data-full={image.src}
+      data-w={image.width}
+      data-h={image.height}
+      data-alt={alt}
+      data-caption={caption}
+      aria-label={`View full size: ${alt}`}
+    >
+      <Image
+        src={image}
+        alt={alt}
+        widths={candidates}
+        sizes={sizes}
+        format="webp"
+        quality={88}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : 'auto'}
+      />
+    </button>
+    {caption && <figcaption class:list={['shot-caption', captionClass]}>{caption}</figcaption>}
+  </figure>
+)}

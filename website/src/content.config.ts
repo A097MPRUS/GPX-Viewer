@@ -11,6 +11,8 @@ const docs = defineCollection({
     section: z.enum(['Start', 'Using GPX Viewer', 'Reference', 'Project']),
     order: z.number(),
     updated: z.string(),
+    /** First release with the feature described; shown as in preparation until it is published. */
+    release: z.string().optional(),
   }),
 });
 

@@ -128,7 +128,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--header-h) + 16px);
+  /* Anchors land below the sticky header, including the iPhone safe area. */
+  scroll-padding-top: calc(var(--header-h) + env(safe-area-inset-top) + 24px);
 }
 body {
   margin: 0;
@@ -508,35 +509,129 @@ a.more:hover {
   }
 }
 
+/* Screenshots (src/components/Shot.astro): never wider than their natural Retina size, never
+   taller than --shot-h, aspect ratio kept, nothing cropped. The width is computed from the known
+   ratio, so the layout is stable before the image loads. */
+.shot {
+  margin: 0;
+  min-width: 0;
+}
+.shot-open {
+  display: block;
+  width: min(100%, var(--shot-w), calc(var(--shot-h) * var(--shot-r)));
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  cursor: zoom-in;
+}
+.shot-open img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--shot-r);
+  object-fit: contain;
+  border-radius: inherit;
+}
+.shot-frame img {
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.shot-open:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+.shot-caption {
+  margin: 12px auto 0;
+  max-width: 64ch;
+  font-size: var(--step--1);
+  color: var(--muted);
+  text-align: center;
+}
+
 /* Full-size screenshot viewer (src/lib/lightbox.ts). */
 .lightbox {
   width: min(96vw, 1800px);
   max-width: none;
   max-height: 94dvh;
-  padding: 14px;
+  padding: 12px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--text);
+  overflow: hidden;
+}
+.lightbox[open] {
+  display: flex;
+  flex-direction: column;
 }
 .lightbox::backdrop {
-  background: rgba(8, 9, 11, 0.82);
+  background: rgba(8, 9, 11, 0.86);
 }
-.lightbox img {
-  width: 100%;
-  height: auto;
-  max-height: 80dvh;
-  object-fit: contain;
-}
-.lightbox-close {
+.lightbox-bar {
   display: flex;
-  margin: 0 0 10px auto;
-  min-height: 36px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.lightbox-count {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+}
+.lightbox-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+.lightbox-frame {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #1e1e1e;
+  border-radius: var(--radius-sm);
+}
+.lightbox-frame img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(94dvh - 120px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  cursor: zoom-in;
+}
+.lightbox.is-actual .lightbox-frame {
+  overflow: auto;
+  place-items: start;
+  overscroll-behavior: contain;
+}
+.lightbox.is-actual .lightbox-frame img {
+  max-width: none;
+  max-height: none;
+  cursor: zoom-out;
 }
 .lightbox-caption {
   margin: 10px 2px 0;
   color: var(--muted);
   font-size: var(--step--1);
+}
+@media (max-width: 600px) {
+  .lightbox {
+    width: 100vw;
+    max-height: 100dvh;
+    height: 100dvh;
+    border-radius: 0;
+    padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
+  }
+  .lightbox-frame img {
+    max-height: calc(100dvh - 150px);
+  }
 }
 
 /* Web Lite preview on the homepage (src/lib/viewer/preview.ts). */

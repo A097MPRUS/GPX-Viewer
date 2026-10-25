@@ -2,10 +2,26 @@
   "schema": 1,
   "updated": "2026-10-25",
   "editions": [
-    { "id": "mac", "name": "macOS, Apple silicon", "short": "Mac" },
-    { "id": "intel", "name": "macOS, Intel", "short": "Intel" },
-    { "id": "windows", "name": "Windows", "short": "Windows" },
-    { "id": "web", "name": "Web Lite", "short": "Web" }
+    {
+      "id": "mac",
+      "name": "macOS, Apple silicon",
+      "short": "Mac"
+    },
+    {
+      "id": "intel",
+      "name": "macOS, Intel",
+      "short": "Intel"
+    },
+    {
+      "id": "windows",
+      "name": "Windows",
+      "short": "Windows"
+    },
+    {
+      "id": "web",
+      "name": "Web Lite",
+      "short": "Web"
+    }
   ],
   "statusLegend": {
     "yes": "Available",
@@ -24,76 +40,528 @@
       "id": "files",
       "title": "Files and GPX data",
       "features": [
-        { "id": "gpx-open", "title": "Open GPX 1.0 and 1.1", "detail": "Tracks, track segments, routes and waypoints. Segments are never joined; files without time or elevation open normally.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "yes" } },
-        { "id": "multi-file", "title": "Several files and drag and drop", "detail": "Open several files at once, by dialog or by dropping them on the window.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "partial" }, "note": { "web": "One file at a time." } },
-        { "id": "extensions", "title": "GPX extensions", "detail": "Heart rate, cadence, power and temperature from common extensions (Garmin TrackPointExtension and similar), GPS accuracy, barometric altitude and pressure from GPX Viewer recordings. Unknown extensions are kept when saving.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "partial" }, "note": { "web": "Reads heart rate, cadence, power and temperature; does not save files." } },
-        { "id": "file-info", "title": "File Info", "detail": "Which device and application recorded a file, sections, findings, raw XML and comparison, based on the file's own content.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "no" } },
-        { "id": "fit", "title": "FIT files", "detail": "Not supported in public releases: the Garmin FIT SDK was removed for licensing reasons on 7 Oct 2026.", "status": { "mac": "no", "intel": "no", "windows": "no", "web": "no" } }
+        {
+          "id": "gpx-open",
+          "title": "Open GPX 1.0 and 1.1",
+          "detail": "Tracks, track segments, routes and waypoints. Segments are never joined; files without time or elevation open normally.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "yes"
+          }
+        },
+        {
+          "id": "multi-file",
+          "title": "Several files and drag and drop",
+          "detail": "Open several files at once, by dialog or by dropping them on the window.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "partial"
+          },
+          "note": {
+            "web": "One file at a time."
+          }
+        },
+        {
+          "id": "extensions",
+          "title": "GPX extensions",
+          "detail": "Heart rate, cadence, power and temperature from common extensions (Garmin TrackPointExtension and similar), GPS accuracy, barometric altitude and pressure from GPX Viewer recordings. Unknown extensions are kept when saving.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "partial"
+          },
+          "note": {
+            "web": "Reads heart rate, cadence, power and temperature; does not save files."
+          }
+        },
+        {
+          "id": "file-info",
+          "title": "File Info",
+          "detail": "Which device and application recorded a file, sections, findings, raw XML and comparison, based on the file's own content.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "no"
+          }
+        },
+        {
+          "id": "fit",
+          "title": "FIT files",
+          "detail": "Not supported in public releases: the Garmin FIT SDK was removed for licensing reasons on 7 Oct 2026.",
+          "status": {
+            "mac": "no",
+            "intel": "no",
+            "windows": "no",
+            "web": "no"
+          }
+        }
       ]
     },
     {
       "id": "maps",
       "title": "Maps",
       "features": [
-        { "id": "apple-maps", "title": "Apple Maps", "detail": "Standard, satellite and hybrid through Apple's MapKit.", "status": { "mac": "yes", "intel": "partial", "windows": "no", "web": "no" }, "note": { "intel": "Apple no longer serves macOS 10.13; the app falls back to OpenStreetMap or official imagery there." } },
-        { "id": "open-maps", "title": "OpenStreetMap, OpenTopoMap, CyclOSM", "detail": "Community maps with visible attribution.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "partial" }, "note": { "web": "OpenStreetMap and OpenTopoMap." } },
-        { "id": "official-imagery", "title": "Official aerial and topographic maps", "detail": "National and regional services from Luxembourg, Belgium, France, the Netherlands, Switzerland, Austria and Germany, with coverage masks; best satellite and hybrid mosaics prefer official imagery by country.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "no" } },
-        { "id": "geoportail", "title": "Geoportail Luxembourg catalogue", "detail": "The full layer catalogue with dated editions, legends and the official sign-in page.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "no" } },
-        { "id": "keyed-open", "title": "Thunderforest and Esri with your own key", "detail": "Keys are entered by the user and stored securely (Keychain on Mac, DPAPI on Windows).", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "no" } },
-        { "id": "commercial", "title": "Azure Maps, TomTom, HERE and Mapbox with your own key", "detail": "54 map styles with correct high-resolution tiles and live credits for Azure Maps and HERE.", "status": { "mac": "yes", "intel": "yes", "windows": "unverified", "web": "no" }, "note": { "intel": "Not tested live with a key in the Intel edition." } },
-        { "id": "overlays", "title": "Overlays", "detail": "Cycle infrastructure, hiking, MTB and signposted cycle routes, roads and place names, with opacity per overlay.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "no" } }
+        {
+          "id": "apple-maps",
+          "title": "Apple Maps",
+          "detail": "Standard, satellite and hybrid through Apple's MapKit.",
+          "status": {
+            "mac": "yes",
+            "intel": "partial",
+            "windows": "no",
+            "web": "no"
+          },
+          "note": {
+            "intel": "Apple no longer serves macOS 10.13; the app falls back to OpenStreetMap or official imagery there."
+          }
+        },
+        {
+          "id": "open-maps",
+          "title": "OpenStreetMap, OpenTopoMap, CyclOSM",
+          "detail": "Community maps with visible attribution.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "partial"
+          },
+          "note": {
+            "web": "OpenStreetMap and OpenTopoMap."
+          }
+        },
+        {
+          "id": "official-imagery",
+          "title": "Official aerial and topographic maps",
+          "detail": "National and regional services from Luxembourg, Belgium, France, the Netherlands, Switzerland, Austria and Germany, with coverage masks; best satellite and hybrid mosaics prefer official imagery by country.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "no"
+          }
+        },
+        {
+          "id": "geoportail",
+          "title": "Geoportail Luxembourg catalogue",
+          "detail": "The full layer catalogue with dated editions, legends and the official sign-in page.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "no"
+          }
+        },
+        {
+          "id": "keyed-open",
+          "title": "Thunderforest and Esri with your own key",
+          "detail": "Keys are entered by the user and stored securely (Keychain on Mac, DPAPI on Windows).",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "no"
+          }
+        },
+        {
+          "id": "commercial",
+          "title": "Azure Maps, TomTom, HERE and Mapbox with your own key",
+          "detail": "54 map styles with correct high-resolution tiles and live credits for Azure Maps and HERE.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "unverified",
+            "web": "no"
+          },
+          "note": {
+            "intel": "Not tested live with a key in the Intel edition."
+          }
+        },
+        {
+          "id": "overlays",
+          "title": "Overlays",
+          "detail": "Cycle infrastructure, hiking, MTB and signposted cycle routes, roads and place names, with opacity per overlay.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "no"
+          }
+        }
       ]
     },
     {
       "id": "graphs",
       "title": "Elevation profile and graphs",
       "features": [
-        { "id": "grade-profile", "title": "Elevation profile coloured by gradient", "detail": "Smoothed elevation over 25 m, gradient over a centred 50 m window, the same colour scale on Mac and Windows.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "yes" } },
-        { "id": "channels", "title": "Speed, heart rate, cadence, power and temperature", "detail": "Recorded and calculated values are labelled separately; missing values are gaps, never zero.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "yes" } },
-        { "id": "main-graph", "title": "Selectable main graph", "detail": "Fourteen measurements, including slope, vertical speed, GPS accuracy, barometric altitude and air pressure; unavailable ones are disabled with the reason.", "status": { "mac": "yes", "intel": "yes", "windows": "unverified", "web": "partial" }, "note": { "web": "Elevation, speed, slope, vertical speed, heart rate, cadence, power and temperature." } },
-        { "id": "layouts", "title": "Combined and stacked graphs", "detail": "Up to three measurements on their own scales in one plot, or one plot each with a shared cursor and zoom.", "status": { "mac": "yes", "intel": "yes", "windows": "unverified", "web": "partial" }, "note": { "web": "One measurement compared with the main graph on its own scale." } },
-        { "id": "time-axes", "title": "Distance, elapsed time and moving time axes", "detail": "Moving time follows the statistics rule; pauses over 60 s lift the pen on time axes.", "status": { "mac": "yes", "intel": "yes", "windows": "unverified", "web": "yes" } },
-        { "id": "sync", "title": "Graph and map in step", "detail": "Hovering the graph moves a marker on the map, hovering the route moves the graph cursor; dragging selects and zooms a section.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "yes" } },
-        { "id": "graph-zoom", "title": "Graph zoom and pan", "detail": "Zoom buttons, pinch, drag to pan, double-click resets.", "status": { "mac": "yes", "intel": "yes", "windows": "unverified", "web": "partial" }, "note": { "web": "Drag to zoom a section, double-click or Reset to show the whole route." } }
+        {
+          "id": "grade-profile",
+          "title": "Elevation profile coloured by gradient",
+          "detail": "Smoothed elevation over 25 m, gradient over a centred 50 m window, the same colour scale on Mac and Windows.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "yes"
+          }
+        },
+        {
+          "id": "channels",
+          "title": "Speed, heart rate, cadence, power and temperature",
+          "detail": "Recorded and calculated values are labelled separately; missing values are gaps, never zero.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "yes"
+          }
+        },
+        {
+          "id": "main-graph",
+          "title": "Selectable main graph",
+          "detail": "Fourteen measurements, including slope, vertical speed, GPS accuracy, barometric altitude and air pressure; unavailable ones are disabled with the reason.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "unverified",
+            "web": "partial"
+          },
+          "note": {
+            "web": "Elevation, speed, slope, vertical speed, heart rate, cadence, power and temperature."
+          }
+        },
+        {
+          "id": "layouts",
+          "title": "Combined and stacked graphs",
+          "detail": "Up to three measurements on their own scales in one plot, or one plot each with a shared cursor and zoom.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "unverified",
+            "web": "partial"
+          },
+          "note": {
+            "web": "One measurement compared with the main graph on its own scale."
+          }
+        },
+        {
+          "id": "time-axes",
+          "title": "Distance, elapsed time and moving time axes",
+          "detail": "Moving time follows the statistics rule; pauses over 60 s lift the pen on time axes.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "unverified",
+            "web": "yes"
+          }
+        },
+        {
+          "id": "sync",
+          "title": "Graph and map in step",
+          "detail": "Hovering the graph moves a marker on the map, hovering the route moves the graph cursor; dragging selects and zooms a section.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "yes"
+          }
+        },
+        {
+          "id": "graph-zoom",
+          "title": "Graph zoom and pan",
+          "detail": "Zoom buttons, pinch, drag to pan, double-click resets.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "unverified",
+            "web": "partial"
+          },
+          "note": {
+            "web": "Drag to zoom a section, double-click or Reset to show the whole route."
+          }
+        }
       ]
     },
     {
       "id": "analysis",
       "title": "Statistics and analysis",
       "features": [
-        { "id": "stats", "title": "Track statistics", "detail": "Distance, elapsed, moving and stopped time, average, moving and maximum speed, gain and loss, minimum and maximum elevation, points and segments.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "yes" } },
-        { "id": "gain-hysteresis", "title": "Elevation gain with selectable hysteresis", "detail": "Gain and loss count changes of at least 5, 2 or 1 m, per elevation source (recorded or official terrain).", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "yes" }, "note": { "web": "5, 2 or 1 m on the recorded elevation." } },
-        { "id": "section-stats", "title": "Statistics for a selected section", "detail": "Select a section on the graph to see its own statistics.", "status": { "mac": "yes", "intel": "yes", "windows": "partial", "web": "yes" } },
-        { "id": "climbs", "title": "Climbs", "detail": "Climbs of at least 20 m and 3 % from where the route leaves the valley floor.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "no" } },
-        { "id": "point-inspector", "title": "Point inspection", "detail": "Coordinates, time, distance, elevation, grade and speed of any point, with recorded or calculated provenance; terrain, slope, aspect, land cover and address on demand.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "partial" }, "note": { "web": "Values from the file and calculated values; no online lookups." } },
-        { "id": "playback", "title": "Playback", "detail": "Replays the ride along the map at selectable speed, jumping recording gaps.", "status": { "mac": "yes", "intel": "yes", "windows": "unverified", "web": "no" } },
-        { "id": "units", "title": "Metric or imperial units, 12 or 24 hour time", "detail": "", "status": { "mac": "yes", "intel": "yes", "windows": "unverified", "web": "yes" } }
+        {
+          "id": "stats",
+          "title": "Track statistics",
+          "detail": "Distance, elapsed, moving and stopped time, average, moving and maximum speed, gain and loss, minimum and maximum elevation, points and segments.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "yes"
+          }
+        },
+        {
+          "id": "gain-hysteresis",
+          "title": "Elevation gain with selectable hysteresis",
+          "detail": "Gain and loss count changes of at least 5, 2 or 1 m, per elevation source (recorded or official terrain).",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "yes"
+          },
+          "note": {
+            "web": "5, 2 or 1 m on the recorded elevation."
+          }
+        },
+        {
+          "id": "section-stats",
+          "title": "Statistics for a selected section",
+          "detail": "Select a section on the graph to see its own statistics.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "partial",
+            "web": "yes"
+          }
+        },
+        {
+          "id": "climbs",
+          "title": "Climbs",
+          "detail": "Climbs of at least 20 m and 3 % from where the route leaves the valley floor.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "no"
+          }
+        },
+        {
+          "id": "point-inspector",
+          "title": "Point inspection",
+          "detail": "Coordinates, time, distance, elevation, grade and speed of any point, with recorded or calculated provenance; terrain, slope, aspect, land cover and address on demand.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "partial"
+          },
+          "note": {
+            "web": "Values from the file and calculated values; no online lookups."
+          }
+        },
+        {
+          "id": "playback",
+          "title": "Playback",
+          "detail": "Replays the ride along the map at selectable speed, jumping recording gaps.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "unverified",
+            "web": "no"
+          }
+        },
+        {
+          "id": "units",
+          "title": "Metric or imperial units, 12 or 24 hour time",
+          "detail": "",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "unverified",
+            "web": "yes"
+          }
+        }
       ]
     },
     {
       "id": "terrain",
       "title": "Terrain and route context",
       "features": [
-        { "id": "official-terrain", "title": "Official terrain elevation", "detail": "Terrain heights from Geoportail Luxembourg and IGN France, Terrain Tiles elsewhere; DTM and DSM labelled correctly.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "no" } },
-        { "id": "relief", "title": "3D relief", "detail": "A local terrain model around the route.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "no" } },
-        { "id": "route-context", "title": "Surface and route context analysis", "detail": "Land cover per point, cycle network, OpenStreetMap ways, surfaces, bridges and tunnels. Optional; sends route coordinates to the named services.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "no" } },
-        { "id": "profiles", "title": "Cross-section and line profile", "detail": "", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "no" } }
+        {
+          "id": "official-terrain",
+          "title": "Official terrain elevation",
+          "detail": "Terrain heights from Geoportail Luxembourg and IGN France, Terrain Tiles elsewhere; DTM and DSM labelled correctly.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "no"
+          }
+        },
+        {
+          "id": "relief",
+          "title": "3D relief",
+          "detail": "A local terrain model around the route.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "no"
+          }
+        },
+        {
+          "id": "route-context",
+          "title": "Surface and route context analysis",
+          "detail": "Land cover per point, cycle network, OpenStreetMap ways, surfaces, bridges and tunnels. Optional; sends route coordinates to the named services.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "no"
+          }
+        },
+        {
+          "id": "profiles",
+          "title": "Cross-section and line profile",
+          "detail": "",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "no"
+          }
+        }
+      ]
+    },
+    {
+      "id": "weather",
+      "title": "Historical weather",
+      "release": "0.3.0",
+      "features": [
+        {
+          "id": "weather-retrieval",
+          "title": "Historical weather for a recording",
+          "detail": "Retrieved on request from the Open-Meteo archive for the recording's places and dates; nothing is sent until you ask.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "no",
+            "web": "no"
+          },
+          "release": "0.3.0"
+        },
+        {
+          "id": "weather-matching",
+          "title": "Matched to timestamps and positions",
+          "detail": "Places about every 10 km and at 300 m height changes; hourly values matched in UTC, blended between places; points without a timestamp get no weather.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "no",
+            "web": "no"
+          },
+          "release": "0.3.0"
+        },
+        {
+          "id": "weather-variables",
+          "title": "Temperature, wind, precipitation, humidity, pressure, cloud cover",
+          "detail": "Air and feels-like temperature, dew point, wind speed, direction and gusts, precipitation, rain and snowfall, sea-level and surface pressure, cloud cover, weather condition. Visibility is not provided by the source.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "no",
+            "web": "no"
+          },
+          "release": "0.3.0"
+        },
+        {
+          "id": "weather-timeline",
+          "title": "Weather timeline linked to map and graphs",
+          "detail": "Temperature, hourly precipitation and wind over the recording time, sharing the pointer with the map and graphs.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "no",
+            "web": "no"
+          },
+          "release": "0.3.0"
+        },
+        {
+          "id": "weather-graphs",
+          "title": "Modelled weather lines on the graph",
+          "detail": "Temperature, wind, gusts, headwind, precipitation, pressure, humidity and cloud cover beside any main measurement, marked Modelled.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "no",
+            "web": "no"
+          },
+          "release": "0.3.0"
+        },
+        {
+          "id": "weather-cache",
+          "title": "Local weather cache and offline use",
+          "detail": "Answers kept on the Mac (at most 20 MB) and shown offline; can be cleared.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "no",
+            "web": "no"
+          },
+          "release": "0.3.0"
+        }
       ]
     },
     {
       "id": "editing",
       "title": "Editing and tools",
       "features": [
-        { "id": "draw", "title": "Route drawing with routing", "detail": "Draw a route freehand or along roads and paths (BRouter profiles).", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "no" } },
-        { "id": "edit-tools", "title": "Split, merge, simplify, clean, reverse, time and elevation tools", "detail": "Every edit can be undone; the original file is never changed.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "no" } },
-        { "id": "measure", "title": "Measure tool", "detail": "", "status": { "mac": "yes", "intel": "yes", "windows": "unverified", "web": "no" } }
+        {
+          "id": "draw",
+          "title": "Route drawing with routing",
+          "detail": "Draw a route freehand or along roads and paths (BRouter profiles).",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "no"
+          }
+        },
+        {
+          "id": "edit-tools",
+          "title": "Split, merge, simplify, clean, reverse, time and elevation tools",
+          "detail": "Every edit can be undone; the original file is never changed.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "no"
+          }
+        },
+        {
+          "id": "measure",
+          "title": "Measure tool",
+          "detail": "",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "unverified",
+            "web": "no"
+          }
+        }
       ]
     },
     {
       "id": "privacy",
       "title": "Privacy",
       "features": [
-        { "id": "local", "title": "Files stay on your computer", "detail": "No account, no analytics, no advertising, no tracking. Map tiles, searches and optional analyses contact the named services only when used.", "status": { "mac": "yes", "intel": "yes", "windows": "yes", "web": "yes" }, "note": { "web": "Files are read in the browser; only map tile requests leave the device." } }
+        {
+          "id": "local",
+          "title": "Files stay on your computer",
+          "detail": "No account, no analytics, no advertising, no tracking. Map tiles, searches and optional analyses contact the named services only when used.",
+          "status": {
+            "mac": "yes",
+            "intel": "yes",
+            "windows": "yes",
+            "web": "yes"
+          },
+          "note": {
+            "web": "Files are read in the browser; only map tile requests leave the device."
+          }
+        }
       ]
     }
   ]

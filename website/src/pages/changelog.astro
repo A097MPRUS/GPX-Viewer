@@ -1,122 +1,537 @@
 ---
-// Release history from the release manifest. Author: A097MPRUS.
+// Changelog: the current release of each platform, releases in preparation (private preview
+// only, never downloadable), and the full history. Generated from the release manifest synced
+// from Setup/public; nothing here is typed by hand. Author: A097MPRUS.
 import Base from '../layouts/Base.astro';
-import { longDate, manifest, url } from '../data/site';
+import ReleaseNotes from '../components/ReleaseNotes.astro';
+import Shot from '../components/Shot.astro';
+import {
+  currentRelease,
+  github,
+  longDate,
+  manifest,
+  platform,
+  releasesOf,
+  upcomingReleases,
+  url,
+  type Release,
+} from '../data/site';
 
-const releases = [...manifest.releases].sort(
-  (a, b) => b.date.localeCompare(a.date) || a.family.localeCompare(b.family),
-);
-const family = (f: string) => (f === 'macos' ? 'macOS' : 'Windows');
+const families = [
+  { id: 'macos', name: 'macOS' },
+  { id: 'windows', name: 'Windows' },
+  { id: 'ios', name: 'iOS' },
+  { id: 'android', name: 'Android' },
+].filter((f) => manifest.releases.some((r) => r.family === f.id && r.status !== 'upcoming'));
+const familyName = (f: string) => families.find((x) => x.id === f)?.name ?? f;
+const current = families.map((f) => currentRelease(f.id)).filter((r): r is Release => !!r);
+const history = families.flatMap((f) => releasesOf(f.id).filter((r) => r.status === 'archived'));
+history.sort((a, b) => b.date.localeCompare(a.date) || a.family.localeCompare(b.family));
+
+const platformsOf = (r: Release) => {
+  const ids =
+    r.platforms ?? [...new Set(r.assets.map((a) => a.platform))].filter((p) => p !== 'source');
+  return ids.map((id) => platform(id)).filter((p) => !!p);
+};
+const requirements = (r: Release) =>
+  platformsOf(r)
+    .map((p) => p!.requirements)
+    .filter(Boolean) as string[];
+const defaultShots: Record<string, string[]> = {
+  macos: ['main-window.png', 'graph-combined.png', 'map-layers.png', 'statistics.png'],
+};
+const shotsOf = (r: Release) => r.screenshots ?? defaultShots[r.family] ?? [];
+const highlights = (r: Release) => (r.sections?.new ?? r.changes).slice(0, 4);
 ---
 
 <Base
   title="Changelog"
-  description="Release history of GPX Viewer for macOS and Windows."
+  description="Release history of GPX Viewer for macOS and Windows: current releases with screenshots, detailed release notes and every earlier version."
   current="changelog/"
 >
-  <div class="section">
-    <div class="wrap">
-      <h1>Changelog</h1>
-      <p class="lede">
-        Public releases of GPX Viewer. Downloads and checksums are on the{' '}
-        <a href={url('downloads/')}>Downloads</a> page.
-      </p>
-      <ol class="timeline">
-        {releases.map((r) => (
-          <li class="entry" id={r.id}>
-            <div class="when">
-              <time datetime={r.date}>{longDate(r.date)}</time>
-            </div>
-            <article>
-              <h2>
-                {family(r.family)} {r.version}
-                {r.build && <span class="muted build"> build {r.build}</span>}
-                <span class:list={['tag', r.status === 'current' && 'tag-ok']}>
-                  {r.status === 'current' ? 'Current' : 'Archived'}
-                </span>
-              </h2>
-              <p class="muted">{r.summary}</p>
-              {r.changes.length > 0 && (
-                <ul>
-                  {r.changes.map((c) => (
-                    <li>{c}</li>
-                  ))}
-                </ul>
-              )}
-              {r.limitations.length > 0 && (
-                <>
-                  <h3>Known limitations</h3>
-                  <ul class="muted">
-                    {r.limitations.map((c) => (
-                      <li>{c}</li>
-                    ))}
-                  </ul>
-                </>
-              )}
-              <p class="small">
-                <a href={r.folder}>Files on SourceForge</a>
-                {r.notes && (
-                  <>
-                    {' '}
-                    <span aria-hidden="true">/</span> <a href={r.notes}>Release notes</a>
-                  </>
-                )}
+  <section class="section head">
+    <div class="wrap wrap-wide head-grid">
+      <div>
+        <h1>Changelog</h1>
+        <p class="lede">
+          Every published release of GPX Viewer, newest first. Downloads and SHA-256 checksums are
+          on <a href={url('downloads/')}>Downloads</a>.
+        </p>
+      </div>
+      <fieldset class="filter" data-filter hidden>
+        <legend class="visually-hidden">Show releases for</legend>
+        <label>
+          <input type="radio" name="family" value="all" checked />
+          <span>All platforms</span>
+        </label>
+        {families.map((f) => (
+          <label>
+            <input type="radio" name="family" value={f.id} />
+            <span>{f.name}</span>
+          </label>
+        ))}
+      </fieldset>
+    </div>
+  </section>
+
+  {upcomingReleases.map((r) => (
+    <section class="section upcoming" data-family={r.family} aria-labelledby={`${r.id}-title`}>
+      <div class="wrap wrap-wide">
+        <p class="state state-upcoming">
+          <span class="state-mark" aria-hidden="true" /> In preparation, not published yet
+        </p>
+        <h2 id={`${r.id}-title`} class="release-title">
+          {familyName(r.family)} {r.version}
+          {r.title && <span class="release-name">{r.title}</span>}
+        </h2>
+        <p class="lede">{r.summary}</p>
+        <p class="small muted">
+          Build {r.build}. This page is the private preview: the release is listed here while it is
+          prepared and tested. It has no download until its installers are published and verified.
+        </p>
+        <div class="shots-grid">
+          {shotsOf(r).map((file, n) => (
+            <Shot
+              file={file}
+              set={`release-${r.id}`}
+              maxHeight={n === 0 ? 'min(64svh, 640px)' : 'min(40svh, 400px)'}
+              class={n === 0 ? 'shot-lead' : 'shot-small'}
+            />
+          ))}
+        </div>
+        <details class="full-notes">
+          <summary>Release notes in preparation</summary>
+          <ReleaseNotes release={r} />
+        </details>
+      </div>
+    </section>
+  ))}
+
+  {current.map((r) => {
+    const shots = shotsOf(r);
+    return (
+      <section
+        class="section current"
+        data-family={r.family}
+        id={r.id}
+        aria-labelledby={`${r.id}-title`}
+      >
+        <div class="wrap wrap-wide">
+          <div class="current-grid">
+            <div class="current-text">
+              <p class="state">
+                <span class="state-mark" aria-hidden="true" /> Current release
               </p>
-            </article>
+              <h2 id={`${r.id}-title`} class="release-title">
+                GPX Viewer for {familyName(r.family)} {r.version}
+                {r.title && <span class="release-name">{r.title}</span>}
+              </h2>
+              <dl class="facts">
+                <div>
+                  <dt>Build</dt>
+                  <dd>{r.build ?? 'not numbered'}</dd>
+                </div>
+                <div>
+                  <dt>Published</dt>
+                  <dd>
+                    <time datetime={r.date}>{longDate(r.date)}</time>
+                  </dd>
+                </div>
+                <div class="wide">
+                  <dt>Runs on</dt>
+                  <dd>
+                    {requirements(r).map((t) => (
+                      <span class="req">{t}</span>
+                    ))}
+                  </dd>
+                </div>
+              </dl>
+              <p>{r.summary}</p>
+              <ul class="highlights">
+                {highlights(r).map((h) => (
+                  <li>{h}</li>
+                ))}
+              </ul>
+              <div class="actions">
+                <a
+                  class="btn btn-primary"
+                  href={url(`downloads/#${r.family === 'macos' ? 'macos-arm64' : 'windows-x64'}`)}
+                >
+                  Download
+                </a>
+                <a class="btn" href={`#${r.id}-notes`}>
+                  Full release notes
+                </a>
+                {r.github && github.project && (
+                  <a class="btn" href={r.github}>
+                    GitHub Release
+                  </a>
+                )}
+              </div>
+            </div>
+            {shots[0] && (
+              <div class="current-shot">
+                <Shot file={shots[0]} set={`release-${r.id}`} maxHeight="min(62svh, 620px)" eager />
+              </div>
+            )}
+          </div>
+          {shots.length > 1 && (
+            <div
+              class="gallery-row"
+              role="list"
+              aria-label={`Screenshots of ${familyName(r.family)} ${r.version}`}
+            >
+              {shots.slice(1).map((file) => (
+                <div role="listitem">
+                  <Shot file={file} set={`release-${r.id}`} maxHeight="min(32svh, 300px)" />
+                </div>
+              ))}
+            </div>
+          )}
+          <details class="full-notes" id={`${r.id}-notes`}>
+            <summary>Full release notes</summary>
+            <ReleaseNotes release={r} />
+            <p class="small file-links">
+              {r.folder && <a href={r.folder}>Files on SourceForge</a>}
+              {r.notes && <a href={r.notes}>README of this release</a>}
+              {r.checksums && <a href={r.checksums}>SHA256SUMS.txt</a>}
+              {r.github && <a href={r.github}>GitHub Release (sign-in required while private)</a>}
+            </p>
+          </details>
+        </div>
+      </section>
+    );
+  })}
+
+  <section class="section history" aria-labelledby="history-title">
+    <div class="wrap wrap-wide">
+      <h2 id="history-title">Earlier releases</h2>
+      <p class="muted small">
+        Archived versions stay available with their notes and files. Their downloads are listed with
+        checksums on SourceForge.
+      </p>
+      <ol class="history-list">
+        {history.map((r) => (
+          <li data-family={r.family} id={r.id}>
+            <details>
+              <summary>
+                <span class="h-version">
+                  {familyName(r.family)} {r.version}
+                  {r.build && <span class="muted"> build {r.build}</span>}
+                </span>
+                <time class="h-date muted" datetime={r.date}>
+                  {longDate(r.date)}
+                </time>
+                <span class="h-summary">{r.summary}</span>
+              </summary>
+              <div class="h-body">
+                <p class="small muted">
+                  Platforms:{' '}
+                  {platformsOf(r)
+                    .map((p) => p!.name)
+                    .join(', ')}
+                </p>
+                <ReleaseNotes release={r} headingLevel={4} />
+                <p class="small file-links">
+                  {r.folder && <a href={r.folder}>Archived files on SourceForge</a>}
+                  {r.notes && <a href={r.notes}>README of this release</a>}
+                  {r.checksums && <a href={r.checksums}>SHA256SUMS.txt</a>}
+                  {r.github && (
+                    <a href={r.github}>GitHub Release (sign-in required while private)</a>
+                  )}
+                </p>
+              </div>
+            </details>
           </li>
         ))}
       </ol>
     </div>
-  </div>
+  </section>
 </Base>
 
 <style>
-  h1 {
-    font-size: var(--step-4);
+  .head {
+    padding: clamp(24px, 2vw + 2vh, 48px) 0 clamp(14px, 1.5vw, 24px);
   }
-  .timeline {
-    list-style: none;
-    padding: 0;
-    margin: 48px 0 0;
+  .upcoming,
+  .current,
+  .history {
+    padding-top: clamp(32px, 3vw + 1vh, 64px);
+    padding-bottom: clamp(32px, 3vw + 1vh, 64px);
   }
-  .entry {
-    display: grid;
-    grid-template-columns: 200px minmax(0, 1fr);
-    gap: 24px;
-    padding: 32px 0;
-    border-top: 1px solid var(--line);
-  }
-  .when {
-    color: var(--muted);
-    font-size: var(--step--1);
-    padding-top: 6px;
-  }
-  .entry h2 {
-    font-size: var(--step-2);
+  .head-grid {
     display: flex;
     flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 18px 40px;
+  }
+  .head h1 {
+    font-size: var(--step-3);
+    margin-bottom: 0.2em;
+  }
+  .head .lede {
+    margin: 0;
+  }
+  /* Platform filter: a plain underlined choice, no capsules. */
+  .filter {
+    display: flex;
+    gap: 22px;
+    border: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .filter label {
+    position: relative;
+    cursor: pointer;
+    padding: 6px 0;
+    color: var(--muted);
+  }
+  .filter input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .filter span {
+    border-bottom: 2px solid transparent;
+    padding-bottom: 4px;
+    transition:
+      color var(--t-feedback) var(--ease),
+      border-color var(--t-feedback) var(--ease);
+  }
+  .filter input:checked + span {
+    color: var(--text);
+    border-color: var(--text);
+  }
+  .filter input:focus-visible + span {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+  [data-family].is-filtered {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-family].is-shown {
+      animation: shown var(--t-small) var(--ease);
+    }
+    @keyframes shown {
+      from {
+        opacity: 0;
+      }
+    }
+  }
+
+  .state {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 10px;
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--ok);
+  }
+  .state-mark {
+    width: 8px;
+    height: 8px;
+    background: currentColor;
+  }
+  .state-upcoming {
+    color: var(--warn);
+  }
+  .state-upcoming .state-mark {
+    background: transparent;
+    border: 1.5px solid currentColor;
+  }
+  .release-title {
+    font-size: var(--step-3);
+    margin-bottom: 0.4em;
+  }
+  .release-name {
+    display: block;
+    font-size: 0.55em;
+    font-weight: 500;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .upcoming {
+    border-top: 1px solid var(--line);
+    background: var(--bg-raised);
+  }
+  .current {
+    border-top: 1px solid var(--line);
+  }
+  .current-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(24px, 4vw, 72px);
+    align-items: start;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 24px;
+    margin: 0 0 18px;
+    border-top: 1px solid var(--line);
+  }
+  .facts div {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .facts .wide {
+    grid-column: 1 / -1;
+  }
+  .facts dt {
+    font-size: var(--step--2);
+    color: var(--muted);
+  }
+  .facts dd {
+    margin: 2px 0 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .req {
+    display: block;
+  }
+  .highlights {
+    margin: 0 0 22px;
+    padding-left: 1.1em;
+    display: grid;
+    gap: 6px;
+    color: var(--muted);
+  }
+  .gallery-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: clamp(16px, 2vw, 28px);
+    margin-top: clamp(28px, 3vw, 44px);
+    align-items: start;
+  }
+  .shots-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(16px, 2vw, 28px);
+    margin-top: 28px;
+    align-items: start;
+  }
+  .shots-grid :global(.shot-lead) {
+    grid-column: 1 / -1;
+  }
+  .full-notes {
+    margin-top: clamp(28px, 3vw, 44px);
+    border-top: 1px solid var(--line);
+  }
+  .full-notes > summary,
+  .history summary {
+    cursor: pointer;
+    list-style: none;
+  }
+  .full-notes > summary {
+    padding: 16px 0;
+    font-weight: 600;
+  }
+  .full-notes > summary::-webkit-details-marker,
+  .history summary::-webkit-details-marker {
+    display: none;
+  }
+  .full-notes > summary::before,
+  .history summary::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 12px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform var(--t-small) var(--ease);
+    vertical-align: 0.15em;
+  }
+  details[open] > summary::before {
+    transform: rotate(45deg);
+  }
+  .file-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    margin-top: 20px;
+  }
+  .history {
+    border-top: 1px solid var(--line);
+  }
+  .history-list {
+    list-style: none;
+    margin: 20px 0 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .history-list > li {
+    border-bottom: 1px solid var(--line);
+  }
+  .history summary {
+    display: grid;
+    grid-template-columns: auto minmax(11rem, 14rem) 9rem minmax(0, 1fr);
+    gap: 4px 20px;
     align-items: baseline;
-    gap: 10px;
+    padding: 16px 0;
   }
-  .build {
-    font-size: var(--step-0);
-    font-weight: 400;
+  .history summary::before {
+    align-self: center;
   }
-  .entry h3 {
-    font-size: var(--step-0);
-    margin-top: 1.4em;
+  .h-version {
+    font-weight: 600;
   }
-  .entry ul {
-    padding-left: 1.2em;
-    max-width: 72ch;
+  .h-summary {
+    color: var(--muted);
+    font-size: var(--step--1);
   }
-  .entry li + li {
-    margin-top: 0.3em;
+  .h-body {
+    padding: 0 0 24px;
   }
-  @media (max-width: 720px) {
-    .entry {
+  @media (prefers-reduced-motion: no-preference) {
+    details[open] > .h-body,
+    .full-notes[open] > :not(summary) {
+      animation: reveal var(--t-small) var(--ease);
+    }
+    @keyframes reveal {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+    }
+  }
+  @media (max-width: 900px) {
+    .current-grid {
       grid-template-columns: 1fr;
-      gap: 6px;
+    }
+    .shots-grid {
+      grid-template-columns: 1fr;
+    }
+    .history summary {
+      grid-template-columns: auto 1fr;
+    }
+    .h-date {
+      grid-column: 2;
+    }
+    .h-summary {
+      grid-column: 2;
     }
   }
 </style>
+
+<script>
+  // Platform filter: progressive enhancement; without JavaScript every release is shown.
+  const filter = document.querySelector<HTMLFieldSetElement>('[data-filter]');
+  if (filter) {
+    filter.hidden = false;
+    const items = [...document.querySelectorAll<HTMLElement>('[data-family]')];
+    filter.addEventListener('change', () => {
+      const value = filter.querySelector<HTMLInputElement>('input:checked')?.value ?? 'all';
+      for (const el of items) {
+        const show = value === 'all' || el.dataset['family'] === value;
+        el.classList.toggle('is-filtered', !show);
+        el.classList.toggle('is-shown', show);
+      }
+    });
+  }
+</script>

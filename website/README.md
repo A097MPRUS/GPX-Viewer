@@ -35,12 +35,12 @@ npm run icons          # favicons and preview image from src/assets/icon-1024.pn
 
 Build variables:
 
-| Variable              | Purpose                                                                                | Default                 |
-| --------------------- | -------------------------------------------------------------------------------------- | ----------------------- |
-| `SITE_URL`            | Public origin, for canonical links                                                     | `http://localhost:4321` |
-| `SITE_BASE`           | Path the site is served under (GitHub Pages project sites use `/<repository>/`)        | `/`                     |
-| `PUBLIC_GITHUB_OWNER` | GitHub account for repository links; links are omitted when unset                      | unset                   |
-| `PUBLIC_SITE_STAGE`   | `public` only for the approved public build; anything else is a preview with `noindex` | preview                 |
+| Variable              | Purpose                                                                                | Default                          |
+| --------------------- | -------------------------------------------------------------------------------------- | -------------------------------- |
+| `SITE_URL`            | Origin for canonical links (the official address)                                      | `https://gpxviewerpro.pages.dev` |
+| `SITE_BASE`           | Path the site is served under                                                          | `/`                              |
+| `PUBLIC_GITHUB_OWNER` | GitHub account for repository links; links are omitted when unset                      | unset                            |
+| `PUBLIC_SITE_STAGE`   | `public` only for the approved public build; anything else is a preview with `noindex` | preview                          |
 
 ## Content and metadata
 
@@ -54,8 +54,9 @@ Do not edit `src/data/*.json`, `src/content/legal/*`, `src/assets/icon-*.png` or
 
 ## Deployment
 
-- **Private preview:** Cloudflare Pages builds this repository and serves it behind Cloudflare Access, so only the owner can open it. Build command `npm ci && npm run build:preview`, output `dist`, environment `NODE_VERSION=24.19.0` and `PUBLIC_GITHUB_OWNER`. `public/_headers` adds security headers and `X-Robots-Tag: noindex`.
-- **Public site:** `.github/workflows/pages.yml` publishes to GitHub Pages only when the repository variable `PUBLIC_LAUNCH` is `approved`. On a free GitHub plan, Pages also needs this repository to be public. Both steps happen only after the owner approves the launch.
+- **One website, one address:** Cloudflare Pages project `gpxviewerpro` builds the `website/` folder of `A097MPRUS/GPX-Viewer` on every push to `main` and serves it at `https://gpxviewerpro.pages.dev/`. Root directory `website`, build command `npm ci && npm run build:preview`, output `dist`, environment `NODE_VERSION=24.19.0` and `PUBLIC_GITHUB_OWNER`. `public/_headers` adds security headers and `X-Robots-Tag: noindex`.
+- **Private until the owner decides:** Cloudflare Access lets only the owner open the site, its preview and deployment URLs and every asset. The public launch removes that restriction on the same project and address; there is no GitHub Pages or `github.io` site and no second website.
+- **Validation:** `.github/workflows/website.yml` at the repository root runs `npm run verify` when `website/`, `release/` or `screenshots/` change.
 
 ## Licences
 

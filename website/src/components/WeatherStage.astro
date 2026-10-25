@@ -1,0 +1,319 @@
+---
+// Historical weather along the synthetic sample: the route with a marker and the wind at that
+// moment, readouts and a weather timeline over the recording time. Scroll position or the
+// timeline (pointer, touch, arrow keys) moves the moment. Values: weather-sample.json (real model
+// values for the sample's places and date, computed with the application's core). Author: A097MPRUS.
+import { sampleGeometry } from '../lib/sample';
+import { conditionText, weatherFrames, weatherInfo } from '../lib/weather-sample';
+
+const g = sampleGeometry();
+const { frames, start } = weatherFrames(160);
+const temps = frames.map((f) => f.temp).filter((v): v is number => v !== null);
+const lo = Math.floor(Math.min(...temps) - 0.5);
+const hi = Math.ceil(Math.max(...temps) + 0.5);
+const TW = 1000;
+const TH = 150;
+const top = 34;
+const bottom = TH - 22;
+const tx = (c: number) => +((c / (frames.length - 1)) * TW).toFixed(1);
+const ty = (v: number) => +(bottom - ((v - lo) / (hi - lo)) * (bottom - top)).toFixed(1);
+let pen = false;
+const line = frames
+  .map((f, c) => {
+    if (f.temp === null) {
+      pen = false;
+      return '';
+    }
+    const cmd = `${pen ? 'L' : 'M'}${tx(c)} ${ty(f.temp)}`;
+    pen = true;
+    return cmd;
+  })
+  .join('');
+const area =
+  `M0 ${bottom}` +
+  frames.map((f, c) => (f.temp === null ? '' : `L${tx(c)} ${ty(f.temp)}`)).join('') +
+  `L${TW} ${bottom}Z`;
+const total = frames[frames.length - 1]!.t;
+// Hour ticks in UTC (the times of the sample are UTC; the page does not guess a time zone).
+const ticks: { x: number; label: string }[] = [];
+for (let h = Math.ceil(start / 3600000) * 3600000; h <= start + total * 1000; h += 1800000) {
+  const d = new Date(h);
+  ticks.push({
+    x: +(((h - start) / 1000 / total) * TW).toFixed(1),
+    label: `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`,
+  });
+}
+const arrows = frames
+  .filter((_, c) => c % 12 === 6)
+  .map((f, n) => ({ x: tx(n * 12 + 6), dir: f.dir, wind: f.wind }));
+const first = frames[0]!;
+const data = frames.map((f) => [f.x, f.y, f.t, f.temp, f.wind, f.dir, f.code]);
+const date = new Date(start).toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<div class="wx" data-weather data-frames={JSON.stringify(data)} data-start={start}>
+  <div class="wx-map">
+    <svg
+      viewBox={`0 0 ${g.width} ${g.height}`}
+      role="img"
+      aria-label="The synthetic sample route with a marker at the selected moment and an arrow showing where the wind blows"
+    >
+      <path class="wx-route" d={g.route}></path>
+      <g class="wx-marker" data-wx-marker transform={`translate(${first.x} ${first.y})`}>
+        <g class="wx-wind" data-wx-wind transform={`rotate(${(first.dir ?? 0) + 180})`}>
+          <path d="M0 -34 L0 -18 M-5 -27 L0 -36 L5 -27" />
+        </g>
+        <circle r="13" class="wx-halo"></circle>
+        <circle r="6" class="wx-dot"></circle>
+      </g>
+    </svg>
+  </div>
+  <dl class="wx-readout" aria-live="off">
+    <div>
+      <dt>Time (UTC)</dt>
+      <dd data-wx="time">-</dd>
+    </div>
+    <div>
+      <dt>Air temperature</dt>
+      <dd>
+        <span data-wx="temp">{first.temp?.toFixed(1) ?? '-'}</span>
+        <small> °C</small>
+      </dd>
+    </div>
+    <div>
+      <dt>Wind</dt>
+      <dd>
+        <span data-wx="wind">{first.wind !== null ? (first.wind * 3.6).toFixed(1) : '-'}</span>
+        <small> km/h</small> <span class="wx-from" data-wx="from"></span>
+      </dd>
+    </div>
+    <div>
+      <dt>Conditions</dt>
+      <dd class="wx-cond" data-wx="cond">
+        {conditionText(first.code)}
+      </dd>
+    </div>
+  </dl>
+  <div
+    class="wx-timeline"
+    data-wx-timeline
+    role="slider"
+    tabindex="0"
+    aria-label="Moment of the recording"
+    aria-valuemin="0"
+    aria-valuemax={total}
+    aria-valuenow="0"
+    aria-valuetext="Start of the recording"
+  >
+    <svg viewBox={`0 0 ${TW} ${TH}`} preserveAspectRatio="none" aria-hidden="true">
+      {ticks.map((t) => (
+        <line class="wx-grid" x1={t.x} x2={t.x} y1={top - 6} y2={bottom}></line>
+      ))}
+      <path class="wx-area" d={area}></path>
+      <path class="wx-line" d={line}></path>
+      {arrows.map((a) =>
+        a.dir === null ? null : (
+          <g transform={`translate(${a.x} 14) rotate(${a.dir + 180})`}>
+            <path class="wx-arrow" d="M0 7 L0 -7 M-4 -2 L0 -8 L4 -2" />
+          </g>
+        ),
+      )}
+      <line class="wx-cursor" data-wx-cursor x1="0" x2="0" y1={top - 8} y2={bottom}></line>
+    </svg>
+    <span class="wx-axis wx-hi">{hi} °C</span>
+    <span class="wx-axis wx-lo">{lo} °C</span>
+    <div class="wx-ticks" aria-hidden="true">
+      {ticks.map((t) => (
+        <span style={`left: ${(t.x / TW) * 100}%`}>{t.label}</span>
+      ))}
+    </div>
+  </div>
+  <p class="wx-note small muted">
+    The synthetic sample route of {date} with the historical weather GPX Viewer retrieves for it:
+    {weatherInfo.places} places along the route, hourly model values matched to each moment and
+    blended between places. {weatherInfo.note} {weatherInfo.attribution}
+  </p>
+</div>
+
+<style>
+  .wx {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    grid-template-areas: 'map readout' 'timeline timeline' 'note note';
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: hidden;
+    container-type: inline-size;
+  }
+  .wx-map {
+    grid-area: map;
+    background: var(--bg-raised);
+  }
+  .wx-map svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: min(48svh, 440px);
+  }
+  .wx-route {
+    fill: none;
+    stroke: var(--route);
+    stroke-width: 3.5;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .wx-halo {
+    fill: var(--marker);
+    opacity: 0.18;
+  }
+  .wx-dot {
+    fill: var(--marker);
+    stroke: var(--surface);
+    stroke-width: 2;
+  }
+  .wx-wind path,
+  .wx-arrow {
+    fill: none;
+    stroke: #0369a1;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  :global(:root[data-theme='dark']) .wx-wind path,
+  :global(:root[data-theme='dark']) .wx-arrow {
+    stroke: #5eb4ef;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .wx-wind path,
+    :global(:root:not([data-theme='light'])) .wx-arrow {
+      stroke: #5eb4ef;
+    }
+  }
+  .wx-readout {
+    grid-area: readout;
+    margin: 0;
+    padding: 20px 22px;
+    display: grid;
+    align-content: center;
+    gap: 16px;
+    border-left: 1px solid var(--line);
+  }
+  .wx-readout dt {
+    font-size: var(--step--2);
+    color: var(--muted);
+  }
+  .wx-readout dd {
+    margin: 2px 0 0;
+    font: 500 clamp(1.2rem, 1rem + 0.8vw, 1.6rem) / 1.2 var(--font-sans);
+    font-variant-numeric: tabular-nums;
+  }
+  .wx-readout small {
+    font-size: 0.55em;
+    color: var(--muted);
+  }
+  .wx-from {
+    font-size: 0.6em;
+    color: var(--muted);
+  }
+  .wx-cond {
+    font-size: var(--step-1) !important;
+  }
+  .wx-timeline {
+    grid-area: timeline;
+    position: relative;
+    height: clamp(120px, 18svh, 170px);
+    border-top: 1px solid var(--line);
+    cursor: ew-resize;
+    touch-action: pan-y;
+    outline: none;
+  }
+  .wx-timeline:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--focus);
+  }
+  .wx-timeline svg {
+    display: block;
+    width: 100%;
+    height: calc(100% - 18px);
+  }
+  .wx-grid {
+    stroke: var(--line);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+  .wx-area {
+    fill: #be123c;
+    opacity: 0.08;
+  }
+  .wx-line {
+    fill: none;
+    stroke: #be123c;
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+  .wx-cursor {
+    stroke: var(--marker);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+  .wx-axis {
+    position: absolute;
+    left: 8px;
+    font: 400 10.5px/1 var(--font-mono);
+    color: var(--muted);
+    background: color-mix(in srgb, var(--surface) 85%, transparent);
+    padding: 2px 4px;
+    pointer-events: none;
+  }
+  .wx-hi {
+    top: 26px;
+  }
+  .wx-lo {
+    bottom: 42px;
+  }
+  .wx-ticks {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 2px;
+    height: 16px;
+    font: 400 10.5px/1 var(--font-mono);
+    color: var(--muted);
+  }
+  .wx-ticks span {
+    position: absolute;
+    transform: translateX(-50%);
+  }
+  .wx-note {
+    grid-area: note;
+    margin: 0;
+    padding: 12px 16px 14px;
+    border-top: 1px solid var(--line);
+  }
+  @container (max-width: 640px) {
+    .wx {
+      grid-template-columns: 1fr;
+      grid-template-areas: 'map' 'readout' 'timeline' 'note';
+    }
+    .wx-readout {
+      border-left: 0;
+      border-top: 1px solid var(--line);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      padding: 14px 16px;
+      gap: 12px;
+    }
+    .wx-map svg {
+      max-height: 34svh;
+    }
+  }
+</style>
+
+<script>
+  import { bindWeatherStage } from '../lib/weather-stage';
+  document.querySelectorAll<HTMLElement>('[data-weather]').forEach((el) => bindWeatherStage(el));
+</script>

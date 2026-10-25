@@ -123,9 +123,15 @@ export function playIntro(root: HTMLElement): void {
   requestAnimationFrame(tick);
 }
 
+/** Layouts where the story stage is not pinned (phones, small tablets, short windows). */
+const COMPACT = '(max-width: 960px), (max-height: 620px)';
+
 /**
- * Scroll story: the position of the visitor in the section drives the stage. Steps marked
- * data-step="n" become current as they cross the middle of the viewport.
+ * Scroll story. Wide layouts: the stage is pinned and the visitor's position in the section
+ * drives it; steps marked data-step="n" become current in turn. Compact layouts: the stage is
+ * in the page flow above the steps, and its own position in the viewport drives it, from the
+ * moment its top enters the lower part of the screen until it reaches the header. Switching
+ * between the two (rotation, resizing) needs no reinitialisation.
  */
 export function bindStory(section: HTMLElement): void {
   const root = section.querySelector<HTMLElement>('[data-stage]');
@@ -158,17 +164,30 @@ export function bindStory(section: HTMLElement): void {
   }
   let active = false;
   let queued = false;
-  const update = () => {
-    queued = false;
+  const compact = window.matchMedia(COMPACT);
+  const progress = (): number => {
+    if (compact.matches) {
+      const r = root.getBoundingClientRect();
+      const header =
+        parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 52;
+      const start = window.innerHeight * 0.92;
+      const end = header + 8;
+      return Math.min(1, Math.max(0, (start - r.top) / Math.max(1, start - end)));
+    }
     const r = section.getBoundingClientRect();
     const span = r.height - window.innerHeight;
-    const p = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+    return span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+  };
+  const update = () => {
+    queued = false;
+    const p = progress();
     // First quarter draws the route, the second reveals the profile, the rest moves the marker.
     stage.draw(Math.min(1, p / 0.3));
     stage.at(p <= 0.3 ? 0 : (p - 0.3) / 0.7);
     const n = p < 0.25 ? 1 : p < 0.45 ? 2 : p < 0.7 ? 3 : 4;
     setStep(n);
   };
+  compact.addEventListener('change', () => onScroll());
   const onScroll = () => {
     if (active && !queued) {
       queued = true;

@@ -5,11 +5,14 @@
     "name": "GPX Viewer",
     "author": "A097MPRUS",
     "license": "MIT",
-    "legalNoticeVersion": 5,
+    "legalNoticeVersion": 6,
     "legalNoticeDate": "2026-10-25",
     "sourceforge": "https://sourceforge.net/projects/gpx-viewer/",
     "sourceforgeFiles": "https://sourceforge.net/projects/gpx-viewer/files/",
-    "tickets": "https://sourceforge.net/p/gpx-viewer/tickets/"
+    "tickets": "https://sourceforge.net/p/gpx-viewer/tickets/",
+    "website": "https://gpxviewerpro.pages.dev/",
+    "github": "https://github.com/A097MPRUS/GPX-Viewer",
+    "githubReleases": "https://github.com/A097MPRUS/GPX-Viewer/releases"
   },
   "platforms": [
     {
@@ -80,6 +83,66 @@
     }
   ],
   "releases": [
+    {
+      "id": "macos-0.3.0",
+      "family": "macos",
+      "version": "0.3.0",
+      "build": "4",
+      "date": "2026-10-25",
+      "status": "upcoming",
+      "folder": null,
+      "checksums": null,
+      "notes": null,
+      "github": null,
+      "hiddenUntil": null,
+      "title": "Historical Weather",
+      "summary": "Historical weather for the time and place of a recording in both Mac editions: a Weather inspector with summaries, a timeline linked to the map and graphs, eight modelled graph lines, a local cache and clear attribution.",
+      "platforms": [
+        "macos-arm64",
+        "macos-x86_64"
+      ],
+      "screenshots": [
+        "weather-app.png",
+        "weather-inspector.png",
+        "weather-timeline.png",
+        "weather-graph.png"
+      ],
+      "sections": {
+        "new": [
+          "Weather inspector in both Mac editions (the cloud and sun tab; also Track, Retrieve Historical Weather and View, Weather).",
+          "Weather is matched to the recording itself: places sampled along the route about every 10 km and at height changes of 300 m, hourly values matched to each point's timestamp in UTC and blended between neighbouring places.",
+          "Air temperature, feels-like temperature, dew point, relative humidity, precipitation, rain, snowfall, wind speed, wind direction, gusts, sea-level and surface pressure, cloud cover and the weather condition. Visibility is shown as not provided by the source.",
+          "Weather timeline over the recording time (temperature, hourly precipitation, wind arrows), linked to the map marker, the graph cursor and the Point inspector.",
+          "Eight modelled graph lines beside any main measurement: temperature, wind speed, gusts, headwind, precipitation, sea-level pressure, humidity and cloud cover, marked Modelled and credited in the legend.",
+          "Summaries for the whole recording or the selected section: ranges and time-weighted averages, precipitation shared out by the time spent in each hour, prevailing wind, wind along the direction of travel and the most frequent condition.",
+          "A temperature recorded by a sensor in the file is shown beside the modelled air temperature, never replaced."
+        ],
+        "improvements": [
+          "Answers are cached on the Mac (at most 20 MB): opening the Weather inspector again or working offline shows saved weather without a request; Clear weather cache deletes them.",
+          "Clear messages for missing timestamps, recordings in the future or before 1940, no data yet for recent days, no connection, timeouts and rate limits.",
+          "Installer read-me and welcome screens describe Historical Weather and what it sends."
+        ],
+        "compatibility": [
+          "Apple silicon edition: macOS 13 and later. Intel edition: built for macOS 10.13 to 12 with the same weather features; its weather code uses only APIs available on macOS 10.13.",
+          "Historical Weather is not available in the Windows edition or in GPX Viewer Web Lite."
+        ],
+        "privacy": [
+          "Weather is requested only when you press Retrieve. Open-Meteo receives a few places along the route, rounded to about 1 km, and the dates of the recording; never the GPX file, exact times, names or sensor values.",
+          "Legal notice version 6, privacy and third-party texts describe the weather source, its licence and attribution."
+        ],
+        "limitations": [
+          "Weather values are model estimates for grid cells of about 9 to 25 km and whole hours, not measurements at the track.",
+          "The most recent days can be missing or provisional until the archive is updated.",
+          "Uses Open-Meteo's free service for non-commercial use; very heavy use can be rate limited.",
+          "Not signed with an Apple Developer ID and not notarized.",
+          "Tested on macOS 27 (Apple silicon; the Intel edition under Rosetta). Historical Weather has not been tested on macOS 10.13 to 12 hardware."
+        ]
+      },
+      "attribution": "Weather data by Open-Meteo.com (CC BY 4.0), based on data and products of ECMWF; contains modified Copernicus Climate Change Service information.",
+      "changes": [],
+      "limitations": [],
+      "assets": []
+    },
     {
       "id": "macos-0.2.0",
       "family": "macos",

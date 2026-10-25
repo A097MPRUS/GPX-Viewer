@@ -10,6 +10,8 @@ updated: '2026-10-25'
 
 GPX Viewer's own source code is free software under the MIT License, © 2026 A097MPRUS. The licence covers the project's code and documentation only. It gives no rights to any map, image or data shown in the applications; those belong to their owners (see the Legal notice and the third-party list shipped with each download).
 
+Historical weather (macOS, from version 0.3.0): weather data by Open-Meteo.com under the Creative Commons Attribution 4.0 licence, based on data and products of ECMWF and containing modified Copernicus Climate Change Service information. The applications credit it wherever weather values are shown.
+
 The applications contain no Garmin FIT SDK code. The bundled region outlines are derived from OpenStreetMap data, © OpenStreetMap contributors, under the Open Database License 1.0.
 
 ## This website

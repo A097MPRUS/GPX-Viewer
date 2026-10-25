@@ -1,133 +1,400 @@
 ---
-// Documentation index with client-side search. Author: A097MPRUS.
+// Documentation landing page: search, where to start, popular topics and every article by
+// section. Client-side search over titles, descriptions and article text. Author: A097MPRUS.
 import Base from '../../layouts/Base.astro';
 import { SECTIONS, allDocs, plainText } from '../../lib/docs';
 import { url } from '../../data/site';
 
 const docs = await allDocs();
-const index = docs.map((d) => ({
-  id: d.id,
-  text: `${d.data.title} ${d.data.description} ${plainText(d.body ?? '')}`.toLowerCase(),
-}));
+const byId = new Map(docs.map((d) => [d.id, d]));
+const index = docs.map((d) => {
+  const body = plainText(d.body ?? '');
+  return {
+    id: d.id,
+    title: d.data.title,
+    description: d.data.description,
+    href: url(`docs/${d.id}/`),
+    body,
+    text: `${d.data.title} ${d.data.description} ${body}`.toLowerCase(),
+  };
+});
+const pick = (ids: string[]) => ids.map((id) => byId.get(id)).filter((d) => !!d);
+const start = pick(['getting-started', 'installing', 'web-lite']);
+const popular = pick([
+  'graphs',
+  'maps',
+  'metrics',
+  'historical-weather',
+  'troubleshooting',
+  'compatibility',
+]);
+const sectionText: Record<string, string> = {
+  Start: 'Installing GPX Viewer and the browser viewer.',
+  'Using GPX Viewer': 'Files, the map, measurements, graphs and weather.',
+  Reference: 'GPX support, map sources, editions and problems.',
+  Project: 'Releases, privacy and licences.',
+};
 ---
 
 <Base
   title="Documentation"
-  description="How to install and use GPX Viewer and GPX Viewer Web Lite: files, maps, graphs, metrics, compatibility, troubleshooting and licences."
+  description="How to install and use GPX Viewer and GPX Viewer Web Lite: files, maps, graphs, metrics, historical weather, compatibility, troubleshooting and licences."
   current="docs/"
 >
-  <section class="section">
+  <section class="section docs-head">
     <div class="wrap wrap-wide">
       <h1>Documentation</h1>
       <p class="lede">
-        Installing and using GPX Viewer, how its values are calculated, and reference information.
+        Installing and using GPX Viewer, how every value is calculated, and the reference behind it.
       </p>
-      <div class="search">
-        <label for="doc-search" class="visually-hidden">
+      <div class="search" role="search">
+        <label for="doc-search" class="search-label">
           Search the documentation
         </label>
         <input
           id="doc-search"
           type="search"
-          placeholder="Search the documentation"
+          placeholder="For example: moving time, Intel, headwind, offline"
           autocomplete="off"
+          spellcheck="false"
           data-search
+          aria-describedby="search-hint"
+          aria-controls="search-results"
         />
+        <p id="search-hint" class="small muted hint">
+          Press <kbd>/</kbd> to search from anywhere on this page.
+        </p>
         <p class="small muted" role="status" aria-live="polite" data-search-status></p>
-      </div>
-      <div class="sections" data-index={JSON.stringify(index)}>
-        {SECTIONS.map((s) => (
-          <section class="doc-section" data-section>
-            <h2>{s}</h2>
-            <ul>
-              {docs
-                .filter((d) => d.data.section === s)
-                .map((d) => (
-                  <li data-doc={d.id}>
-                    <a href={url(`docs/${d.id}/`)}>{d.data.title}</a>
-                    <p class="small muted">{d.data.description}</p>
-                  </li>
-                ))}
-            </ul>
-          </section>
-        ))}
+        <ol id="search-results" class="results" data-results hidden></ol>
       </div>
     </div>
   </section>
+
+  <div data-browse>
+    <section class="section start" aria-labelledby="start-title">
+      <div class="wrap wrap-wide">
+        <h2 id="start-title" class="block-title">
+          Start here
+        </h2>
+        <ul class="start-list">
+          {start.map((d, n) => (
+            <li>
+              <span class="num mono" aria-hidden="true">
+                {String(n + 1).padStart(2, '0')}
+              </span>
+              <a href={url(`docs/${d!.id}/`)}>{d!.data.title}</a>
+              <p class="small muted">{d!.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section popular" aria-labelledby="popular-title">
+      <div class="wrap wrap-wide">
+        <h2 id="popular-title" class="block-title">
+          Popular topics
+        </h2>
+        <ul class="topic-list">
+          {popular.map((d) => (
+            <li>
+              <a href={url(`docs/${d!.id}/`)}>{d!.data.title}</a>
+              <span class="small muted">{d!.data.description}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section all" aria-labelledby="all-title">
+      <div class="wrap wrap-wide">
+        <h2 id="all-title" class="block-title">
+          All articles
+        </h2>
+        <div class="sections">
+          {SECTIONS.map((s) => (
+            <section class="doc-section">
+              <h3>{s}</h3>
+              <p class="small muted">{sectionText[s]}</p>
+              <ul>
+                {docs
+                  .filter((d) => d.data.section === s)
+                  .map((d) => (
+                    <li>
+                      <a href={url(`docs/${d.id}/`)}>{d.data.title}</a>
+                    </li>
+                  ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </div>
+    </section>
+  </div>
+  <script
+    type="application/json"
+    id="doc-index"
+    set:html={JSON.stringify(index).replace(/</g, '\\u003c')}
+  />
 </Base>
 
 <style>
-  h1 {
+  .docs-head {
+    padding-bottom: clamp(16px, 2vw, 32px);
+  }
+  .docs-head h1 {
     font-size: var(--step-4);
+    margin-bottom: 0.2em;
   }
   .search {
-    margin: 28px 0 40px;
-    max-width: 560px;
+    margin-top: 28px;
+    max-width: 720px;
+  }
+  .search-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
   }
   input[type='search'] {
     width: 100%;
-    min-height: 48px;
-    padding: 0 14px;
+    min-height: 54px;
+    padding: 0 16px;
     border: 1px solid var(--line-strong);
     border-radius: 8px;
     background: var(--surface);
     color: var(--text);
     font: inherit;
-  }
-  .sections {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 40px clamp(24px, 4vw, 64px);
-  }
-  .doc-section h2 {
     font-size: var(--step-1);
-    padding-bottom: 10px;
+  }
+  input[type='search']:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .hint {
+    margin: 8px 0 0;
+  }
+  kbd {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    padding: 1px 5px;
+    border: 1px solid var(--line-strong);
+    border-radius: 4px;
+  }
+  .results {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .results li {
+    padding: 14px 0;
     border-bottom: 1px solid var(--line);
   }
-  ul {
+  .results a {
+    font-weight: 600;
+  }
+  .results p {
+    margin: 4px 0 0;
+  }
+  .results mark {
+    background: var(--route-soft);
+    color: inherit;
+    padding: 0 1px;
+  }
+  .block-title {
+    font-size: var(--step-1);
+    margin-bottom: 18px;
+  }
+  .start,
+  .popular,
+  .all {
+    padding-top: clamp(24px, 3vw, 48px);
+    padding-bottom: clamp(24px, 3vw, 48px);
+  }
+  .start-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0 clamp(20px, 3vw, 48px);
   }
-  li {
-    padding: 12px 0;
-    border-bottom: 1px solid var(--line);
+  .start-list li {
+    padding-top: 16px;
+    border-top: 2px solid var(--text);
   }
-  li a {
+  .num {
+    display: block;
+    color: var(--faint);
+    font-size: var(--step--1);
+    margin-bottom: 6px;
+  }
+  .start-list a {
+    font-size: var(--step-1);
     font-weight: 600;
     text-decoration: none;
   }
-  li a:hover {
+  .start-list a:hover,
+  .topic-list a:hover,
+  .doc-section a:hover {
     text-decoration: underline;
   }
-  li p {
-    margin: 4px 0 0;
+  .start-list p {
+    margin: 6px 0 0;
+  }
+  .topic-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 clamp(20px, 3vw, 48px);
+    border-top: 1px solid var(--line);
+  }
+  .topic-list li {
+    display: grid;
+    gap: 2px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .topic-list a,
+  .doc-section a {
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .sections {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px clamp(20px, 3vw, 48px);
+  }
+  .doc-section h3 {
+    font-size: var(--step-0);
+    margin-bottom: 4px;
+  }
+  .doc-section > p {
+    margin: 0 0 10px;
+  }
+  .doc-section ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .doc-section li {
+    padding: 9px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  @media (max-width: 1000px) {
+    .sections {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
   @media (max-width: 760px) {
+    .start-list,
+    .topic-list,
     .sections {
       grid-template-columns: 1fr;
+    }
+    .start-list li + li {
+      margin-top: 20px;
     }
   }
 </style>
 
 <script>
+  interface Doc {
+    id: string;
+    title: string;
+    description: string;
+    href: string;
+    body: string;
+    text: string;
+  }
   const input = document.querySelector<HTMLInputElement>('[data-search]');
-  const holder = document.querySelector<HTMLElement>('[data-index]');
   const status = document.querySelector<HTMLElement>('[data-search-status]');
-  const index = JSON.parse(holder?.dataset['index'] ?? '[]') as { id: string; text: string }[];
-  input?.addEventListener('input', () => {
-    const terms = input.value.toLowerCase().split(/\s+/).filter(Boolean);
-    let shown = 0;
-    for (const item of index) {
-      const li = document.querySelector<HTMLElement>(`[data-doc="${CSS.escape(item.id)}"]`);
-      const match = terms.every((t) => item.text.includes(t));
-      if (li) li.hidden = !match;
-      if (match) shown++;
+  const results = document.querySelector<HTMLOListElement>('[data-results]');
+  const browse = document.querySelector<HTMLElement>('[data-browse]');
+  const index = JSON.parse(document.getElementById('doc-index')?.textContent ?? '[]') as Doc[];
+
+  /** Text with every term wrapped in <mark>, built with DOM nodes (no HTML strings). */
+  const highlighted = (text: string, terms: string[]): DocumentFragment => {
+    const frag = document.createDocumentFragment();
+    if (!terms.length) {
+      frag.append(text);
+      return frag;
     }
-    document.querySelectorAll<HTMLElement>('[data-section]').forEach((s) => {
-      s.hidden = ![...s.querySelectorAll('li')].some((li) => !li.hidden);
-    });
+    const pattern = new RegExp(
+      `(${terms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`,
+      'gi',
+    );
+    for (const part of text.split(pattern)) {
+      if (!part) continue;
+      if (terms.some((t) => part.toLowerCase() === t)) {
+        const m = document.createElement('mark');
+        m.textContent = part;
+        frag.append(m);
+      } else frag.append(part);
+    }
+    return frag;
+  };
+  const snippet = (doc: Doc, terms: string[]): string => {
+    const lower = doc.body.toLowerCase();
+    const at = terms
+      .map((t) => lower.indexOf(t))
+      .filter((i) => i >= 0)
+      .sort((a, b) => a - b)[0];
+    if (at === undefined) return doc.description;
+    const start = Math.max(0, at - 70);
+    return (start > 0 ? '... ' : '') + doc.body.slice(start, start + 200).trim() + ' ...';
+  };
+  const run = () => {
+    if (!input || !results || !browse) return;
+    const terms = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+    results.replaceChildren();
+    if (!terms.length) {
+      results.hidden = true;
+      browse.hidden = false;
+      if (status) status.textContent = '';
+      return;
+    }
+    const found = index
+      .filter((d) => terms.every((t) => d.text.includes(t)))
+      .sort((a, b) => {
+        const score = (d: Doc) => terms.filter((t) => d.title.toLowerCase().includes(t)).length;
+        return score(b) - score(a);
+      });
+    for (const d of found) {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = d.href;
+      a.append(highlighted(d.title, terms));
+      const p = document.createElement('p');
+      p.className = 'small muted';
+      p.append(highlighted(snippet(d, terms), terms));
+      li.append(a, p);
+      results.append(li);
+    }
+    results.hidden = found.length === 0;
+    browse.hidden = true;
     if (status)
-      status.textContent = terms.length ? `${shown} article${shown === 1 ? '' : 's'} found` : '';
+      status.textContent = found.length
+        ? `${found.length} article${found.length === 1 ? '' : 's'} found`
+        : 'No article matches every word. Try fewer or different words.';
+  };
+  input?.addEventListener('input', run);
+  input?.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      input.value = '';
+      run();
+    } else if (e.key === 'Enter') {
+      results?.querySelector('a')?.click();
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    const t = e.target as HTMLElement;
+    if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(t.tagName) && !t.isContentEditable) {
+      e.preventDefault();
+      input?.focus();
+    }
   });
 </script>

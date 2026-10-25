@@ -1,6 +1,6 @@
 # Changelog
 
-Public releases of GPX Viewer. Generated from `release/release-manifest.json`.
+Published releases of GPX Viewer. Generated from `release/release-manifest.json`; releases in preparation are not listed.
 
 ## macOS 0.2.0 (build 3), 25 October 2026
 

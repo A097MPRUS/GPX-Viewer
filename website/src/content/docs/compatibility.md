@@ -17,6 +17,8 @@ updated: '2026-10-25'
 | Android              |                                              |              | No public build                   |
 | Wear OS extension    |                                              |              | On hold                           |
 
+Historical weather (from version 0.3.0) is in both macOS editions. The Windows edition and Web Lite do not have it.
+
 ## Tested
 
 - The macOS 0.2.0 editions were tested on macOS 27; the Intel edition under Rosetta. The author has not tested macOS 13 to 26 for the Apple silicon edition, or macOS 10.14 to 12 for the Intel edition, since 7 October 2026. The 0.1.0 Intel edition was tested on a 2011 MacBook Pro with macOS 10.13.

@@ -11,7 +11,8 @@ execFileSync(process.execPath, [join(root, 'scripts/generate.mjs'), '--check'], 
 
 const walk = (dir) =>
   readdirSync(dir).flatMap((n) => {
-    if (n === '.git' || n === 'node_modules') return [];
+    // website/ has its own checks (npm run verify): its documentation uses site paths.
+    if (n === '.git' || n === 'node_modules' || n === 'website' || n === 'dist') return [];
     const p = join(dir, n);
     return statSync(p).isDirectory() ? walk(p) : [p];
   });
@@ -28,11 +29,15 @@ for (const file of files.filter((f) => f.endsWith('.md'))) {
     errors.push(`${name}: em or en dash`);
 }
 const manifest = JSON.parse(readFileSync(join(root, 'release/release-manifest.json'), 'utf8'));
-for (const r of manifest.releases)
+for (const r of manifest.releases) {
+  if (r.status === 'upcoming' && r.assets.length) errors.push(`${r.id}: an upcoming release lists downloads`);
+  if (r.github && !r.github.startsWith('https://github.com/A097MPRUS/GPX-Viewer/releases/')) errors.push(`${r.id}: GitHub link`);
   for (const a of r.assets) {
     if (!a.url.startsWith('https://sourceforge.net/projects/gpx-viewer/files/')) errors.push(`${a.id}: not a SourceForge link`);
     if (!/^[0-9a-f]{64}$/.test(a.sha256)) errors.push(`${a.id}: SHA-256`);
+    if (a.github && !a.github.startsWith('https://github.com/A097MPRUS/GPX-Viewer/releases/download/')) errors.push(`${a.id}: GitHub asset link`);
   }
+}
 if (errors.length) {
   console.error(`Validation failed:\n- ${errors.join('\n- ')}`);
   process.exit(1);

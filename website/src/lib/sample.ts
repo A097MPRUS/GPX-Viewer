@@ -31,6 +31,10 @@ export interface SampleGeometry {
   stats: Stats;
   points: number;
   segments: number;
+  /** Map position and UTC time (ms, NaN when missing) of every point, for build-time use only. */
+  pointX: number[];
+  pointY: number[];
+  times: number[];
 }
 
 let cache: SampleGeometry | null = null;
@@ -156,6 +160,9 @@ export function sampleGeometry(): SampleGeometry {
     stats,
     points: data.count,
     segments: data.segments.length,
+    pointX: Array.from({ length: data.count }, (_, i) => px(i)),
+    pointY: Array.from({ length: data.count }, (_, i) => py(i)),
+    times: Array.from(data.time),
   };
   return cache;
 }

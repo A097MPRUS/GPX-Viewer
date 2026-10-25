@@ -31,6 +31,12 @@ const ALLOWED_HOSTS = new Set([
   'github.com',
   'localhost',
   'operations.osmfoundation.org',
+  // The one official address of this website (canonical links and the preview image).
+  'gpxviewerpro.pages.dev',
+  // Attribution links of the historical weather source (links only; the site never requests them).
+  'open-meteo.com',
+  'www.ecmwf.int',
+  'climate.copernicus.eu',
 ]);
 // The site's own public address (canonical and preview image links).
 if (process.env.SITE_URL) ALLOWED_HOSTS.add(new URL(process.env.SITE_URL).hostname);

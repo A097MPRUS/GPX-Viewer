@@ -20,7 +20,21 @@ export interface Asset {
   maximumOS: string | null;
   signed: boolean;
   notarized: boolean;
+  /** The same file attached to the GitHub Release (needs a GitHub sign-in while the repository is private). */
+  github?: string | null;
 }
+
+/** Categories of the detailed release notes, in display order. Only filled ones are shown. */
+export const noteSections = [
+  ['new', 'New features'],
+  ['improvements', 'Improvements'],
+  ['fixes', 'Bug fixes'],
+  ['performance', 'Performance'],
+  ['compatibility', 'Compatibility'],
+  ['privacy', 'Privacy and legal information'],
+  ['limitations', 'Known limitations'],
+] as const;
+export type NoteSection = (typeof noteSections)[number][0];
 
 export interface Release {
   id: string;
@@ -28,8 +42,9 @@ export interface Release {
   version: string;
   build: string | null;
   date: string;
-  status: 'current' | 'archived';
-  folder: string;
+  /** "upcoming": being prepared, never downloadable and shown only in the private preview. */
+  status: 'current' | 'archived' | 'upcoming';
+  folder: string | null;
   checksums: string | null;
   notes: string | null;
   summary: string;
@@ -37,6 +52,13 @@ export interface Release {
   assets: Asset[];
   changes: string[];
   limitations: string[];
+  title?: string;
+  platforms?: string[];
+  screenshots?: string[];
+  sections?: Partial<Record<NoteSection, string[]>>;
+  attribution?: string;
+  /** The GitHub Release page, once published there. */
+  github?: string | null;
 }
 
 export interface Platform {
@@ -53,6 +75,8 @@ export interface Platform {
 
 export interface Feature {
   id: string;
+  /** First release with the feature; while that release is upcoming the feature is not available. */
+  release?: string;
   title: string;
   detail: string;
   status: Record<string, FeatureStatus>;
@@ -80,6 +104,9 @@ export const manifest = manifestJson as unknown as {
     sourceforge: string;
     sourceforgeFiles: string;
     tickets: string;
+    website: string;
+    github: string;
+    githubReleases: string;
   };
   platforms: Platform[];
   releases: Release[];
@@ -89,7 +116,7 @@ export const features = featuresJson as unknown as {
   editions: { id: string; name: string; short: string }[];
   statusLegend: Record<FeatureStatus, string>;
   sources: Record<string, string>;
-  categories: { id: string; title: string; features: Feature[] }[];
+  categories: { id: string; title: string; release?: string; features: Feature[] }[];
 };
 
 export const screenshots = screenshotsJson as unknown as {
@@ -105,6 +132,24 @@ export function currentRelease(family: string): Release | undefined {
 }
 
 export const archivedReleases = manifest.releases.filter((r) => r.status === 'archived');
+
+/** Preview builds (the private website) may show releases in preparation; public builds never. */
+export const isPreviewBuild = import.meta.env.PUBLIC_SITE_STAGE !== 'public';
+export const upcomingReleases = isPreviewBuild
+  ? manifest.releases.filter((r) => r.status === 'upcoming')
+  : [];
+
+/** True when a feature belongs to a release that is not published yet. */
+export function featurePending(f: { release?: string }): boolean {
+  return Boolean(
+    f.release && manifest.releases.some((r) => r.version === f.release && r.status === 'upcoming'),
+  );
+}
+
+/** Releases of a family, newest first, without upcoming ones. */
+export function releasesOf(family: string): Release[] {
+  return manifest.releases.filter((r) => r.family === family && r.status !== 'upcoming');
+}
 export const platform = (id: string) => manifest.platforms.find((p) => p.id === id);
 
 /** True while SourceForge keeps a release staged (hidden); computed at build time. */
@@ -120,11 +165,15 @@ export function temporarilyHidden(release: Release, now = Date.now()): boolean {
 const owner = (import.meta.env.PUBLIC_GITHUB_OWNER as string | undefined)?.trim() || null;
 export const github = {
   owner,
+  /** The single project repository; the website source lives in its website/ folder. */
   project: owner ? `https://github.com/${owner}/GPX-Viewer` : null,
-  website: owner ? `https://github.com/${owner}/GPX-Viewer-Website` : null,
+  releases: owner ? `https://github.com/${owner}/GPX-Viewer/releases` : null,
 };
 
-/** Joins a site path to the configured base (GitHub Pages serves projects under /<repo>/). */
+/** The one official website address (Cloudflare Pages). Canonical links always use it. */
+export const officialSite = 'https://gpxviewerpro.pages.dev/';
+
+/** Joins a site path to the configured base. */
 export function url(path = ''): string {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const clean = path.replace(/^\//, '');

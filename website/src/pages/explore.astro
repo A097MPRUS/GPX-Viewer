@@ -1,10 +1,20 @@
 ---
-// Explore the project: implemented features per edition, screenshots, platform status.
+// Explore the project: what GPX Viewer does, section by section with genuine screenshots, then
+// the complete feature comparison per edition (every status and footnote from features.json).
 // Author: A097MPRUS.
 import Base from '../layouts/Base.astro';
-import Gallery from '../components/Gallery.astro';
 import Carousel from '../components/Carousel.astro';
-import { features, manifest, screenshots, url, type FeatureStatus } from '../data/site';
+import RouteStage from '../components/RouteStage.astro';
+import Shot from '../components/Shot.astro';
+import {
+  featurePending,
+  features,
+  manifest,
+  platform,
+  screenshots,
+  url,
+  type FeatureStatus,
+} from '../data/site';
 
 const editions = features.editions;
 const statusText: Record<FeatureStatus, string> = {
@@ -13,13 +23,16 @@ const statusText: Record<FeatureStatus, string> = {
   no: 'Not in this edition',
   unverified: 'Not verified',
 };
-const shotGroups = screenshots.groups
-  .map((g) => ({
-    ...g,
-    count: screenshots.items.filter((s) => s.group === g.id && s.status === 'available').length,
-  }))
-  .filter((g) => g.count > 0);
+const has = (file: string) =>
+  screenshots.items.some((s) => s.file === file && s.status === 'available');
+const graphShots = screenshots.items
+  .filter((s) => s.group === 'graphs' && s.status === 'available')
+  .map((s) => s.file);
+const weatherCat = features.categories.find((c) => c.id === 'weather');
+const weatherPending = weatherCat ? featurePending(weatherCat) : true;
 const others = manifest.platforms.filter((p) => p.status !== 'released');
+const ios = platform('ios');
+
 let footnote = 0;
 const notes: { n: number; text: string }[] = [];
 const noteFor = (text: string) => {
@@ -29,8 +42,10 @@ const noteFor = (text: string) => {
 };
 const tables = features.categories.map((c) => ({
   ...c,
+  pending: featurePending(c),
   rows: c.features.map((f) => ({
     ...f,
+    pending: featurePending(f),
     cells: editions.map((e) => {
       const status = (f.status[e.id] ?? 'no') as FeatureStatus;
       const note = f.note?.[e.id];
@@ -38,217 +53,720 @@ const tables = features.categories.map((c) => ({
     }),
   })),
 }));
+const sections = [
+  ['overview', 'Overview'],
+  ['platforms', 'Platforms'],
+  ['files', 'Files'],
+  ['mapping', 'Mapping'],
+  ['official', 'Official maps'],
+  ['graphs', 'Graphs'],
+  ['statistics', 'Statistics'],
+  ['terrain', 'Terrain'],
+  ['weather', 'Weather'],
+  ['recording', 'Recording'],
+  ['editing', 'Editing'],
+  ['comparison', 'Feature comparison'],
+];
 ---
 
 <Base
   title="Explore the project"
-  description="What GPX Viewer does on each platform: files, maps, graphs, statistics, terrain, editing and privacy, with screenshots of the macOS application."
+  description="What GPX Viewer does on each platform: files, maps, official imagery, graphs, statistics, terrain, historical weather and editing, with screenshots of the macOS application and the complete feature comparison."
   current="explore/"
 >
-  <section class="section head-section">
+  <section class="section head" id="overview" aria-labelledby="explore-title">
     <div class="wrap wrap-wide">
       <p class="kicker">Explore the project</p>
-      <h1>What GPX Viewer does</h1>
+      <h1 id="explore-title">What GPX Viewer does</h1>
       <p class="lede">
-        GPX Viewer opens GPX files, shows them on official and open maps, and analyses them with
-        graphs and statistics. It is a native application on macOS, with a separate Windows edition.
-        This page lists what each edition provides, based on the source code and release notes;
-        nothing here is planned work presented as finished.
+        GPX Viewer opens GPX files, shows them on official and open maps and analyses them with
+        graphs, statistics, terrain and historical weather. It is a native application for macOS,
+        with a separate Windows edition and a lighter viewer in this website. Everything here is
+        based on the source code and release notes; nothing planned is presented as finished.
       </p>
-      <nav class="jump small" aria-label="On this page">
-        {tables.map((t) => (
-          <a href={`#${t.id}`}>{t.title}</a>
+      <nav class="jump" aria-label="On this page">
+        {sections.slice(1).map(([id, label]) => (
+          <a href={`#${id}`}>{label}</a>
         ))}
-        <a href="#screenshots">Screenshots</a>
-        <a href="#platforms">Other platforms</a>
       </nav>
     </div>
   </section>
 
-  <section class="section section-alt editions" aria-labelledby="editions-title">
+  <section class="section platforms" id="platforms" aria-labelledby="platforms-title">
     <div class="wrap wrap-wide">
-      <h2 id="editions-title">Three editions, one file format</h2>
+      <h2 id="platforms-title" class="title">
+        Three editions, one file format
+      </h2>
       <div class="edition-grid">
         <div>
           <h3>macOS, Apple silicon</h3>
+          <p class="small mono muted">macOS 13 and later, arm64</p>
           <p class="muted">
             SwiftUI and AppKit with Apple's MapKit, Liquid Glass on macOS 26 and later. The most
             complete edition: selectable main graph, combined and stacked graphs, time axes,
-            commercial maps with your own key, playback and the measure tool.
+            commercial maps with your own key, playback, the measure tool and historical weather.
           </p>
         </div>
         <div>
           <h3>macOS, Intel</h3>
+          <p class="small mono muted">macOS 10.13 to 12, x86_64</p>
           <p class="muted">
-            A separate AppKit application for macOS 10.13 to 12 with the same core and the same
-            features as the Apple silicon edition, adapted to older systems (Apple Maps falls back
-            to open maps on 10.13, a narrow certificate path for official servers).
+            A separate AppKit application with the same core and the same features, adapted to older
+            systems: Apple Maps falls back to open maps on 10.13, a narrow certificate path keeps
+            official servers reachable.
           </p>
         </div>
         <div>
           <h3>Windows</h3>
+          <p class="small mono muted">Windows 10 and 11, x64</p>
           <p class="muted">
             A separate code base with the same GPX model, gradient colours and statistics, official
-            maps, terrain, route analysis and editing tools. Features added to the Mac editions in
-            October 2026 are listed as not verified until the Windows edition is re-checked.
+            maps, terrain, route analysis and editing. Features added to the Mac editions since
+            October 2026 are listed as missing or not verified until Windows is checked.
+          </p>
+        </div>
+      </div>
+      <p class="small muted others-line">
+        {others.map((p) => `${p.name}: ${p.note}`).join(' ')}{' '}
+        <a href={url('viewer/')}>GPX Viewer Web Lite</a> opens GPX files in your browser.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-alt files" id="files" aria-labelledby="files-title">
+    <div class="wrap wrap-wide split">
+      <div class="split-text">
+        <p class="kicker">Files</p>
+        <h2 id="files-title" class="title">
+          Open what you recorded, exactly as recorded.
+        </h2>
+        <p class="muted">
+          GPX 1.0 and 1.1 tracks, routes and waypoints, several files at once and by drag and drop.
+          Extensions such as heart rate, cadence, power, temperature and device fields are read and
+          kept; segments are never joined, so a pause in the recording stays a pause. File Info
+          shows the full XML and identifies the recording app or device.
+        </p>
+        <a class="more" href={url('docs/opening-files/')}>
+          Opening files
+        </a>
+      </div>
+      <dl class="fact-list">
+        <div>
+          <dt>Formats</dt>
+          <dd>
+            GPX 1.0 and 1.1. FIT is not opened (Garmin's licence does not allow its SDK here).
+          </dd>
+        </div>
+        <div>
+          <dt>Original file</dt>
+          <dd>Never changed by opening or analysing; edits are saved only when you choose.</dd>
+        </div>
+        <div>
+          <dt>Large files</dt>
+          <dd>Tested with 100,000 and 500,000 points.</dd>
+        </div>
+        <div>
+          <dt>Privacy</dt>
+          <dd>Files are read on your computer and never uploaded.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section mapping" id="mapping" aria-labelledby="mapping-title">
+    <div class="wrap wrap-wide">
+      <div class="narrow-head">
+        <p class="kicker">Mapping</p>
+        <h2 id="mapping-title" class="title">
+          The track over the map you choose.
+        </h2>
+        <p class="lede">
+          Apple Maps on Mac, OpenStreetMap, OpenTopoMap and CyclOSM, national imagery and
+          topographic maps, overlays such as cycle infrastructure and hiking routes, and commercial
+          services with your own key. Every map keeps its owner's credit visible.
+        </p>
+      </div>
+      {has('map-layers.png') && (
+        <Shot file="map-layers.png" set="explore" maxHeight="min(72svh, 800px)" class="wide-shot" />
+      )}
+    </div>
+  </section>
+
+  <section class="section section-alt official" id="official" aria-labelledby="official-title">
+    <div class="wrap wrap-wide split split-reverse">
+      {has('official-aerial.png') && (
+        <Shot file="official-aerial.png" set="explore" maxHeight="min(60svh, 600px)" />
+      )}
+      <div class="split-text">
+        <p class="kicker">Official maps</p>
+        <h2 id="official-title" class="title">
+          Imagery from the agencies that survey the land.
+        </h2>
+        <p class="muted">
+          Where a national or regional mapping agency publishes imagery and maps openly, GPX Viewer
+          offers them, and suggests official imagery when the map is over its area.
+        </p>
+        <ul class="country-list">
+          <li>
+            <strong>Luxembourg</strong> Geoportail aerial (summer, leaf-off), topographic, 1:20,000,
+            hybrid, full catalogue
+          </li>
+          <li>
+            <strong>Belgium</strong> Wallonia, Flanders and Brussels aerial imagery, NGI maps
+          </li>
+          <li>
+            <strong>France</strong> IGN aerial imagery and Plan IGN
+          </li>
+          <li>
+            <strong>Netherlands</strong> PDOK aerial imagery and BRT map
+          </li>
+          <li>
+            <strong>Switzerland</strong> swisstopo SWISSIMAGE and national map
+          </li>
+          <li>
+            <strong>Austria</strong> basemap.at imagery and map
+          </li>
+          <li>
+            <strong>Germany</strong> basemap.de and four states' aerial imagery
+          </li>
+        </ul>
+        <a class="more" href={url('docs/maps/')}>
+          Map sources and attribution
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section graphs" id="graphs" aria-labelledby="graphs-title">
+    <div class="wrap wrap-wide">
+      <div class="graphs-head">
+        <div>
+          <p class="kicker">Graphs</p>
+          <h2 id="graphs-title" class="title">
+            A profile that shows where it gets steep.
+          </h2>
+          <p class="muted">
+            The elevation is coloured by gradient over 50 m. Fourteen measurements can be the main
+            graph, up to three can be combined on their own scales or stacked, against distance,
+            elapsed time or moving time. The graph and the map share one cursor.
+          </p>
+          <a class="more" href={url('docs/graphs/')}>
+            The graph in detail
+          </a>
+        </div>
+        <div class="graphs-demo">
+          <RouteStage
+            id="explore-demo"
+            mode="intro"
+            label="The synthetic sample route and its profile; drag along the profile to move the marker"
+          />
+          <p class="small muted">
+            Drag along the profile, or use the arrow keys: the marker follows on the route.
+          </p>
+        </div>
+      </div>
+    </div>
+    {graphShots.length > 0 && (
+      <div class="graph-carousel">
+        <Carousel id="explore-graphs" label="Graph screenshots" files={graphShots} />
+      </div>
+    )}
+  </section>
+
+  <section class="section section-alt statistics" id="statistics" aria-labelledby="stats-title">
+    <div class="wrap wrap-wide split">
+      <div class="split-text">
+        <p class="kicker">Statistics</p>
+        <h2 id="stats-title" class="title">
+          Numbers with their rules written down.
+        </h2>
+        <dl class="rule-list">
+          <div>
+            <dt>Distance</dt>
+            <dd>Geodesic, along the recorded points, never across a gap between segments.</dd>
+          </div>
+          <div>
+            <dt>Elevation gain</dt>
+            <dd>Changes of at least 5, 2 or 1 m (your choice), restarted in every segment.</dd>
+          </div>
+          <div>
+            <dt>Moving time</dt>
+            <dd>Steps of up to 300 s at 0.5 m/s or more within one segment.</dd>
+          </div>
+          <div>
+            <dt>Section</dt>
+            <dd>Select part of the graph: every figure is computed for that part.</dd>
+          </div>
+        </dl>
+        <a class="more" href={url('docs/metrics/')}>
+          How values are calculated
+        </a>
+      </div>
+      {has('statistics.png') && (
+        <Shot file="statistics.png" set="explore" maxHeight="min(70svh, 600px)" />
+      )}
+    </div>
+  </section>
+
+  <section class="section terrain" id="terrain" aria-labelledby="terrain-title">
+    <div class="wrap wrap-wide">
+      <p class="kicker">Terrain and route context</p>
+      <h2 id="terrain-title" class="title">
+        The ground under the track.
+      </h2>
+      <div class="three">
+        <div>
+          <h3>Official terrain</h3>
+          <p class="muted small">
+            Terrain heights from Geoportail Luxembourg, IGN in France or worldwide terrain tiles,
+            compared with the recorded elevation, with the difference as its own line.
+          </p>
+        </div>
+        <div>
+          <h3>3D relief</h3>
+          <p class="muted small">
+            The route draped over a relief model of the surrounding terrain, in both Mac editions.
+          </p>
+        </div>
+        <div>
+          <h3>Route context</h3>
+          <p class="muted small">
+            Land cover, the national cycle network, roads and paths, surfaces, bridges and tunnels
+            along the route, as bands under the profile. Map-derived, labelled as estimates.
           </p>
         </div>
       </div>
     </div>
   </section>
 
-  {tables.map((t) => (
-    <section class="section feature-section" id={t.id} aria-labelledby={`${t.id}-title`}>
-      <div class="wrap wrap-wide">
-        <h2 id={`${t.id}-title`}>{t.title}</h2>
-        <div
-          class="table-scroll"
-          tabindex="0"
-          role="region"
-          aria-label={`${t.title}, availability by edition`}
-        >
-          <table class="matrix">
-            <thead>
-              <tr>
-                <th scope="col">Feature</th>
-                {editions.map((e) => (
-                  <th scope="col">{e.name}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {t.rows.map((r) => (
-                <tr>
-                  <th scope="row">
-                    <span class="feature-title">{r.title}</span>
-                    {r.detail && <span class="feature-detail">{r.detail}</span>}
-                  </th>
-                  {r.cells.map((c) => (
-                    <td class={`st st-${c.status}`}>
-                      <span class="mark" aria-hidden="true" />
-                      {statusText[c.status]}
-                      {c.note && (
-                        <sup>
-                          <a href={`#note-${c.note}`} aria-label={`Note ${c.note}`}>
-                            {c.note}
-                          </a>
-                        </sup>
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-  ))}
-
-  <section class="section notes-section" aria-labelledby="notes-title">
+  <section class="section weather" id="weather" aria-labelledby="weather-title">
     <div class="wrap wrap-wide">
-      <h2 id="notes-title" class="small-title">
-        Notes and sources
-      </h2>
-      <ol class="notes small muted">
-        {notes.map((n) => (
-          <li id={`note-${n.n}`}>{n.text}</li>
-        ))}
-      </ol>
-      <ul class="sources small muted">
-        {editions.map((e) => (
-          <li>
-            <strong>{e.name}:</strong> {features.sources[e.id]}
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
-
-  <section class="section section-alt" id="screenshots" aria-labelledby="shots-title">
-    <div class="wrap wrap-wide">
-      <div class="section-head">
-        <h2 id="shots-title">Screenshots</h2>
+      <div class="narrow-head">
+        <p class="kicker">
+          Historical weather{' '}
+          <span class:list={['state', { pending: weatherPending }]}>
+            {weatherPending ? 'macOS 0.3.0, in preparation' : 'macOS, from 0.3.0'}
+          </span>
+        </p>
+        <h2 id="weather-title" class="title">
+          Estimated weather for every point of a recording.
+        </h2>
         <p class="lede">
-          Screenshots of GPX Viewer for macOS with synthetic test files. Select a screenshot to see
-          it at full size.
+          On request, GPX Viewer retrieves historical weather for the places and hours of the
+          recording from the Open-Meteo archive and matches it to each point's timestamp. The
+          Weather inspector summarises it, a timeline follows it over time and eight weather lines
+          can join the graph.
         </p>
       </div>
+      {has('weather-app.png') && (
+        <Shot
+          file="weather-app.png"
+          set="explore-weather"
+          maxHeight="min(72svh, 800px)"
+          class="wide-shot"
+        />
+      )}
+      <div class="weather-detail">
+        <dl class="rule-list">
+          <div>
+            <dt>Matching</dt>
+            <dd>
+              Places about every 10 km and at 300 m height changes; hourly values matched in UTC and
+              blended between places.
+            </dd>
+          </div>
+          <div>
+            <dt>Values</dt>
+            <dd>
+              Air and feels-like temperature, dew point, humidity, precipitation, rain, snowfall,
+              wind speed, direction and gusts, pressure, cloud cover, conditions. Visibility is not
+              provided by the source.
+            </dd>
+          </div>
+          <div>
+            <dt>Timeline and graph</dt>
+            <dd>
+              Temperature, hourly precipitation and wind over time, sharing the cursor with the map
+              and graph; eight modelled graph lines.
+            </dd>
+          </div>
+          <div>
+            <dt>Cache and offline</dt>
+            <dd>
+              Answers saved on the Mac (at most 20 MB), shown offline, cleared with one button.
+            </dd>
+          </div>
+          <div>
+            <dt>Accuracy</dt>
+            <dd>
+              Model estimates for grid cells of about 9 to 25 km and whole hours, not measurements
+              at the track; marked Modelled. Sensor values in the file stay separate.
+            </dd>
+          </div>
+          <div>
+            <dt>Privacy and source</dt>
+            <dd>
+              Only rounded places and dates are sent, only when you ask. Weather data by
+              Open-Meteo.com (CC BY 4.0), based on ECMWF data and Copernicus information.
+            </dd>
+          </div>
+        </dl>
+        <div class="weather-shots">
+          {has('weather-timeline.png') && (
+            <Shot file="weather-timeline.png" set="explore-weather" maxHeight="min(40svh, 380px)" />
+          )}
+          {has('weather-graph.png') && (
+            <Shot file="weather-graph.png" set="explore-weather" maxHeight="min(40svh, 380px)" />
+          )}
+        </div>
+      </div>
+      <a class="more" href={url('docs/historical-weather/')}>
+        Historical weather in detail
+      </a>
     </div>
-    {shotGroups.map((g) =>
-      g.id === 'graphs' ? (
-        <div class="shot-group">
-          <h3 class="wrap wrap-wide">{g.title}</h3>
-          <Carousel
-            id={`explore-${g.id}`}
-            label={g.title}
-            files={screenshots.items
-              .filter((s) => s.group === g.id && s.status === 'available')
-              .map((s) => s.file)}
-          />
-        </div>
-      ) : (
-        <div class="wrap wrap-wide shot-group">
-          <h3>{g.title}</h3>
-          <Gallery group={g.id} />
-        </div>
-      ),
-    )}
   </section>
 
-  <section class="section" id="platforms" aria-labelledby="platforms-title">
-    <div class="wrap wrap-wide">
-      <h2 id="platforms-title">Other platforms</h2>
-      <dl class="other">
-        {others.map((p) => (
-          <div>
-            <dt>{p.name}</dt>
-            <dd>{p.note}</dd>
-          </div>
-        ))}
-      </dl>
-      <p class="small muted">
-        Only released editions have downloads. See <a href={url('downloads/')}>Downloads</a>.
+  <section class="section section-alt recording" id="recording" aria-labelledby="recording-title">
+    <div class="wrap wrap-wide split">
+      <div class="split-text">
+        <p class="kicker">Recording</p>
+        <h2 id="recording-title" class="title">
+          Recording belongs to the phone.
+        </h2>
+        <p class="muted">
+          The Mac and Windows editions view and analyse recordings; they do not record. A GPX Viewer
+          for iPhone with recording is in development. {ios?.note}
+        </p>
+      </div>
+      <p class="muted small aside-text">
+        Recordings from any app or device that writes GPX open in every edition, including accuracy,
+        barometer and device temperature fields where the recorder stores them.
       </p>
+    </div>
+  </section>
+
+  <section class="section editing" id="editing" aria-labelledby="editing-title">
+    <div class="wrap wrap-wide">
+      <p class="kicker">Editing and measuring</p>
+      <h2 id="editing-title" class="title">
+        Change a copy, keep the original.
+      </h2>
+      <div class="three">
+        <div>
+          <h3>Draw and route</h3>
+          <p class="muted small">
+            Draw a route by hand or let BRouter follow roads and paths for cycling, hiking or
+            driving.
+          </p>
+        </div>
+        <div>
+          <h3>Repair and reshape</h3>
+          <p class="muted small">
+            Split, merge, simplify, clean outliers, reverse, shift times and fix elevations, with
+            undo for every step.
+          </p>
+        </div>
+        <div>
+          <h3>Measure</h3>
+          <p class="muted small">
+            Measure distances and areas on the map, and draw a terrain profile along any measured
+            line.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="section section-alt comparison"
+    id="comparison"
+    aria-labelledby="comparison-title"
+  >
+    <div class="wrap wrap-wide">
+      <h2 id="comparison-title" class="title">
+        Complete feature comparison
+      </h2>
+      <p class="muted">
+        Every feature by edition. Statuses come from the source code and release notes; a feature of
+        a release in preparation is marked as such.
+      </p>
+      <div class="legend small muted" aria-label="Status legend">
+        {(['yes', 'partial', 'unverified', 'no'] as FeatureStatus[]).map((s) => (
+          <span class={`st st-${s}`}>
+            <span class="mark" aria-hidden="true" />
+            {features.statusLegend[s]}
+          </span>
+        ))}
+      </div>
+      <div class="tabs" role="tablist" aria-label="Feature categories" data-tabs hidden>
+        {tables.map((t, n) => (
+          <button
+            type="button"
+            role="tab"
+            id={`tab-${t.id}`}
+            aria-controls={`panel-${t.id}`}
+            aria-selected={n === 0 ? 'true' : 'false'}
+            tabindex={n === 0 ? 0 : -1}
+          >
+            {t.title}
+          </button>
+        ))}
+        <button
+          type="button"
+          role="tab"
+          id="tab-all"
+          aria-controls="panel-all"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          All
+        </button>
+      </div>
+      <div data-panels>
+        {tables.map((t) => (
+          <section
+            class="panel"
+            id={`panel-${t.id}`}
+            role="tabpanel"
+            aria-labelledby={`tab-${t.id}`}
+            data-panel={t.id}
+          >
+            <h3 class="panel-title">
+              {t.title}
+              {t.pending && <span class="pending-label"> (macOS 0.3.0, in preparation)</span>}
+            </h3>
+            <div
+              class="table-scroll"
+              tabindex="0"
+              role="region"
+              aria-label={`${t.title}, availability by edition`}
+            >
+              <table class="matrix">
+                <thead>
+                  <tr>
+                    <th scope="col">Feature</th>
+                    {editions.map((e) => (
+                      <th scope="col">{e.name}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {t.rows.map((r) => (
+                    <tr>
+                      <th scope="row">
+                        <span class="feature-title">{r.title}</span>
+                        {r.detail && <span class="feature-detail">{r.detail}</span>}
+                      </th>
+                      {r.cells.map((c) => (
+                        <td class={`st st-${c.status}`}>
+                          <span class="mark" aria-hidden="true" />
+                          {r.pending && c.status === 'yes'
+                            ? 'In preparation'
+                            : statusText[c.status]}
+                          {c.note && (
+                            <sup>
+                              <a href={`#note-${c.note}`} aria-label={`Note ${c.note}`}>
+                                {c.note}
+                              </a>
+                            </sup>
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        ))}
+      </div>
+      <div class="notes-block">
+        <h3 class="panel-title">Notes and sources</h3>
+        <ol class="notes small muted">
+          {notes.map((n) => (
+            <li id={`note-${n.n}`}>{n.text}</li>
+          ))}
+        </ol>
+        <ul class="sources small muted">
+          {editions.map((e) => (
+            <li>
+              <strong>{e.name}:</strong> {features.sources[e.id]}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .head-section h1 {
+  .head h1 {
     font-size: var(--step-4);
   }
   .jump {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px 18px;
+    gap: 6px 20px;
     margin-top: 24px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
   }
   .jump a {
     color: var(--muted);
     text-decoration: none;
+    font-size: var(--step--1);
   }
   .jump a:hover {
     color: var(--text);
     text-decoration: underline;
   }
-  .edition-grid {
+  .title {
+    font-size: var(--step-3);
+  }
+  .narrow-head {
+    max-width: 860px;
+    margin-bottom: clamp(24px, 3vw, 44px);
+  }
+  .edition-grid,
+  .three {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: clamp(20px, 3vw, 48px);
+    margin-top: 24px;
+  }
+  .edition-grid > div,
+  .three > div {
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .edition-grid h3,
+  .three h3 {
+    font-size: var(--step-1);
+    margin-bottom: 4px;
+  }
+  .others-line {
     margin-top: 28px;
   }
-  .edition-grid h3 {
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(28px, 5vw, 88px);
+    align-items: center;
+  }
+  .split-reverse {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  }
+  .fact-list,
+  .rule-list {
+    margin: 0;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--line);
+  }
+  .fact-list div,
+  .rule-list div {
+    display: grid;
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .fact-list dt,
+  .rule-list dt {
+    font-weight: 600;
+    font-size: var(--step--1);
+  }
+  .fact-list dd,
+  .rule-list dd {
+    margin: 0;
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+  .rule-list {
+    margin: 20px 0;
+  }
+  .country-list {
+    list-style: none;
+    padding: 0;
+    margin: 18px 0;
+    display: grid;
+    gap: 6px;
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .country-list strong {
+    color: var(--text);
+    margin-right: 8px;
+  }
+  .graphs-head {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: clamp(28px, 4vw, 72px);
+    align-items: center;
+  }
+  .graph-carousel {
+    margin-top: clamp(32px, 4vw, 56px);
+  }
+  .weather-detail {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: clamp(24px, 4vw, 64px);
+    align-items: start;
+    margin-top: clamp(24px, 3vw, 44px);
+  }
+  .weather-shots {
+    display: grid;
+    gap: 24px;
+  }
+  .state {
+    margin-left: 10px;
+    color: var(--ok);
+  }
+  .state.pending,
+  .pending-label {
+    color: var(--warn);
+  }
+  .aside-text {
+    padding-left: 20px;
+    border-left: 2px solid var(--line);
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 22px;
+    margin: 18px 0;
+  }
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 22px;
+    margin: 8px 0 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .tabs button {
+    padding: 10px 0;
+    margin-bottom: -1px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    cursor: pointer;
+  }
+  .tabs button[aria-selected='true'] {
+    color: var(--text);
+    border-bottom-color: var(--text);
+  }
+  .tabs button:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .panel + .panel {
+    margin-top: 36px;
+  }
+  .panel-title {
     font-size: var(--step-1);
-  }
-  @media (max-width: 900px) {
-    .edition-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  .feature-section {
-    padding-top: clamp(40px, 4vw, 72px);
-    padding-bottom: clamp(40px, 4vw, 72px);
+    margin-bottom: 12px;
   }
   .table-scroll {
     overflow-x: auto;
@@ -280,9 +798,6 @@ const tables = features.categories.map((c) => ({
     color: var(--muted);
     margin-top: 2px;
   }
-  .matrix thead th {
-    vertical-align: bottom;
-  }
   .st {
     white-space: nowrap;
     color: var(--muted);
@@ -313,8 +828,8 @@ const tables = features.categories.map((c) => ({
     margin-left: 3px;
     text-decoration: none;
   }
-  .small-title {
-    font-size: var(--step-1);
+  .notes-block {
+    margin-top: 40px;
   }
   .notes {
     padding-left: 20px;
@@ -326,36 +841,95 @@ const tables = features.categories.map((c) => ({
     display: grid;
     gap: 6px;
   }
-  .shot-group + .shot-group {
-    margin-top: 56px;
+  @media (prefers-reduced-motion: no-preference) {
+    .panel.is-shown {
+      animation: panel-in var(--t-small) var(--ease);
+    }
+    @keyframes panel-in {
+      from {
+        opacity: 0;
+      }
+    }
   }
-  .shot-group h3 {
-    font-size: var(--step-1);
-    margin-bottom: 18px;
+  @media (max-width: 960px) {
+    .split,
+    .split-reverse,
+    .graphs-head,
+    .weather-detail {
+      grid-template-columns: 1fr;
+    }
+    .split-reverse > :global(.shot) {
+      order: 2;
+    }
   }
-  .other {
-    margin: 20px 0;
-    display: grid;
-    gap: 0;
-  }
-  .other div {
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 16px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .other dt {
-    font-weight: 600;
-  }
-  .other dd {
-    margin: 0;
-    color: var(--muted);
-  }
-  @media (max-width: 600px) {
-    .other div {
+  @media (max-width: 760px) {
+    .edition-grid,
+    .three {
+      grid-template-columns: 1fr;
+    }
+    .fact-list div,
+    .rule-list div {
       grid-template-columns: 1fr;
       gap: 2px;
     }
   }
 </style>
+
+<script>
+  import { playIntro } from '../lib/stage';
+  const demo = document.querySelector<HTMLElement>('#graphs [data-stage]');
+  if (demo) playIntro(demo);
+
+  // Category tabs for the comparison: progressive enhancement; without JavaScript every table
+  // is shown one after another.
+  const tablist = document.querySelector<HTMLElement>('[data-tabs]');
+  const panels = [...document.querySelectorAll<HTMLElement>('[data-panel]')];
+  if (tablist && panels.length) {
+    tablist.hidden = false;
+    const tabs = [...tablist.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const select = (tab: HTMLButtonElement, focus = false) => {
+      const all = tab.id === 'tab-all';
+      tabs.forEach((t) => {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      panels.forEach((p) => {
+        const show = all || `tab-${p.dataset['panel']}` === tab.id;
+        p.hidden = !show;
+        p.classList.toggle('is-shown', show);
+      });
+      if (focus) tab.focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t));
+      t.addEventListener('keydown', (e) => {
+        const next =
+          e.key === 'ArrowRight'
+            ? tabs[(i + 1) % tabs.length]
+            : e.key === 'ArrowLeft'
+              ? tabs[(i - 1 + tabs.length) % tabs.length]
+              : e.key === 'Home'
+                ? tabs[0]
+                : e.key === 'End'
+                  ? tabs[tabs.length - 1]
+                  : undefined;
+        if (next) {
+          e.preventDefault();
+          select(next, true);
+        }
+      });
+    });
+    // A link to a footnote or a table row opens the panel that contains it.
+    const reveal = () => {
+      const target = location.hash && document.querySelector(location.hash);
+      const panel =
+        target instanceof HTMLElement ? target.closest<HTMLElement>('[data-panel]') : null;
+      const tab = panel && tabs.find((t) => t.id === `tab-${panel.dataset['panel']}`);
+      if (tab) select(tab);
+    };
+    select(tabs[0]!);
+    reveal();
+    window.addEventListener('hashchange', reveal);
+  }
+</script>

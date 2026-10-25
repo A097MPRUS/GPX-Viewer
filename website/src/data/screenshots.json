@@ -23,6 +23,10 @@
     {
       "id": "analysis",
       "title": "Statistics and analysis"
+    },
+    {
+      "id": "weather",
+      "title": "Historical weather"
     }
   ],
   "items": [
@@ -98,6 +102,46 @@
       "caption": "Heart rate chosen as the main graph, with the calculated route grade on the right axis. Synthetic test file.",
       "alt": "Heart rate graph with the route grade on a second axis.",
       "status": "available"
+    },
+    {
+      "file": "weather-app.png",
+      "group": "weather",
+      "edition": "GPX Viewer 0.3.0 for macOS (Apple silicon), synthetic sample; weather retrieved from Open-Meteo for the sample's real places and date",
+      "status": "available",
+      "caption": "Historical weather for the synthetic sample: the route on OpenTopoMap, the modelled air temperature beside the elevation profile and the Weather inspector.",
+      "alt": "GPX Viewer for macOS with the Weather inspector open: recording conditions clear sky, 17.3 to 19.9 degrees, the weather timeline, and the graph showing elevation with the modelled air temperature line."
+    },
+    {
+      "file": "weather-inspector.png",
+      "group": "weather",
+      "edition": "GPX Viewer 0.3.0 for macOS (Apple silicon), synthetic sample; weather retrieved from Open-Meteo for the sample's real places and date",
+      "status": "available",
+      "caption": "The Weather inspector: recording conditions, the places sampled, the weather timeline and the temperature summary, every value marked Modelled.",
+      "alt": "The Weather inspector of GPX Viewer: clear sky, 17.3 to 19.9 degrees Celsius marked Modelled, date and time of the recording, three places sampled, and the weather timeline."
+    },
+    {
+      "file": "weather-timeline.png",
+      "group": "weather",
+      "edition": "GPX Viewer 0.3.0 for macOS (Apple silicon), synthetic sample; weather retrieved from Open-Meteo for the sample's real places and date",
+      "status": "available",
+      "caption": "The weather timeline over the recording time: air temperature as a line and arrows showing where the wind blows.",
+      "alt": "Weather timeline from 10:00 to 11:00 with the temperature rising from 17.3 to 19.9 degrees and wind arrows pointing east north east."
+    },
+    {
+      "file": "weather-graph.png",
+      "group": "weather",
+      "edition": "GPX Viewer 0.3.0 for macOS (Apple silicon), synthetic sample; weather retrieved from Open-Meteo for the sample's real places and date",
+      "status": "available",
+      "caption": "Historical temperature on the graph: the modelled air temperature on its own scale beside the elevation profile, credited to Open-Meteo in the legend.",
+      "alt": "Graph with the elevation profile coloured by gradient and a red line of modelled air temperature from 17 to 20 degrees, with the legend Weather: air temperature, Modelled, and Weather data by Open-Meteo.com."
+    },
+    {
+      "file": "weather-app-dark.png",
+      "group": "weather",
+      "edition": "GPX Viewer 0.3.0 for macOS (Apple silicon), synthetic sample; weather retrieved from Open-Meteo for the sample's real places and date",
+      "status": "available",
+      "caption": "The same recording in dark appearance with modelled wind speed and precipitation on the graph.",
+      "alt": "GPX Viewer in dark appearance with the Weather inspector, the route on OpenStreetMap and the graph showing elevation with modelled wind speed and precipitation lines."
     }
   ]
 }

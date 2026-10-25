@@ -11,6 +11,7 @@ updated: '2026-10-25'
 - Your files stay on your computer. Opening a file never changes it.
 - No account, no analytics, no advertising, no tracking.
 - Online services receive data only when you use them: map images for the visible area; place searches and addresses (Geoportail Luxembourg or Apple Maps); the route's coordinates when you ask for official terrain (Geoportail Luxembourg, IGN, or terrain tiles hosted on AWS), route analysis (Geoportail Luxembourg and the OpenStreetMap Overpass service) or route planning (BRouter); and, with your own key, the commercial map services you choose.
+- Historical weather (macOS, from version 0.3.0): only when you press Retrieve, Open-Meteo receives a few places along the route rounded to about 1 km and the days of the recording. Never the GPX file, exact times, elevations, names or sensor values. Answers are cached on your Mac (at most 20 MB) and can be deleted with Clear weather cache. Details: [Historical weather](../historical-weather/).
 - API keys are stored in the macOS Keychain (DPAPI on Windows) and sent only to their provider. The applications never use your current location.
 
 ## Web Lite

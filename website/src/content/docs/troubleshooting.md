@@ -25,6 +25,13 @@ The installer is not code-signed. Choose More info, then Run anyway, only for a 
 - On macOS 10.13, Apple Maps is not available; choose another map.
 - Official services are sometimes down for maintenance; choose another map meanwhile.
 
+## Historical weather does not appear
+
+- Weather needs timestamps in the file; a planned route without times has none.
+- The archive covers 1940 to today; the last few days can be missing until the archive is updated.
+- Without an internet connection only weather saved earlier is shown.
+- If the service is limiting requests, wait a few minutes. Details: [Historical weather](../historical-weather/).
+
 ## A file does not open
 
 - GPX Viewer opens GPX files only (not FIT, TCX or KML).

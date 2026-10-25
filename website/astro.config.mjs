@@ -1,9 +1,9 @@
 // GPX Viewer website. Author: A097MPRUS.
-// The public address is never hard-coded: SITE_URL and SITE_BASE come from the deployment
-// workflow (actions/configure-pages) and default to a local preview.
+// Canonical links always name the one official address, https://gpxviewerpro.pages.dev/
+// (Cloudflare Pages); SITE_URL overrides it only for local experiments.
 import { defineConfig } from 'astro/config';
 
-const site = process.env.SITE_URL || 'http://localhost:4321';
+const site = process.env.SITE_URL || 'https://gpxviewerpro.pages.dev';
 const base = process.env.SITE_BASE || '/';
 
 export default defineConfig({
