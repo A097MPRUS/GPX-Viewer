@@ -35,6 +35,23 @@ export interface SampleGeometry {
 
 let cache: SampleGeometry | null = null;
 
+/** Hard-edged gradient stops: one band per run of equal colour, as each pixel column in the app. */
+function bands(colors: string[]): { offset: number; color: string }[] {
+  const out: { offset: number; color: string }[] = [];
+  const n = colors.length;
+  let start = 0;
+  for (let c = 1; c <= n; c++) {
+    if (c < n && colors[c] === colors[start]) continue;
+    const color = colors[start]!;
+    out.push(
+      { offset: +((start / n) * 100).toFixed(2), color },
+      { offset: +((c / n) * 100).toFixed(2), color },
+    );
+    start = c;
+  }
+  return out;
+}
+
 export function sampleGeometry(): SampleGeometry {
   if (cache) return cache;
   const text = readFileSync(
@@ -134,10 +151,7 @@ export function sampleGeometry(): SampleGeometry {
     start: [px(0), py(0)],
     end: [px(data.count - 1), py(data.count - 1)],
     profile: { width: PW, height: PH, area, ridge, speed, low, high, speedMax },
-    stops: idx.map((i, c) => ({
-      offset: +((c / (COLS - 1)) * 100).toFixed(2),
-      color: gradeColor(d.grade[i]!),
-    })),
+    stops: bands(idx.map((i) => gradeColor(d.grade[i]!))),
     columns,
     stats,
     points: data.count,

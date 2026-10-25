@@ -19,7 +19,7 @@
   --line-strong: #c8c8c2;
   --text: #16171a;
   --muted: #5d6169;
-  --faint: #868a91;
+  --faint: #666a72;
   --link: #1a5fd0;
   --primary: #16171a;
   --primary-ink: #ffffff;
@@ -74,7 +74,7 @@
     --line-strong: #3a3c42;
     --text: #f1f2f4;
     --muted: #a3a7ae;
-    --faint: #73777f;
+    --faint: #8b9098;
     --link: #78adff;
     --primary: #f1f2f4;
     --primary-ink: #0b0c0e;
@@ -101,7 +101,7 @@
   --line-strong: #3a3c42;
   --text: #f1f2f4;
   --muted: #a3a7ae;
-  --faint: #73777f;
+  --faint: #8b9098;
   --link: #78adff;
   --primary: #f1f2f4;
   --primary-ink: #0b0c0e;
@@ -240,9 +240,7 @@ td {
 th {
   font-weight: 600;
   color: var(--muted);
-  font-size: var(--step--2);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: var(--step--1);
 }
 .visually-hidden {
   position: absolute !important;

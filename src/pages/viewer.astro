@@ -23,13 +23,13 @@ import { url } from '../data/site';
       <div class="bar-actions">
         <label class="btn btn-primary file-button">
           <input type="file" class="visually-hidden" data-file-input aria-label="Open a GPX file" />
-          Open GPX file
+          Open<span class="long">&nbsp;GPX file</span>
         </label>
         <button type="button" class="btn" data-load-sample>
           Sample
         </button>
         <button type="button" class="btn" data-fit>
-          Fit route
+          Fit<span class="long">&nbsp;route</span>
         </button>
         <details class="settings">
           <summary class="btn">Settings</summary>
@@ -96,6 +96,8 @@ import { url } from '../data/site';
         </div>
       </div>
     </div>
+
+    <dl class="key-stats" data-key-stats aria-label="Key figures"></dl>
 
     <section class="lite-graph" aria-label="Graph">
       <div class="graph-bar">
@@ -206,11 +208,12 @@ import { url } from '../data/site';
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--side);
-    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    grid-template-rows: auto auto minmax(0, 1fr) auto auto;
     grid-template-areas:
       'bar bar'
       'error error'
       'map side'
+      'keys side'
       'graph side';
     height: calc(100dvh - var(--header-h) - env(safe-area-inset-top));
     min-height: 560px;
@@ -354,6 +357,11 @@ import { url } from '../data/site';
   }
   .empty .actions {
     justify-content: center;
+  }
+  .key-stats {
+    grid-area: keys;
+    display: none;
+    margin: 0;
   }
   .lite-graph {
     grid-area: graph;
@@ -578,8 +586,8 @@ import { url } from '../data/site';
       height: auto;
       min-height: 0;
       grid-template-columns: 1fr;
-      grid-template-rows: auto auto auto auto auto;
-      grid-template-areas: 'bar' 'error' 'map' 'graph' 'side';
+      grid-template-rows: auto auto auto auto auto auto;
+      grid-template-areas: 'bar' 'error' 'map' 'keys' 'graph' 'side';
     }
     .lite-map {
       height: clamp(320px, 58dvh, 720px);
@@ -603,6 +611,49 @@ import { url } from '../data/site';
   }
   /* Phones: the map first; statistics as a compact strip; graph panel can collapse. */
   @media (max-width: 640px) {
+    .long {
+      display: none;
+    }
+    .bar-actions {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .bar-actions .btn,
+    .settings summary {
+      width: 100%;
+      justify-content: center;
+      padding: 0 6px;
+    }
+    .settings-panel {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      top: auto;
+      width: auto;
+    }
+    .lite-app.has-file .key-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+    }
+    .key-stats :global(div) {
+      padding: 8px 10px;
+    }
+    .key-stats :global(div + div) {
+      border-left: 1px solid var(--line);
+    }
+    .key-stats :global(dt) {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .key-stats :global(dd) {
+      margin: 0;
+      font-weight: 600;
+      font-size: var(--step--1);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
     .lite-bar {
       flex-wrap: wrap;
       padding: 8px 12px;

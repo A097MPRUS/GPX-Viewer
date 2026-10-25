@@ -144,14 +144,16 @@ const fmtMinutes = (sec: number | null) => {
   </section>
 
   <section class="section section-alt graphs" aria-labelledby="graphs-title">
-    <div class="wrap wrap-wide section-head">
-      <p class="kicker">Graphs</p>
-      <h2 id="graphs-title">Choose what the graph shows.</h2>
-      <p class="lede">
-        Fourteen measurements as the main graph, combined or stacked layouts, and three horizontal
-        axes in both Mac editions. Screenshots of GPX Viewer {mac.version} with a synthetic test
-        file.
-      </p>
+    <div class="wrap wrap-wide">
+      <div class="section-head">
+        <p class="kicker">Graphs</p>
+        <h2 id="graphs-title">Choose what the graph shows.</h2>
+        <p class="lede">
+          Fourteen measurements as the main graph, combined or stacked layouts, and three horizontal
+          axes in both Mac editions. Screenshots of GPX Viewer {mac.version} with a synthetic test
+          file.
+        </p>
+      </div>
     </div>
     <Carousel id="graph-gallery" label="Graph screenshots" files={graphShots} />
   </section>
@@ -250,8 +252,8 @@ const fmtMinutes = (sec: number | null) => {
         <div>
           <dt>Stopped</dt>
           <dd>
-            {fmtMinutes(s.stopped)}
-            <small> h</small>
+            {Math.round((s.stopped ?? 0) / 60)}
+            <small> min</small>
           </dd>
         </div>
         <div>
@@ -264,11 +266,8 @@ const fmtMinutes = (sec: number | null) => {
           </dd>
         </div>
         <div>
-          <dt>Track segments</dt>
-          <dd>
-            {g.segments}
-            <small> ({g.points.toLocaleString('en')} points)</small>
-          </dd>
+          <dt>Points, in {g.segments} segments</dt>
+          <dd>{g.points.toLocaleString('en')}</dd>
         </div>
       </dl>
     </div>
@@ -363,6 +362,11 @@ const fmtMinutes = (sec: number | null) => {
   .stage-note {
     margin-top: 12px;
     text-align: center;
+  }
+  @media (max-width: 600px) {
+    .intro-text .lede {
+      font-size: var(--step-1);
+    }
   }
   /* Short laptop windows: keep the introduction compact. */
   @media (max-height: 760px) and (min-width: 900px) {
@@ -510,7 +514,7 @@ const fmtMinutes = (sec: number | null) => {
     inset: auto 0 0 0;
     margin: 0;
     padding: 12px 16px;
-    color: #73777f !important;
+    color: #8b9098 !important;
   }
   @media (max-width: 960px) {
     .lite-grid {

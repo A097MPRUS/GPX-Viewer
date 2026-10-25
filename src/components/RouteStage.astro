@@ -261,6 +261,15 @@ const P = g.profile;
   .stage.show-speed .axis-speed {
     opacity: 1;
   }
+  /* In the scroll story on small screens the stage stays pinned above the text: keep it short. */
+  @media (max-width: 960px), (max-height: 620px) {
+    .stage-story .map {
+      max-height: 30svh;
+    }
+    .stage-story .profile {
+      height: 64px;
+    }
+  }
   @container (max-width: 620px) {
     .stage {
       grid-template-columns: 1fr;

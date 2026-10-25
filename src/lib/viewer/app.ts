@@ -95,6 +95,7 @@ export function initViewer(root: HTMLElement): void {
     chart: $(root, '[data-chart]')!,
     tooltip: $(root, '[data-tooltip]')!,
     stats: $(root, '[data-stats]')!,
+    keyStats: $(root, '[data-key-stats]'),
     statsTitle: $(root, '[data-stats-title]')!,
     point: $(root, '[data-point]')!,
     warnings: $(root, '[data-warnings]')!,
@@ -514,6 +515,26 @@ export function initViewer(root: HTMLElement): void {
       frag.append(row);
     }
     el.stats.replaceChildren(frag);
+    if (el.keyStats) {
+      const u = settings.units;
+      const keys: [string, string][] = [
+        ['Distance', fmt.distance(s.distance, u)],
+        ['Gain', fmt.elevation(s.gain, u)],
+        ['Moving', fmt.duration(s.moving)],
+        ['Average', fmt.speed(s.movingSpeed ?? s.avgSpeed, u)],
+      ];
+      el.keyStats.replaceChildren(
+        ...keys.map(([label, value]) => {
+          const row = document.createElement('div');
+          const dt = document.createElement('dt');
+          dt.textContent = label;
+          const dd = document.createElement('dd');
+          dd.textContent = value;
+          row.append(dt, dd);
+          return row;
+        }),
+      );
+    }
   }
 
   function pointRows(i: number): [string, string, 'recorded' | 'calculated'][] {
