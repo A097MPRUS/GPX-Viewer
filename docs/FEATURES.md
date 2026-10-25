@@ -59,8 +59,6 @@ Generated from `release/features.json`. "Not verified" means the feature exists 
 
 ## Historical weather
 
-In GPX Viewer 0.3.0 for macOS, which is being prepared and not published yet.
-
 | Feature | macOS, Apple silicon | macOS, Intel | Windows | Web Lite |
 | --- | --- | --- | --- | --- |
 | **Historical weather for a recording**<br>Retrieved on request from the Open-Meteo archive for the recording's places and dates; nothing is sent until you ask. | Yes | Yes | No | No |

@@ -41,8 +41,8 @@ What each edition provides, feature by feature: [docs/FEATURES.md](docs/FEATURES
 <!-- platforms:start -->
 | Platform | Status | Current version | Architecture |
 | --- | --- | --- | --- |
-| macOS for Apple silicon | Released | 0.2.0 | arm64 |
-| macOS for Intel | Released | 0.2.0 | x86_64 |
+| macOS for Apple silicon | Released | 0.3.0 | arm64 |
+| macOS for Intel | Released | 0.3.0 | x86_64 |
 | Windows | Released | 0.3.0 | x64 |
 | iPhone | In development, no public release |  | arm64 |
 | Android | No public build |  |  |
@@ -54,11 +54,11 @@ What each edition provides, feature by feature: [docs/FEATURES.md](docs/FEATURES
 <!-- downloads:start -->
 | Edition | Requirements | Installer | Size | SHA-256 |
 | --- | --- | --- | --- | --- |
-| macOS for Apple silicon | macOS 13 Ventura or later on a Mac with Apple silicon (M1 or later) | [GPX Viewer 0.2.0 Apple Silicon macOS 13+.pkg](https://sourceforge.net/projects/gpx-viewer/files/macOS/0.2.0/ARM64/GPX%20Viewer%200.2.0%20Apple%20Silicon%20macOS%2013%2B.pkg/download) | 4.4 MB | `02026cc723525aa78e775a4d77714644ba49e30c91845f9b109f93b0a4f6fa2a` |
-| macOS for Intel | macOS 10.13 High Sierra to macOS 12 Monterey on an Intel Mac | [GPX Viewer 0.2.0 Intel macOS 10.13-12.pkg](https://sourceforge.net/projects/gpx-viewer/files/macOS/0.2.0/X64/GPX%20Viewer%200.2.0%20Intel%20macOS%2010.13-12.pkg/download) | 6.1 MB | `5d6c7953b02d8497ff82a512cabad6a4c7162954462a1443d1c3ade0ec06aaf3` |
+| macOS for Apple silicon | macOS 13 Ventura or later on a Mac with Apple silicon (M1 or later) | [GPX Viewer 0.3.0 Apple Silicon macOS 13+.pkg](https://sourceforge.net/projects/gpx-viewer/files/macOS/0.3.0/ARM64/GPX%20Viewer%200.3.0%20Apple%20Silicon%20macOS%2013%2B.pkg/download) | 4.5 MB | `1036e9d2454673f449bb6cb66d16d0ce896a6d23236958e5f80c76f5f46b1711` |
+| macOS for Intel | macOS 10.13 High Sierra to macOS 12 Monterey on an Intel Mac | [GPX Viewer 0.3.0 Intel macOS 10.13-12.pkg](https://sourceforge.net/projects/gpx-viewer/files/macOS/0.3.0/X64/GPX%20Viewer%200.3.0%20Intel%20macOS%2010.13-12.pkg/download) | 6.2 MB | `70ea3288940ffacbeec8315dc607f21e4bf2201c76a03647a225af089707d312` |
 | Windows | Windows 10 version 1809 or later, or Windows 11, 64-bit | [GpxViewer-0.3.0-Setup-x64.exe](https://sourceforge.net/projects/gpx-viewer/files/Windows/0.3.0/GpxViewer-0.3.0-Setup-x64.exe/download) | 45.3 MB | `691445205bed57f0ca5578252836cbc1c686e0ed46b382f3a369ae77acab7626` |
 
-Released: macOS 0.2.0 on 25 October 2026, Windows 0.3.0 on 12 October 2026. Files are hosted on [SourceForge](https://sourceforge.net/projects/gpx-viewer/files/). Archived releases are listed in [CHANGELOG.md](CHANGELOG.md).
+Released: macOS 0.3.0 on 25 October 2026, Windows 0.3.0 on 12 October 2026. Files are hosted on [SourceForge](https://sourceforge.net/projects/gpx-viewer/files/). Archived releases are listed in [CHANGELOG.md](CHANGELOG.md).
 <!-- downloads:end -->
 
 The installers are not signed with a developer certificate. On macOS, Control-click the package and choose Open (macOS 15 and later: System Settings, Privacy and Security, Open Anyway). On Windows, SmartScreen may warn about an unknown publisher. Always compare the SHA-256 checksum: [docs/INSTALLING.md](docs/INSTALLING.md).
@@ -66,10 +66,11 @@ The installers are not signed with a developer certificate. On macOS, Control-cl
 ## Known limitations
 
 <!-- limitations:start -->
-- Not signed with an Apple Developer ID and not notarized: Control-click the installer and choose Open (macOS 15 and later: System Settings, Privacy and Security, Open Anyway).
-- Tested on macOS 27 (Apple silicon; the Intel edition under Rosetta). Earlier macOS versions have not been tested by the author since 7 October 2026.
-- Microsoft Azure Maps has not been tested with a real key.
-- An older GPX Viewer Intel app installed by drag and drop stays in Applications; delete it after installing.
+- Weather values are model estimates for grid cells of about 9 to 25 km and whole hours, not measurements at the track.
+- The most recent days can be missing or provisional until the archive is updated.
+- Uses Open-Meteo's free service for non-commercial use; very heavy use can be rate limited.
+- Not signed with an Apple Developer ID and not notarized.
+- Tested on macOS 27 (Apple silicon; the Intel edition under Rosetta). Historical Weather has not been tested on macOS 10.13 to 12 hardware.
 - The installer is not code-signed: Microsoft Defender SmartScreen may warn about an unknown publisher. Choose More info, then Run anyway, only for a file downloaded from the GPX Viewer SourceForge project.
 <!-- limitations:end -->
 

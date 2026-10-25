@@ -20,7 +20,7 @@
       "family": "macos",
       "name": "macOS for Apple silicon",
       "status": "released",
-      "current": "0.2.0",
+      "current": "0.3.0",
       "architecture": "arm64",
       "requirements": "macOS 13 Ventura or later on a Mac with Apple silicon (M1 or later)",
       "testedOn": "macOS 27",
@@ -31,7 +31,7 @@
       "family": "macos",
       "name": "macOS for Intel",
       "status": "released",
-      "current": "0.2.0",
+      "current": "0.3.0",
       "architecture": "x86_64",
       "requirements": "macOS 10.13 High Sierra to macOS 12 Monterey on an Intel Mac",
       "testedOn": "macOS 27 under Rosetta; macOS 10.13 on a 2011 MacBook Pro for the 0.1.0 edition",
@@ -89,11 +89,11 @@
       "version": "0.3.0",
       "build": "4",
       "date": "2026-10-25",
-      "status": "upcoming",
-      "folder": null,
-      "checksums": null,
-      "notes": null,
-      "github": null,
+      "status": "current",
+      "folder": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.3.0/",
+      "checksums": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.3.0/SHA256SUMS.txt/download",
+      "notes": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.3.0/README.md/download",
+      "github": "https://github.com/A097MPRUS/GPX-Viewer/releases/tag/v0.3.0",
       "hiddenUntil": null,
       "title": "Historical Weather",
       "summary": "Historical weather for the time and place of a recording in both Mac editions: a Weather inspector with summaries, a timeline linked to the map and graphs, eight modelled graph lines, a local cache and clear attribution.",
@@ -139,9 +139,71 @@
         ]
       },
       "attribution": "Weather data by Open-Meteo.com (CC BY 4.0), based on data and products of ECMWF; contains modified Copernicus Climate Change Service information.",
-      "changes": [],
-      "limitations": [],
-      "assets": []
+      "changes": [
+        "Historical weather for the time and place of a recording in both Mac editions: a Weather inspector, a timeline linked to the map and graphs, and eight modelled graph lines.",
+        "Weather matched to each track point's timestamp in UTC and blended between places along the route; summaries for the whole recording or a selected section.",
+        "A temperature recorded by a sensor stays separate from the modelled air temperature.",
+        "Local weather cache (at most 20 MB) for offline viewing; Clear weather cache deletes it.",
+        "Weather data by Open-Meteo.com (CC BY 4.0); only rounded places and dates are sent, and only when you press Retrieve.",
+        "Legal notice version 6."
+      ],
+      "limitations": [
+        "Weather values are model estimates for grid cells of about 9 to 25 km and whole hours, not measurements at the track.",
+        "The most recent days can be missing or provisional until the archive is updated.",
+        "Uses Open-Meteo's free service for non-commercial use; very heavy use can be rate limited.",
+        "Not signed with an Apple Developer ID and not notarized.",
+        "Tested on macOS 27 (Apple silicon; the Intel edition under Rosetta). Historical Weather has not been tested on macOS 10.13 to 12 hardware."
+      ],
+      "assets": [
+        {
+          "id": "macos-0.3.0-arm64",
+          "platform": "macos-arm64",
+          "kind": "installer",
+          "format": "pkg",
+          "file": "GPX Viewer 0.3.0 Apple Silicon macOS 13+.pkg",
+          "path": "macOS/0.3.0/ARM64/GPX Viewer 0.3.0 Apple Silicon macOS 13+.pkg",
+          "url": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.3.0/ARM64/GPX%20Viewer%200.3.0%20Apple%20Silicon%20macOS%2013%2B.pkg/download",
+          "size": 4499320,
+          "sha256": "1036e9d2454673f449bb6cb66d16d0ce896a6d23236958e5f80c76f5f46b1711",
+          "minimumOS": "macOS 13",
+          "maximumOS": null,
+          "signed": false,
+          "notarized": false,
+          "github": "https://github.com/A097MPRUS/GPX-Viewer/releases/download/v0.3.0/GPX.Viewer.0.3.0.Apple.Silicon.macOS.13%2B.pkg"
+        },
+        {
+          "id": "macos-0.3.0-x86_64",
+          "platform": "macos-x86_64",
+          "kind": "installer",
+          "format": "pkg",
+          "file": "GPX Viewer 0.3.0 Intel macOS 10.13-12.pkg",
+          "path": "macOS/0.3.0/X64/GPX Viewer 0.3.0 Intel macOS 10.13-12.pkg",
+          "url": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.3.0/X64/GPX%20Viewer%200.3.0%20Intel%20macOS%2010.13-12.pkg/download",
+          "size": 6218570,
+          "sha256": "70ea3288940ffacbeec8315dc607f21e4bf2201c76a03647a225af089707d312",
+          "minimumOS": "macOS 10.13",
+          "maximumOS": "macOS 12",
+          "signed": false,
+          "notarized": false,
+          "github": "https://github.com/A097MPRUS/GPX-Viewer/releases/download/v0.3.0/GPX.Viewer.0.3.0.Intel.macOS.10.13-12.pkg"
+        },
+        {
+          "id": "macos-0.3.0-source",
+          "platform": "source",
+          "kind": "source",
+          "format": "zip",
+          "file": "GPX-Viewer-0.3.0-source.zip",
+          "path": "macOS/0.3.0/GPX-Viewer-0.3.0-source.zip",
+          "url": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.3.0/GPX-Viewer-0.3.0-source.zip/download",
+          "size": 2787855,
+          "sha256": "6cce8e6570e6cc0a7830ac438baf02e1deecf4dac47f774650e81b55e41f8476",
+          "minimumOS": null,
+          "maximumOS": null,
+          "signed": false,
+          "notarized": false,
+          "github": "https://github.com/A097MPRUS/GPX-Viewer/releases/download/v0.3.0/GPX-Viewer-0.3.0-source.zip"
+        }
+      ]
     },
     {
       "id": "macos-0.2.0",
@@ -149,7 +211,7 @@
       "version": "0.2.0",
       "build": "3",
       "date": "2026-10-25",
-      "status": "current",
+      "status": "archived",
       "folder": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.2.0/",
       "checksums": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.2.0/SHA256SUMS.txt/download",
       "notes": "https://sourceforge.net/projects/gpx-viewer/files/macOS/0.2.0/README.md/download",
@@ -168,7 +230,8 @@
           "minimumOS": "macOS 13",
           "maximumOS": null,
           "signed": false,
-          "notarized": false
+          "notarized": false,
+          "github": "https://github.com/A097MPRUS/GPX-Viewer/releases/download/v0.2.0/GPX.Viewer.0.2.0.Apple.Silicon.macOS.13%2B.pkg"
         },
         {
           "id": "macos-0.2.0-x86_64",
@@ -183,7 +246,8 @@
           "minimumOS": "macOS 10.13",
           "maximumOS": "macOS 12",
           "signed": false,
-          "notarized": false
+          "notarized": false,
+          "github": "https://github.com/A097MPRUS/GPX-Viewer/releases/download/v0.2.0/GPX.Viewer.0.2.0.Intel.macOS.10.13-12.pkg"
         },
         {
           "id": "macos-0.2.0-source",
@@ -198,7 +262,8 @@
           "minimumOS": null,
           "maximumOS": null,
           "signed": false,
-          "notarized": false
+          "notarized": false,
+          "github": "https://github.com/A097MPRUS/GPX-Viewer/releases/download/v0.2.0/GPX-Viewer-0.2.0-source.zip"
         }
       ],
       "changes": [
@@ -221,7 +286,8 @@
         "Microsoft Azure Maps has not been tested with a real key.",
         "An older GPX Viewer Intel app installed by drag and drop stays in Applications; delete it after installing."
       ],
-      "hiddenUntil": null
+      "hiddenUntil": null,
+      "github": "https://github.com/A097MPRUS/GPX-Viewer/releases/tag/v0.2.0"
     },
     {
       "id": "windows-0.3.0",
