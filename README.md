@@ -10,7 +10,11 @@ This repository holds the project's public documentation, release metadata and s
 
 ## Screenshots
 
-GPX Viewer 0.2.0 for macOS with a synthetic test file.
+GPX Viewer 0.2.0 for macOS with synthetic GPX files.
+
+![Main window: a route on OpenTopoMap, the elevation profile coloured by gradient and the statistics](screenshots/main-window.png)
+
+![Official aerial imagery from Geoportail Luxembourg with its credit on the map](screenshots/official-aerial.png)
 
 ![Stacked graphs: elevation, speed and heart rate in separate plots sharing one cursor and zoom](screenshots/graph-stacked.png)
 
